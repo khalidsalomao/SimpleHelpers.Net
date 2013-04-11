@@ -8,16 +8,16 @@ namespace SimpleHelpers
     /// Articles on CodeProject
 
     /// <summary>
-    /// SimpleTimedQueue stores all data in a concurrent queue and periodically process the queued items.
+    /// TimedQueue stores all data in a concurrent queue and periodically process the queued items.
     /// </summary>    
-    public class SimpleTimedQueue : SimpleTimedQueue<object>
+    public class TimedQueue : TimedQueue<object>
     {
     }
 
     /// <summary>
-    /// SimpleTimedQueue stores all data in a concurrent queue and periodically process the queued items.
+    /// TimedQueue stores all data in a concurrent queue and periodically process the queued items.
     /// </summary>
-    public class SimpleTimedQueue<T> where T : class
+    public class TimedQueue<T> where T : class
     {
         private static TimeSpan m_timerStep = TimeSpan.FromMilliseconds (1000);
 

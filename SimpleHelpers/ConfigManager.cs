@@ -7,7 +7,7 @@ namespace SimpleHelpers
     /// For updated code: https://gist.github.com/khalidsalomao/5065646
     /// Articles on CodeProject
 
-    public class SimpleConfiguration
+    public class ConfigManager
     {
         private static System.Configuration.Configuration m_instance = null;
         private static object m_lock = new object ();

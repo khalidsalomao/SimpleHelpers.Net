@@ -6,13 +6,19 @@ namespace SimpleHelpers
     /// For updated code: https://gist.github.com/khalidsalomao/4968274
     /// Articles on CodeProject
 
-    public class SimpleObjectPool<T> where T : class
+    public class ObjectPool<T> where T : class
     {
         static System.Collections.Concurrent.ConcurrentStack<T> m_bag = new System.Collections.Concurrent.ConcurrentStack<T> ();
+        
         public static int MaxCapacity = 10;
 
         public static Func<T> InstanceFactory;
 
+        /// <summary>
+        /// Gets the specified instance factory.
+        /// </summary>
+        /// <param name="instanceFactory">The instance factory.</param>
+        /// <returns></returns>
         public static T Get (Func<T> instanceFactory)
         {
             T item;
@@ -23,6 +29,10 @@ namespace SimpleHelpers
             return item;
         }
 
+        /// <summary>
+        /// Gets this instance.
+        /// </summary>
+        /// <returns></returns>
         public static T Get ()
         {
             T item;
@@ -35,6 +45,10 @@ namespace SimpleHelpers
             return item;
         }
 
+        /// <summary>
+        /// Puts the specified item.
+        /// </summary>
+        /// <param name="item">The item.</param>
         public static void Put (T item)
         {
             // add to pool if it is not full
@@ -44,11 +58,18 @@ namespace SimpleHelpers
             }
         }
 
+        /// <summary>
+        /// Clears this instance.
+        /// </summary>
         public static void Clear ()
         {
             m_bag.Clear ();
         }
 
+        /// <summary>
+        /// Gets the count.
+        /// </summary>
+        /// <value>The count.</value>
         public static int Count
         {
             get { return m_bag.Count; }

@@ -56,6 +56,12 @@
     <Compile Include="MemoryCacheTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SimpleHelpers\SimpleHelpers.csproj">
+      <Project>{aa0f6cea-2779-4b7e-807c-56ada8892b01}</Project>
+      <Name>SimpleHelpers</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
