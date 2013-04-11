@@ -3,8 +3,8 @@ using System.Linq;
 
 namespace SimpleHelpers
 {
-    /// For updated code: https://gist.github.com/khalidsalomao/4968274
-    /// Articles on CodeProject
+    /// For updated code: https://github.com/khalidsalomao/SimpleHelpers.Net
+    
     /// <summary>
     /// Simple object in memory cache, with a background timer to clear expired objects.
     /// </summary>

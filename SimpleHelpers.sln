@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleHelpers", "SimpleHelp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{301E413A-6429-4EA0-BCD6-9DB7E78282C0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NugetProjects", "NugetProjects", "{8690EBAA-311D-4178-A0A8-CBBDB8E41CCD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NugetProjects", "NugetProjects", "{941009AD-2CF6-4739-AB78-6C10ED253364}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
