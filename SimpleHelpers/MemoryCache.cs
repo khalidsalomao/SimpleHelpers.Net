@@ -36,36 +36,34 @@ using System.Linq;
 namespace SimpleHelpers
 {
     /// <summary>
-    /// Simple object in memory cache, with a background timer to clear expired objects.
+    /// Simple lightweight object in-memory cache, with a background timer to remove expired objects.
+    /// Fast in-memory cache for data that are expensive to create and can be used in a thread-safe manner.
+    /// All stored items are kept in concurrent data structures (ConcurrentDictionary) to allow multi-thread usage of the MemoryCache static methods.
+    /// Note that the stored objects must be **thread-safe**, since the same instace of an object can and will be returned by multiple calls of *Get* methods. 
+    /// If you wish to use non-thread safe object instances you must use the *Remove* method to atomically (safelly) get and remove the object instance from the cache.
+    /// Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
     /// </summary>
-    public class MemoryCache : MemoryCache<object>
-    {
-        /// <summary>
-        /// Gets the stored value associated with the specified key and cast it to desired type.
-        /// Returns null if not found or if the type cast failed.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns>The key value or null if not found or if the type cast failed.</returns>
-        public static T GetAs<T> (string key) where T : class
-        {
-            return Get (key) as T;
-        }
-
-        /// <summary>
-        /// Removes and returns the value associated with the specified key.
-        /// Returns null if not found or if the type cast failed.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns>The key value or null if not found or if the type cast failed.</returns>
-        public static T RemoveAs<T> (string key) where T : class
-        {
-            return Remove (key) as T;
-        }
-    }
-
-    /// <summary>
-    /// Simple object in memory cache, with a background timer to clear expired objects.
-    /// </summary>
+    /// <example>
+    /// // setup:
+    /// // set a duration of an item in the cache to 1 second
+    /// MemoryCache<string>.Expiration = TimeSpan.FromSeconds (1);
+    /// // set the internal maintenance timed task to run each 500 ms removing expired items
+    /// MemoryCache<string>.MaintenanceStep = TimeSpan.FromMilliseconds (500);
+    /// // Our event, if we want to treat the removed expired items
+    /// MemoryCache<string>.OnExpiration += (string key, string item) => {};
+    /// 
+    /// // Simple usage:
+    /// // store an item:
+    /// MemoryCache<string>.Set ("k1", "test");
+    /// 
+    /// // get it back (if it is still valid, otherwise we get null):
+    /// string value = MemoryCache<string>.Get ("k1");
+    /// </example>    
+    /// <remarks>
+    /// Note that the stored objects must be thread-safe, since the same instace of an object can and will be returned
+    /// by multiple calls of Get methods. To avoid this you must use the Remove method, to atomically (safelly) 
+    /// get and remove the object instance of the cache.
+    /// </remarks>
     public class MemoryCache<T> where T : class
     {
         private static readonly System.Collections.Concurrent.ConcurrentDictionary <string, CachedItem> m_cacheMap = new System.Collections.Concurrent.ConcurrentDictionary<string, CachedItem> (StringComparer.Ordinal);
@@ -75,7 +73,8 @@ namespace SimpleHelpers
         private static TimeSpan m_maintenanceStep = TimeSpan.FromMinutes (5);
 
         /// <summary>
-        /// Expiration TimeSpan of stored items
+        /// Expiration TimeSpan of stored items.
+        /// Default value is 5 minutes.
         /// </summary>
         public static TimeSpan Expiration
         {
@@ -85,6 +84,7 @@ namespace SimpleHelpers
 
         /// <summary>
         /// Interval duration between checks for expired cached items by the internal timer thread.
+        /// Default value is 5 minutes.
         /// </summary>
         public static TimeSpan MaintenanceStep
         {
@@ -332,5 +332,33 @@ namespace SimpleHelpers
         }
         
         #endregion
+    }
+
+    /// <summary>
+    /// MemoryCache implements some helper methods on top of the MemoryCache<object>.
+    /// </summary>
+    public class MemoryCache : MemoryCache<object>
+    {
+        /// <summary>
+        /// Gets the stored value associated with the specified key and cast it to desired type.
+        /// Returns null if not found or if the type cast failed.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>The key value or null if not found or if the type cast failed.</returns>
+        public static T GetAs<T> (string key) where T : class
+        {
+            return Get (key) as T;
+        }
+
+        /// <summary>
+        /// Removes and returns the value associated with the specified key.
+        /// Returns null if not found or if the type cast failed.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>The key value or null if not found or if the type cast failed.</returns>
+        public static T RemoveAs<T> (string key) where T : class
+        {
+            return Remove (key) as T;
+        }
     }
 }

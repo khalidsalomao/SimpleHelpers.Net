@@ -35,14 +35,16 @@ using System;
 namespace SimpleHelpers
 {
     /// <summary>
-    /// A simple object pool for fast and simple object reuse.
+    /// A simple lightweight object pool for fast and simple object reuse.
+    /// Fast lightweight thread-safe object pool for objects that are expensive to create or could efficiently be reused.
+    /// Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
     /// </summary>
     public class ObjectPool<T> where T : class
     {
         static System.Collections.Concurrent.ConcurrentStack<T> m_bag = new System.Collections.Concurrent.ConcurrentStack<T> ();
         
         /// <summary>
-        /// Maximum capactity of the pool.
+        /// Maximum capactity of the pool, used in Put to discards objects if the capacity was reached.
         /// </summary>
         public static int MaxCapacity = 10;
 

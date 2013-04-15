@@ -1,6 +1,6 @@
 ﻿#region *   License     *
 /*
-    SimpleHelpers - TimedQueue   
+    SimpleHelpers - ConfigManager   
 
     Copyright © 2013 Khalid Salomão
 
@@ -38,6 +38,7 @@ namespace SimpleHelpers
 {
     /// <summary>
     /// Simple configuration manager to get and set the values in the AppSettings section of the default configuration file.
+    /// Note: this nuget package contains csharp source code and depends on Generics introduced in .Net 2.0.
     /// </summary>
     public class ConfigManager
     {

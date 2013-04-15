@@ -6,7 +6,7 @@
 
     Permission is hereby granted, free of charge, to any person
     obtaining a copy of this software and associated documentation
-    files (the "Software"), to deal in the Software without
+    files (the “Software”), to deal in the Software without
     restriction, including without limitation the rights to use,
     copy, modify, merge, publish, distribute, sublicense, and/or sell
     copies of the Software, and to permit persons to whom the
@@ -16,7 +16,7 @@
     The above copyright notice and this permission notice shall be
     included in all copies or substantial portions of the Software.
 
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -35,7 +35,10 @@ using System;
 namespace $rootnamespace$.SimpleHelpers
 {
     /// <summary>
-    /// Synchronization helper: a global lock collection associated with a key.
+    /// Synchronization helper: a static lock collection associated with a key.
+    /// NamedLock manages the lifetime of critical sections that can be accessed by a key (name) throughout the application. 
+    /// It also have some helper methods to allow a maximum wait time (timeout) to aquire the lock and safelly release it.    
+    /// Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
     /// </summary>
     /// <example>
     /// // create a lock for this key

@@ -37,17 +37,14 @@ using System.Linq;
 namespace SimpleHelpers
 {
     /// <summary>
-    /// TimedQueue stores all data in a concurrent queue and periodically process the queued items.
-    /// Userful for processing items in batches.
+    /// Simple lightweight queue that stores data in a concurrent queue and periodically process the queued items.
+    /// Userful for:
+    /// * processing items in batches;
+    /// * grouping data for later processing;
+    /// * async processing (consumer/producer);
+    /// * etc.
+    /// Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
     /// </summary>    
-    public class TimedQueue : TimedQueue<object>
-    {
-    }
-
-    /// <summary>
-    /// TimedQueue stores all data in a concurrent queue and periodically process the queued items.
-    /// Userful for processing items in batches.
-    /// </summary>
     public class TimedQueue<T> where T : class
     {
         private static TimeSpan m_timerStep = TimeSpan.FromMilliseconds (1000);
@@ -56,6 +53,7 @@ namespace SimpleHelpers
 
         /// <summary>
         /// Interval duration between OnExecution calls by the internal timer thread.
+        /// Default value is 1000 milliseconds.
         /// </summary>
         public static TimeSpan TimerStep
         {

@@ -1,4 +1,4 @@
-#region *   License     *
+﻿#region *   License     *
 /*
     SimpleHelpers - ObjectPool   
 
@@ -6,7 +6,7 @@
 
     Permission is hereby granted, free of charge, to any person
     obtaining a copy of this software and associated documentation
-    files (the "Software"), to deal in the Software without
+    files (the “Software”), to deal in the Software without
     restriction, including without limitation the rights to use,
     copy, modify, merge, publish, distribute, sublicense, and/or sell
     copies of the Software, and to permit persons to whom the
@@ -16,7 +16,7 @@
     The above copyright notice and this permission notice shall be
     included in all copies or substantial portions of the Software.
 
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -35,14 +35,16 @@ using System;
 namespace $rootnamespace$.SimpleHelpers
 {
     /// <summary>
-    /// A simple object pool for fast and simple object reuse.
+    /// A simple lightweight object pool for fast and simple object reuse.
+    /// Fast lightweight thread-safe object pool for objects that are expensive to create or could efficiently be reused.
+    /// Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
     /// </summary>
     public class ObjectPool<T> where T : class
     {
         static System.Collections.Concurrent.ConcurrentStack<T> m_bag = new System.Collections.Concurrent.ConcurrentStack<T> ();
         
         /// <summary>
-        /// Maximum capactity of the pool.
+        /// Maximum capactity of the pool, used in Put to discards objects if the capacity was reached.
         /// </summary>
         public static int MaxCapacity = 10;
 

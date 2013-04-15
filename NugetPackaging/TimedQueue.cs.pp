@@ -1,4 +1,4 @@
-#region *   License     *
+﻿#region *   License     *
 /*
     SimpleHelpers - TimedQueue   
 
@@ -6,7 +6,7 @@
 
     Permission is hereby granted, free of charge, to any person
     obtaining a copy of this software and associated documentation
-    files (the "Software"), to deal in the Software without
+    files (the “Software”), to deal in the Software without
     restriction, including without limitation the rights to use,
     copy, modify, merge, publish, distribute, sublicense, and/or sell
     copies of the Software, and to permit persons to whom the
@@ -16,7 +16,7 @@
     The above copyright notice and this permission notice shall be
     included in all copies or substantial portions of the Software.
 
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -37,15 +37,14 @@ using System.Linq;
 namespace $rootnamespace$.SimpleHelpers
 {
     /// <summary>
-    /// TimedQueue stores all data in a concurrent queue and periodically process the queued items.
+    /// Simple lightweight queue that stores data in a concurrent queue and periodically process the queued items.
+    /// Userful for:
+    /// * processing items in batches;
+    /// * grouping data for later processing;
+    /// * async processing (consumer/producer);
+    /// * etc.
+    /// Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
     /// </summary>    
-    public class TimedQueue : TimedQueue<object>
-    {
-    }
-
-    /// <summary>
-    /// TimedQueue stores all data in a concurrent queue and periodically process the queued items.
-    /// </summary>
     public class TimedQueue<T> where T : class
     {
         private static TimeSpan m_timerStep = TimeSpan.FromMilliseconds (1000);
@@ -54,6 +53,7 @@ namespace $rootnamespace$.SimpleHelpers
 
         /// <summary>
         /// Interval duration between OnExecution calls by the internal timer thread.
+        /// Default value is 1000 milliseconds.
         /// </summary>
         public static TimeSpan TimerStep
         {
