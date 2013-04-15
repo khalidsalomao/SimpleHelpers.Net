@@ -36,7 +36,7 @@ MemoryCache<string>.OnExpiration += (string key, string item) =>
 
 ```
 
-** Example **
+**Example**
 
 ```csharp
 
@@ -102,7 +102,8 @@ NamedLock manages the lifetime of critical sections that can be accessed by a ke
 	
 Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
 
-** Example **
+**Example**
+
 Simple usage where we try to aquire the lock for 100 ms. 
 So if somewhere else in our application this same lock was already aquired, we will wait until we aquire the lock or 100 ms has passed.
 
@@ -148,7 +149,7 @@ Fast lightweight thread-safe object pool for objects that are expensive to creat
 
 Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
 
-** Example **
+**Example**
 
 ```csharp
 
@@ -208,7 +209,7 @@ MemoryCache<string>.OnExecution += (IEnumerable<Our_Object> items) =>
 
 ```
 
-** Example **
+**Example**
 
 ```csharp
 
