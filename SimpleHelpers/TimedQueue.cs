@@ -46,6 +46,7 @@ namespace SimpleHelpers
 
     /// <summary>
     /// TimedQueue stores all data in a concurrent queue and periodically process the queued items.
+    /// Userful for processing items in batches.
     /// </summary>
     public class TimedQueue<T> where T : class
     {
