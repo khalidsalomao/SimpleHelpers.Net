@@ -269,7 +269,7 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
             // execute query
             using (var db = Open ())
             {
-                return db.Query<string> (query, new { Key = key, limit = limit, value = Newtonsoft.Json.JsonConvert.SerializeObject (searchParam).Replace ('{', '%').Replace ('}', '%').Replace (',', '%') })
+                return db.Query<string> (query, new { Key = key, limit = limit, value = prepareSearchParam (searchParam) })
                     .Select (i => Newtonsoft.Json.JsonConvert.DeserializeObject<T> (i));
             }
         }
@@ -285,7 +285,7 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
             // execute query
             using (var db = Open ())
             {
-                return db.Query<string> (query, new { limit = limit, value = Newtonsoft.Json.JsonConvert.SerializeObject (searchParam).Replace ('{', '%').Replace ('}', '%').Replace (',', '%') })
+                return db.Query<string> (query, new { limit = limit, value = prepareSearchParam (searchParam) })
                     .Select (i => Newtonsoft.Json.JsonConvert.DeserializeObject<T> (i));
             }
         }
@@ -294,8 +294,13 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
         {
             using (var db = Open ())
             {
-                db.Execute ("Delete FROM \"" + TableName + "\" Where Key = @Key AND Value LIKE @value ", new { Key = key, value = Newtonsoft.Json.JsonConvert.SerializeObject (searchParam).Replace ('{', '%').Replace ('}', '%').Replace (',', '%') });
+                db.Execute ("Delete FROM \"" + TableName + "\" Where Key = @Key AND Value LIKE @value ", new { Key = key, value = prepareSearchParam (searchParam) });
             }
+        }
+
+        static string prepareSearchParam (object searchParam)
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject (searchParam).Replace ('{', '%').Replace ('}', '%').Replace ("\",\"", "\"%\"");
         }
     }
 }
