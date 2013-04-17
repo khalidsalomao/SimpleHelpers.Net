@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ObjectExtensions.cs" />
     <Compile Include="SQLiteStorage.cs" />
     <Compile Include="MemoryCache.cs" />
     <Compile Include="NamedLock.cs" />
