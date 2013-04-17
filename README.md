@@ -256,3 +256,35 @@ string address = SimpleConfiguration.Get ("MongoDBaddress", "localhost");
 int port = SimpleConfiguration.Get ("MongoDBport", 21766);
 
 ```
+
+<h3>SQLiteStorage</h3>
+
+Simple key value storage using sqlite.
+
+All member methods are thread-safe, so a instance can be safelly be accessed by multiple threads.
+
+All stored items are serialized to json by json.net.
+
+Note: this nuget package contains csharp source code and depends on .Net 4.0.
+
+**Configuration**
+
+```csharp
+
+// setup:
+SQLiteStorage db = new SQLiteStorage ("path_to_my_file.sqlite", SQLiteStorageOptions.UniqueKeys ());
+
+```
+
+** Example **
+
+```csharp
+
+// create a new instance
+SQLiteStorage db = new SQLiteStorage ("path_to_my_file.sqlite", SQLiteStorageOptions.UniqueKeys ());
+// save an item
+db.Set ("my_key_for_this_item", new My_Class ());
+// get it back
+var my_obj = db.Get ("my_key_for_this_item").FirstOrDefault ();
+
+```

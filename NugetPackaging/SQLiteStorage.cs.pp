@@ -39,8 +39,19 @@ using Dapper;
 namespace $rootnamespace$.SimpleHelpers.SQLite
 {    
     /// <summary>
-    /// Simple storage using sqlite.
-    /// </summary>
+    /// Simple key value storage using sqlite.
+    /// All member methods are thread-safe, so a instance can be safelly be accessed by multiple threads.
+    /// All stored items are serialized to json by json.net.
+    /// Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
+    /// </summary>    
+    /// <example>
+    /// // create a new instance
+    /// SQLiteStorage db = new SQLiteStorage ("path_to_my_file.sqlite", SQLiteStorageOptions.UniqueKeys ());
+    /// // save an item
+    /// db.Set ("my_key_for_this_item", new My_Class ());
+    /// // get it back
+    /// var my_obj = db.Get ("my_key_for_this_item").FirstOrDefault ();    
+    /// </example>
     public class SQLiteStorage<T> where T : class
     {
         protected const int cacheSize = 1000;
