@@ -136,6 +136,9 @@ namespace SimpleHelpers.SQLite
             sb.Pooling = true;
             sb.JournalMode = SQLiteJournalModeEnum.Wal;
             sb.SyncMode = SynchronizationModes.Normal;
+            sb.DateTimeKind = DateTimeKind.Utc;
+            sb.DateTimeFormat = SQLiteDateFormats.ISO8601;
+            sb.DefaultIsolationLevel = System.Data.IsolationLevel.ReadCommitted;
             m_connectionString = sb.ToString ();
             // execute initialization
             CreateTable ();

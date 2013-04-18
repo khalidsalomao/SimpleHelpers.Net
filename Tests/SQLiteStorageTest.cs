@@ -44,14 +44,17 @@ namespace Tests
             Assert.IsTrue (obj.name == "xpto", "wrong item!");
             Assert.IsTrue (obj.counter == 1, "wrong item!");
 
-            var obj2 = db.Get ("1").Where (i => i.counter == 1 && i.name == "xpto").FirstOrDefault ();
+            var obj2 = db.Get ("1").Where (i => i.counter == 1 && i.name == "xpto").First ();
 
             Assert.IsNotNull (obj2, "item not found!");
             Assert.IsTrue (obj2.name == "xpto", "wrong item!");
-            Assert.IsTrue (obj2.counter == 1, "wrong item!");
+            Assert.IsTrue (obj2.counter == 1, "wrong item!");            
 
             Assert.IsTrue (db.Get ("1").Count () == 1, "wrong item count!");
-            Assert.IsTrue (db.Get (new string[] { "1", "2" }).Count () == 2, "wrong item count!");
+            Assert.IsTrue (db.Get (new string[] { "1", "2" }).Count () == 2, "wrong item count!");                        
+            
+            var details = db.GetDetails ("1").First ();
+            Assert.IsTrue (details.Date.Hour == DateTime.UtcNow.Hour, "wrong date format!");
         }
 
         public class Item1
@@ -109,13 +112,13 @@ namespace Tests
                     db.Get (u.Login).First ();
             });
 
-            Time ("Find Test ForEach Key (" + len + ")", () =>
+            Time ("Find Test ForEach Key (" + (len - start) + ")", () =>
             {   
                 for (int i = start; i < len; i++)
                     db.Find (new { Login = list[i].Login }).Count ();
             });
 
-            Time ("In-memory Linq Test ForEach Key (" + len + " x " + len + ")", () =>
+            Time ("In-memory Linq Test ForEach Key (" + (len - start) + " x " + loopCounter + ")", () =>
             {
                 for (int i = start; i < len; i++)
                     db.Get().Where (u => u.Login == list[i].Login).Count ();
@@ -123,7 +126,7 @@ namespace Tests
 
             db.Clear ();
 
-            Time ("Set single insert Test (" + loopCounter/10 + ")", () =>
+            Time ("Set single insert Test (" + (loopCounter / 10) + ")", () =>
             {
                 foreach (var u in list.Take (loopCounter / 10))
                     db.Set (u.Login, u);
