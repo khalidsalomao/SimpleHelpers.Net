@@ -42,7 +42,7 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
     /// Simple key value storage using sqlite.
     /// All member methods are thread-safe, so a instance can be safelly be accessed by multiple threads.
     /// All stored items are serialized to json by json.net.
-    /// Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
+    /// Note: this nuget package contains c# source code and depends on .Net 4.0.
     /// </summary>    
     /// <example>
     /// // create a new instance
@@ -87,7 +87,8 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
         /// </summary>
         /// <param name="filename">The filename.</param>
         /// <param name="options">The options.</param>
-        public SQLiteStorage (string filename, SQLiteStorageOptions options) : this (filename, typeof (T).Name, options)
+        public SQLiteStorage (string filename, SQLiteStorageOptions options) 
+            : this (filename, typeof (T).Name, options)
         {
         }
 
@@ -155,7 +156,7 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
         {
             using (var connection = Open ())
             {
-                if (connection.Query<Int64> ("SELECT count(*) FROM sqlite_master WHERE type='table' AND name=@table", new { table = TableName }).FirstOrDefault () == 0)
+                if (connection.Query<Int64> ("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=@table", new { table = TableName }).FirstOrDefault () == 0)
                 {
                     foreach (var sql in GetTableCreateSQL ())
                     {
@@ -182,7 +183,7 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
             return new string[]
             {
                 "CREATE TABLE IF NOT EXISTS \"" + TableName + "\" (Id integer NOT NULL PRIMARY KEY AUTOINCREMENT, " +
-                "Date datetime NOT NULL DEFAULT 'CURRENT_TIMESTAMP', " +
+                "Date datetime, " +
                 "Key varchar NOT NULL," +
                 "Value varchar NOT NULL)",
                 "CREATE INDEX \"" + TableName + "_Idx_Key\" ON \"" + TableName + "\" (Key, Date DESC)"
@@ -278,12 +279,12 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
             var info = new { Date = DateTime.UtcNow, Key = key, Value = value, Count = count };
             if (isDistinct && count != 1)
             {
-                db.Execute ("Delete From \"" + TableName + "\" Where Key = @Key And Value = @Value", info, trans);
+                db.Execute ("Delete From \"" + TableName + "\" Where [Key] = @Key And [Value] = @Value", info, trans);
             }
-            db.Execute ("INSERT INTO \"" + TableName + "\" (Date, Key, Value) values (@Date, @Key, @Value)", info, trans);
+            db.Execute ("INSERT INTO \"" + TableName + "\" ([Date], [Key], [Value]) values (@Date, @Key, @Value)", info, trans);
             if (count > 0)
             {
-                db.Execute ("Delete from \"" + TableName + "\" Where Id in (Select Id FROM \"" + TableName + "\" Where Key = @Key Order by Key, Date DESC Limit 100000 Offset @Count)",
+                db.Execute ("Delete from \"" + TableName + "\" Where [Id] in (Select [Id] FROM \"" + TableName + "\" Where [Key] = @Key Order by Key, Date DESC Limit 100000 Offset @Count)",
                     info, trans);
             }
         }
@@ -297,7 +298,7 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
         {
             using (var db = Open ())
             {
-                db.Execute ("Delete FROM \"" + TableName + "\" Where Key = @Key AND Date <= @olderThan", new { Key = key, olderThan = olderThan.ToUniversalTime () });
+                db.Execute ("Delete FROM \"" + TableName + "\" Where [Key] = @Key AND [Date] <= @olderThan", new { Key = key, olderThan = olderThan.ToUniversalTime () });
             }
         }
 
@@ -309,7 +310,7 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
         {
             using (var db = Open ())
             {
-                db.Execute ("Delete FROM \"" + TableName + "\" Where Key = @Key ", new { Key = key });
+                db.Execute ("Delete FROM \"" + TableName + "\" Where [Key] = @Key ", new { Key = key });
             }
         }
 
@@ -321,7 +322,7 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
         {
             using (var db = Open ())
             {
-                db.Execute ("Delete FROM \"" + TableName + "\" Where Key IN @Key ", new { Key = keys });
+                db.Execute ("Delete FROM \"" + TableName + "\" Where [Key] IN @Key ", new { Key = keys });
             }
         }
 
@@ -333,7 +334,7 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
         {
             using (var db = Open ())
             {
-                db.Execute ("DELETE FROM \"" + TableName + "\" Where Date <= @olderThan", new { olderThan = olderThan.ToUniversalTime () });
+                db.Execute ("DELETE FROM \"" + TableName + "\" Where [Date] <= @olderThan", new { olderThan = olderThan.ToUniversalTime () });
             }
         }
 
@@ -345,7 +346,7 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
         {
             using (var db = Open ())
             {
-                db.Execute ("DELETE FROM \"" + TableName + "\" Where Id = @Id", item);
+                db.Execute ("DELETE FROM \"" + TableName + "\" Where [Id] = @Id", item);
             }
         }
 
@@ -381,24 +382,13 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
         private IEnumerable<T> getInternal (object key, bool sortNewestFirst = true)
         {
             // prepare SQL
-            System.Text.StringBuilder query = new System.Text.StringBuilder ("Select Value FROM \"", 50).Append (TableName).Append ('\"');
-            // create filter
-            if (key == null)
-            {
-                if ((key as System.Collections.IEnumerable) != null)
-                    query.Append ("WHERE Key IN @Key");
-                else
-                    query.Append ("WHERE Key = @Key");
-            }
-            // create sort order
-            if (sortNewestFirst)
-                query.Append (" Order by Id DESC");
-            else
-                query.Append (" Order by Id");
+            string query;
+            object parameter;
+            prepareGetSqlQuery (key, true, sortNewestFirst, out query, out parameter);
             // execute query
             using (var db = Open ())
             {
-                foreach (var item in db.Query<string> (query.ToString (), new { Key = key }, null, false))
+                foreach (var item in db.Query<string> (query.ToString (), parameter, null, false))
                     yield return Newtonsoft.Json.JsonConvert.DeserializeObject<T> (item);
             }
         }
@@ -435,24 +425,13 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
         private IEnumerable<SQLiteStorageItem<T>> getDetailsInternal (object key, bool sortNewestFirst = true)
         {
             // prepare SQL
-            System.Text.StringBuilder query = new System.Text.StringBuilder ("Select * FROM \"", 50).Append (TableName).Append ('\"');
-            // create filter
-            if (key == null)
-            {
-                if ((key as System.Collections.IEnumerable) != null)
-                    query.Append ("WHERE Key IN @Key");
-                else
-                    query.Append ("WHERE Key = @Key");
-            }            
-            // create sort order            
-            if (sortNewestFirst)
-                query.Append (" Order by Id DESC");
-            else
-                query.Append (" Order by Id");
+            string query;
+            object parameter;            
+            prepareGetSqlQuery (key, false, sortNewestFirst, out query, out parameter);
             // execute query
             using (var db = Open ())
             {
-                foreach (var item in db.Query<SQLiteStorageItem<T>> (query.ToString (), new { Key = key }, null, false))
+                foreach (var item in db.Query<SQLiteStorageItem<T>> (query.ToString (), parameter, null, false))
                     yield return item;
             }
         }
@@ -469,11 +448,11 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
         {
             // prepare SQL
             string query;
-            string keyFilter = key == null ? "" : "Key = @Key";            
+            string keyFilter = key == null ? "" : "[Key] = @Key";            
             if (sortNewestFirst)
-                query = "Select Value FROM \"" + TableName + "\" Where " + keyFilter + " AND Value LIKE @value Order by Id DESC";
+                query = "Select [Value] FROM \"" + TableName + "\" Where " + keyFilter + " AND [Value] LIKE @value Order by [Id] DESC";
             else
-                query = "Select Value FROM \"" + TableName + "\" Where " + keyFilter + " AND Value LIKE @value Order by Id";
+                query = "Select [Value] FROM \"" + TableName + "\" Where " + keyFilter + " AND [Value] LIKE @value Order by [Id]";
             // execute query
             using (var db = Open ())
             {
@@ -504,7 +483,7 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
         {
             string whereClause;
             object queryParameter;
-            prepareWhereClause (key, parameters, null, out whereClause, out queryParameter);
+            prepareFindSqlQuery (key, parameters, null, out whereClause, out queryParameter);
 
             string query = "Delete FROM \"" + TableName + "\"" + whereClause;
 
@@ -534,11 +513,10 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
         /// <param name="sortNewestFirst">The sort newest first.</param>
         public IEnumerable<T> Find (string key, object parameters, bool sortNewestFirst = true)
         {
-            string whereClause;
-            object queryParameter;
-            prepareWhereClause (key, parameters, sortNewestFirst, out whereClause, out queryParameter);
             // prepare SQL
-            string query = "Select Value FROM \"" + TableName + "\"" + whereClause;
+            string query;
+            object queryParameter;
+            prepareFindSqlQuery (key, parameters, sortNewestFirst, out query, out queryParameter);            
             // execute query
             using (var db = Open ())
             {
@@ -547,11 +525,63 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
             }
         }
 
-        static void prepareWhereClause (string key, object parameters, bool? sortDescendingByDate, out string whereClause, out object queryParameter)
-        {
-            System.Text.StringBuilder query = new System.Text.StringBuilder (" WHERE", 50);
+        private void prepareGetSqlQuery (object key, bool selectValueOnly, bool? sortDescendingByDate, out string sqlQuery, out object parameters)
+        {            
+            System.Text.StringBuilder query = new System.Text.StringBuilder ("Select ", 100);
+            if (selectValueOnly)
+                query.Append (" [Value] FROM \"");
+            else
+                query.Append (" * FROM \"");
+            query.Append (TableName).Append ('\"');            
+            // create filter
             if (key != null)
-                query.Append (" Key = @Key");            
+            {
+                if ((key as string) != null)
+                {
+                    query.Append (" WHERE [Key] = @Key");
+                    parameters = new { Key = (string)key };
+                }
+                else if ((key as System.Collections.IEnumerable) != null)
+                {
+                    query.Append (" WHERE [Key] IN @Key");
+                    parameters = new { Key = (System.Collections.IEnumerable)key };
+                }
+                else
+                {
+                    parameters = null;
+                }
+            }
+            else
+            {
+                parameters = null;
+            }
+            // create sort order
+            if (sortDescendingByDate.HasValue)
+            {
+                if (sortDescendingByDate.Value)
+                {
+                    if (key == null)
+                        query.Append (" Order by [Id] DESC");
+                    else
+                        query.Append (" Order by [Key], [Date] DESC");
+                }
+                else
+                {
+                    query.Append (" Order by [Id]");
+                }
+            }
+            sqlQuery = query.ToString ();
+        }
+
+        private void prepareFindSqlQuery (string key, object parameters, bool? sortDescendingByDate, out string whereClause, out object queryParameter)
+        {
+            // prepare sql where statement
+            System.Text.StringBuilder query = new System.Text.StringBuilder ("Select [Value] FROM \"", 120).Append (TableName).Append ("\" WHERE");
+
+            // prepare key filter
+            if (key != null)
+                query.Append (" [Key] = @Key");
+            // prepare parameters filter
             if (parameters != null)
             {
                 System.ComponentModel.PropertyDescriptorCollection properties = System.ComponentModel.TypeDescriptor.GetProperties (parameters);
@@ -567,7 +597,7 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
                     string vName = "v" + i;
                     if (i > 1 || key != null)
                         query.Append (" AND");
-                    query.Append (" Value LIKE @").Append (vName);
+                    query.Append (" [Value] LIKE @").Append (vName);
                     values.Add (new KeyValuePair<string, object> (vName, "%\"" + property.Name + "\":" + Newtonsoft.Json.JsonConvert.SerializeObject (value) + "%"));
                 }
                 queryParameter = createAnonymousType (values);
@@ -576,12 +606,20 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
             {
                 queryParameter = new { Key = key };
             }
+            // prepare sort mode
             if (sortDescendingByDate.HasValue)
             {
                 if (sortDescendingByDate.Value)
-                    query.Append (" Order by Date DESC");
+                {
+                    if (key == null)
+                        query.Append (" Order by [Id] DESC");
+                    else
+                        query.Append (" Order by [Key], [Date] DESC");
+                }
                 else
-                    query.Append (" Order by Id");
+                {
+                    query.Append (" Order by [Id]");
+                }
             }
             whereClause = query.ToString ();            
         }

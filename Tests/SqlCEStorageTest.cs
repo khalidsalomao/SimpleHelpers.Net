@@ -4,14 +4,15 @@ using SimpleHelpers.SQLite;
 using System.Linq;
 using System.Diagnostics;
 using System.Collections.Generic;
+using SimpleHelpers.SQLCE;
 
 namespace Tests
 {
     [TestClass]
-    public class SQLiteStorageTest
+    public class SqlCEStorageTest
     {
-        static string filename = @"C:\temp\testfile.sqlite";
-        static SQLiteStorage<string> logDb;
+        static string filename = @"C:\temp\testfile.sqlce";
+        static SqlCEStorage<string> logDb;
 
         [ClassInitialize ()]
         public static void ClassInit (TestContext context)
@@ -22,13 +23,13 @@ namespace Tests
         public void Initialize ()
         {
             System.Diagnostics.Debug.WriteLine ("SQLiteStorageTest.Initialize");
-            logDb = new SQLiteStorage<string> (filename, "Log", SQLiteStorageOptions.KeepItemsHistory ());
+            logDb = new SqlCEStorage<string> (filename, "Log", SqlCEStorageOptions.KeepItemsHistory ());
         }
 
         [TestMethod]
-        public void SQLiteStorageTest_SimpleTest ()
+        public void SqlCEStorageTest_SimpleTest ()
         {
-            var db = new SQLiteStorage<Item1> (filename);
+            var db = new SqlCEStorage<Item1> (filename);
             db.Clear ();
 
             db.Set ("2", new Item1 { name = "luis", counter = 2, address = "raphael" });
@@ -66,10 +67,10 @@ namespace Tests
         }
 
         [TestMethod]
-        public void SQLiteStoragePerformance_SimpleTest ()
+        public void SqlCEStoragePerformance_SimpleTest ()
         {
             int loopCounter = 10000;
-            var db = new SQLiteStorage<FFUser> (filename);
+            var db = new SqlCEStorage<FFUser> (filename);
             db.Clear ();
             uniqueCounter = 0;
 
@@ -81,7 +82,7 @@ namespace Tests
                 start = 0;
             len = start + len;
             if (len > list.Count)
-                len = list.Count - start;
+                len = list.Count - start;            
 
             Time ("Set Test (" + loopCounter + ")", () =>
             {
@@ -118,7 +119,7 @@ namespace Tests
             Time ("In-memory Linq Test ForEach Key (" + len + " x " + len + ")", () =>
             {
                 for (int i = start; i < len; i++)
-                    db.Get().Where (u => u.Login == list[i].Login).Count ();
+                    db.Get ().Where (u => u.Login == list[i].Login).Count ();
             });
 
             db.Clear ();

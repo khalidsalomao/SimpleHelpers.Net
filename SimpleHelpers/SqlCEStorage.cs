@@ -1,6 +1,6 @@
 #region *   License     *
 /*
-    SimpleHelpers - SQLiteStorage   
+    SimpleHelpers - SqlCEStorage   
 
     Copyright © 2013 Khalid Salomão
 
@@ -32,85 +32,85 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
+using System.Data.SqlServerCe;
 using System.Linq;
 using Dapper;
 
-namespace SimpleHelpers.SQLite
+namespace SimpleHelpers.SQLCE
 {    
     /// <summary>
-    /// Simple key value storage using sqlite.
-    /// All member methods are thread-safe, so a instance can be safelly be accessed by multiple threads.
+    /// Simple key value storage using sqlce.
+    /// All member methods are NOT thread-safe, so a instance can be safelly be accessed by multiple threads.
     /// All stored items are serialized to json by json.net.
     /// Note: this nuget package contains c# source code and depends on .Net 4.0.
     /// </summary>    
     /// <example>
     /// // create a new instance
-    /// SQLiteStorage db = new SQLiteStorage ("path_to_my_file.sqlite", SQLiteStorageOptions.UniqueKeys ());
+    /// SqlCEStorage db = new SqlCEStorage ("path_to_my_file.sqlite", SqlCEStorageOptions.UniqueKeys ());
     /// // save an item
     /// db.Set ("my_key_for_this_item", new My_Class ());
     /// // get it back
     /// var my_obj = db.Get ("my_key_for_this_item").FirstOrDefault ();    
     /// </example>
-    public class SQLiteStorage<T> where T : class
+    public class SqlCEStorage<T> where T : class
     {
         protected const int cacheSize = 1000;
         
         protected string m_connectionString = null; 
         
-        protected SQLiteStorageOptions defaultOptions = null;
+        protected SqlCEStorageOptions defaultOptions = null;
 
         public string TableName { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteStorage" /> class.
-        /// Uses SQLiteStorageOptions.UniqueKeys () as default options.
+        /// Initializes a new instance of the <see cref="SqlCEStorage" /> class.
+        /// Uses SqlCEStorageOptions.UniqueKeys () as default options.
         /// </summary>
         /// <param name="filename">The filename.</param>
-        public SQLiteStorage (string filename) : this (filename, typeof (T).Name, null)
+        public SqlCEStorage (string filename) : this (filename, typeof (T).Name, null)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteStorage" /> class.
+        /// Initializes a new instance of the <see cref="SqlCEStorage" /> class.
         /// </summary>
         /// <param name="filename">The filename.</param>
         /// <param name="count">The count.</param>
         /// <param name="isDistinct">The is distinct.</param>
-        public SQLiteStorage (string filename, int count, bool isDistinct)
-            : this (filename, typeof (T).Name, new SQLiteStorageOptions { MaximumItemsPerKeys = count, OverwriteSimilarItems = isDistinct})
+        public SqlCEStorage (string filename, int count, bool isDistinct)
+            : this (filename, typeof (T).Name, new SqlCEStorageOptions { MaximumItemsPerKeys = count, OverwriteSimilarItems = isDistinct })
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteStorage" /> class.
+        /// Initializes a new instance of the <see cref="SqlCEStorage" /> class.
         /// </summary>
         /// <param name="filename">The filename.</param>
         /// <param name="options">The options.</param>
-        public SQLiteStorage (string filename, SQLiteStorageOptions options) 
+        public SqlCEStorage (string filename, SqlCEStorageOptions options)
             : this (filename, typeof (T).Name, options)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteStorage" /> class.
+        /// Initializes a new instance of the <see cref="SqlCEStorage" /> class.
         /// </summary>
         /// <param name="filename">The filename.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="options">The options.</param>
-        public SQLiteStorage (string filename, string tableName, SQLiteStorageOptions options)
+        public SqlCEStorage (string filename, string tableName, SqlCEStorageOptions options)
         {
             if (String.IsNullOrEmpty (tableName))
                 throw new ArgumentNullException ("TableName");
-            defaultOptions = options ?? SQLiteStorageOptions.UniqueKeys ();
+            defaultOptions = options ?? SqlCEStorageOptions.UniqueKeys ();
             TableName = tableName;
             Configure (filename, cacheSize);
         }
 
         /// <summary>
-        /// Default behavior of how SQLiteStorage store items.
+        /// Default behavior of how SqlCEStorage store items.
         /// </summary>
-        public SQLiteStorageOptions DefaultOptions
+        public SqlCEStorageOptions DefaultOptions
         {
             get { return defaultOptions; }
             set
@@ -126,42 +126,46 @@ namespace SimpleHelpers.SQLite
             if (String.IsNullOrEmpty (filename))
                 throw new ArgumentNullException ("filename");
             // create connection string
-            var sb = new SQLiteConnectionStringBuilder ();
+            var sb = new SqlCeConnectionStringBuilder ();
             sb.DataSource = filename;
-            sb.FailIfMissing = false;
-            sb.PageSize = 32768;
-            sb.CacheSize = cacheSize;
-            sb.ForeignKeys = false;
-            sb.UseUTF16Encoding = false;
-            sb.Pooling = true;
-            sb.JournalMode = SQLiteJournalModeEnum.Wal;
-            sb.SyncMode = SynchronizationModes.Normal;
             m_connectionString = sb.ToString ();
+            if (!System.IO.File.Exists (filename))
+            {
+                using (SqlCeEngine db = new SqlCeEngine (m_connectionString))
+                    db.CreateDatabase ();
+            }
             // execute initialization
             CreateTable ();
         }
+        SqlCeConnection connection = null;
 
-        protected SQLiteConnection Open ()
+        protected SqlCeConnection Open ()
         {
             if (m_connectionString == null)
             {
                 throw new ArgumentNullException ("Invalid connection string, call Configure to set the connection string.");
             }
-            var connection = new SQLiteConnection (m_connectionString);
-            connection.Open ();
+            if (connection == null || connection.State == System.Data.ConnectionState.Closed)
+            {
+                connection = new SqlCeConnection (m_connectionString);
+                connection.Open ();
+            }
             return connection;
+        }
+
+        public void Close ()
+        {
+            Open ().Close ();            
         }
 
         protected void CreateTable ()
         {
-            using (var connection = Open ())
+            var connection = Open ();
+            if (connection.Query<int> ("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME=@table", new { table = TableName }).FirstOrDefault () == 0)
             {
-                if (connection.Query<Int64> ("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=@table", new { table = TableName }).FirstOrDefault () == 0)
+                foreach (var sql in GetTableCreateSQL ())
                 {
-                    foreach (var sql in GetTableCreateSQL ())
-                    {
-                        connection.Execute (sql);
-                    }
+                    connection.Execute (sql);
                 }
             }
         }
@@ -170,11 +174,10 @@ namespace SimpleHelpers.SQLite
         /// Helper method to optimize the sqlite file.
         /// </summary>
         public void Vaccum ()
-        {
-            SQLiteConnection.ClearAllPools ();
-            using (var db = Open ())
+        {            
+            using (var db = new SqlCeEngine (m_connectionString))
             {
-                db.Execute ("vacuum");
+                db.Shrink ();
             }
         }
         
@@ -182,11 +185,11 @@ namespace SimpleHelpers.SQLite
         {
             return new string[]
             {
-                "CREATE TABLE IF NOT EXISTS \"" + TableName + "\" (Id integer NOT NULL PRIMARY KEY AUTOINCREMENT, " +
-                "Date datetime, " +
-                "Key varchar NOT NULL," +
-                "Value varchar NOT NULL)",
-                "CREATE INDEX \"" + TableName + "_Idx_Key\" ON \"" + TableName + "\" (Key, Date DESC)"
+                "CREATE TABLE  \"" + TableName + "\" ([Id] bigint IDENTITY NOT NULL PRIMARY KEY, " +
+                "[Date] datetime NOT NULL, " +
+                "[Key] nchar (256) NOT NULL," +
+                "[Value] ntext NOT NULL)",
+                "CREATE INDEX \"" + TableName + "_Idx_Key\" ON \"" + TableName + "\" ([Key], [Date] DESC)"
             };
         }
 
@@ -195,10 +198,8 @@ namespace SimpleHelpers.SQLite
         /// </summary>
         public void Clear ()
         {
-            using (var db = Open ())
-            {
-                db.Execute ("DELETE FROM \"" + TableName + "\" ");
-            }
+            var db = Open ();
+            db.Execute ("DELETE FROM \"" + TableName + "\" ");
         }
 
         /// <summary>
@@ -208,15 +209,13 @@ namespace SimpleHelpers.SQLite
         /// <param name="value">Item to be stored.</param>
         public void Set (string key, T value)
         {
-            using (var db = Open ())
+            var db = Open ();
+            using (var trans = db.BeginTransaction ())
             {
-                using (var trans = db.BeginTransaction ())
-                {
-                    insertInternal (key, Newtonsoft.Json.JsonConvert.SerializeObject (value), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
-                    trans.Commit ();
-                }
-            }
-        }
+                insertInternal (key, Newtonsoft.Json.JsonConvert.SerializeObject (value), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
+                trans.Commit ();
+            }                    
+         }
 
         /// <summary>
         /// Stores a list of items.
@@ -225,26 +224,24 @@ namespace SimpleHelpers.SQLite
         public void Set (IEnumerable<KeyValuePair<string, T>> items)
         {
             int counter = 0;
-            using (var db = Open ())
+            var db = Open ();
+            var trans = db.BeginTransaction ();
+            try
             {
-                var trans = db.BeginTransaction ();
-                try
+                foreach (var i in items)
                 {
-                    foreach (var i in items)
+                    insertInternal (i.Key, Newtonsoft.Json.JsonConvert.SerializeObject (i.Value), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
+                    if (++counter % 2500 == 0)
                     {
-                        insertInternal (i.Key, Newtonsoft.Json.JsonConvert.SerializeObject (i.Value), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
-                        if (++counter % 2500 == 0)
-                        {
-                            trans.Commit ();
-                            trans = db.BeginTransaction ();
-                        }
+                        trans.Commit ();
+                        trans = db.BeginTransaction ();
                     }
-                    trans.Commit ();
                 }
-                finally
-                {
-                    trans.Dispose ();
-                }
+                trans.Commit ();
+            }
+            finally
+            {
+                trans.Dispose ();
             }
         }
 
@@ -264,17 +261,15 @@ namespace SimpleHelpers.SQLite
         /// </param>
         public void SetSpecial (string key, T value, int count, bool isDistinct = false)
         {
-            using (var db = Open ())
+            var db = Open ();
+            using (var trans = db.BeginTransaction ())
             {
-                using (var trans = db.BeginTransaction ())
-                {
-                    insertInternal (key, Newtonsoft.Json.JsonConvert.SerializeObject (value), count, isDistinct, trans, db);
-                    trans.Commit ();
-                }
+                insertInternal (key, Newtonsoft.Json.JsonConvert.SerializeObject (value), count, isDistinct, trans, db);
+                trans.Commit ();
             }
         }
 
-        private void insertInternal (string key, string value, int count, bool isDistinct, SQLiteTransaction trans, SQLiteConnection db)
+        private void insertInternal (string key, string value, int count, bool isDistinct, SqlCeTransaction trans, SqlCeConnection db)
         {
             var info = new { Date = DateTime.UtcNow, Key = key, Value = value, Count = count };
             if (isDistinct && count != 1)
@@ -284,7 +279,7 @@ namespace SimpleHelpers.SQLite
             db.Execute ("INSERT INTO \"" + TableName + "\" ([Date], [Key], [Value]) values (@Date, @Key, @Value)", info, trans);
             if (count > 0)
             {
-                db.Execute ("Delete from \"" + TableName + "\" Where [Id] in (Select [Id] FROM \"" + TableName + "\" Where [Key] = @Key Order by Key, Date DESC Limit 100000 Offset @Count)",
+                db.Execute ("Delete from \"" + TableName + "\" Where [Id] in (Select [Id] FROM \"" + TableName + "\" Where [Key] = @Key Order by [Key], [Date] DESC OFFSET @Count ROWS FETCH NEXT 10000 ROWS ONLY)",
                     info, trans);
             }
         }
@@ -296,10 +291,7 @@ namespace SimpleHelpers.SQLite
         /// <param name="olderThan">The older than.</param>
         public void Remove (string key, DateTime olderThan)
         {
-            using (var db = Open ())
-            {
-                db.Execute ("Delete FROM \"" + TableName + "\" Where [Key] = @Key AND [Date] <= @olderThan", new { Key = key, olderThan = olderThan.ToUniversalTime () });
-            }
+            Open ().Execute ("Delete FROM \"" + TableName + "\" Where [Key] = @Key AND [Date] <= @olderThan", new { Key = key, olderThan = olderThan.ToUniversalTime () });
         }
 
         /// <summary>
@@ -308,10 +300,7 @@ namespace SimpleHelpers.SQLite
         /// <param name="key">The key associated with the item.</param>
         public void Remove (string key)
         {
-            using (var db = Open ())
-            {
-                db.Execute ("Delete FROM \"" + TableName + "\" Where [Key] = @Key ", new { Key = key });
-            }
+            Open ().Execute ("Delete FROM \"" + TableName + "\" Where [Key] = @Key ", new { Key = key });
         }
 
         /// <summary>
@@ -320,10 +309,7 @@ namespace SimpleHelpers.SQLite
         /// <param name="keys">The list of keys.</param>
         public void Remove (IEnumerable<string> keys)
         {
-            using (var db = Open ())
-            {
-                db.Execute ("Delete FROM \"" + TableName + "\" Where [Key] IN @Key ", new { Key = keys });
-            }
+            Open ().Execute ("Delete FROM \"" + TableName + "\" Where [Key] IN @Key ", new { Key = keys });
         }
 
         /// <summary>
@@ -332,22 +318,16 @@ namespace SimpleHelpers.SQLite
         /// <param name="olderThan">The older than.</param>
         public void Remove (DateTime olderThan)
         {
-            using (var db = Open ())
-            {
-                db.Execute ("DELETE FROM \"" + TableName + "\" Where [Date] <= @olderThan", new { olderThan = olderThan.ToUniversalTime () });
-            }
+            Open ().Execute ("DELETE FROM \"" + TableName + "\" Where [Date] <= @olderThan", new { olderThan = olderThan.ToUniversalTime () });
         }
 
         /// <summary>
         /// Removes the specified item.
         /// </summary>
         /// <param name="item">The item.</param>
-        public void Remove (SQLiteStorageItem<T> item)
+        public void Remove (SqlCEStorageItem<T> item)
         {
-            using (var db = Open ())
-            {
-                db.Execute ("DELETE FROM \"" + TableName + "\" Where [Id] = @Id", item);
-            }
+            Open ().Execute ("DELETE FROM \"" + TableName + "\" Where [Id] = @Id", item);
         }
 
         /// <summary>
@@ -386,11 +366,9 @@ namespace SimpleHelpers.SQLite
             object parameter;
             prepareGetSqlQuery (key, true, sortNewestFirst, out query, out parameter);
             // execute query
-            using (var db = Open ())
-            {
-                foreach (var item in db.Query<string> (query.ToString (), parameter, null, false))
-                    yield return Newtonsoft.Json.JsonConvert.DeserializeObject<T> (item);
-            }
+            var db = Open ();
+            foreach (var item in db.Query<string> (query.ToString (), parameter, null, false))
+                yield return Newtonsoft.Json.JsonConvert.DeserializeObject<T> (item);
         }
 
         /// <summary>
@@ -398,7 +376,7 @@ namespace SimpleHelpers.SQLite
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="sortNewestFirst">The sort newest first.</param>
-        public IEnumerable<SQLiteStorageItem<T>> GetDetails (string key, bool sortNewestFirst = true)
+        public IEnumerable<SqlCEStorageItem<T>> GetDetails (string key, bool sortNewestFirst = true)
         {
             return getDetailsInternal (key, sortNewestFirst);
         }
@@ -408,7 +386,7 @@ namespace SimpleHelpers.SQLite
         /// </summary>
         /// <param name="keys">The keys.</param>
         /// <param name="sortNewestFirst">The sort newest first.</param>
-        public IEnumerable<SQLiteStorageItem<T>> GetDetails (IEnumerable<string> keys, bool sortNewestFirst = true)
+        public IEnumerable<SqlCEStorageItem<T>> GetDetails (IEnumerable<string> keys, bool sortNewestFirst = true)
         {
             return getDetailsInternal (keys, sortNewestFirst);
         }
@@ -417,23 +395,21 @@ namespace SimpleHelpers.SQLite
         /// Gets the stored items with its details.
         /// </summary>
         /// <param name="sortNewestFirst">The sort newest first.</param>
-        public IEnumerable<SQLiteStorageItem<T>> GetDetails (bool sortNewestFirst = true)
+        public IEnumerable<SqlCEStorageItem<T>> GetDetails (bool sortNewestFirst = true)
         {
             return getDetailsInternal (null, sortNewestFirst);
         }
 
-        private IEnumerable<SQLiteStorageItem<T>> getDetailsInternal (object key, bool sortNewestFirst = true)
+        private IEnumerable<SqlCEStorageItem<T>> getDetailsInternal (object key, bool sortNewestFirst = true)
         {
             // prepare SQL
             string query;
             object parameter;            
             prepareGetSqlQuery (key, false, sortNewestFirst, out query, out parameter);
             // execute query
-            using (var db = Open ())
-            {
-                foreach (var item in db.Query<SQLiteStorageItem<T>> (query.ToString (), parameter, null, false))
-                    yield return item;
-            }
+            var db = Open ();
+            foreach (var item in db.Query<SqlCEStorageItem<T>> (query.ToString (), parameter, null, false))
+                yield return item;
         }
 
         /// <summary>
@@ -454,11 +430,9 @@ namespace SimpleHelpers.SQLite
             else
                 query = "Select [Value] FROM \"" + TableName + "\" Where " + keyFilter + " AND [Value] LIKE @value Order by [Id]";
             // execute query
-            using (var db = Open ())
-            {
-                return db.Query<string> (query, new { Key = key, value = prepareSearchParam (fieldName, fieldValue) })
+            var db = Open ();
+            return db.Query<string> (query, new { Key = key, value = prepareSearchParam (fieldName, fieldValue) })
                     .Select (i => Newtonsoft.Json.JsonConvert.DeserializeObject<T> (i));
-            }
         }
 
         /// <summary>
@@ -487,10 +461,8 @@ namespace SimpleHelpers.SQLite
 
             string query = "Delete FROM \"" + TableName + "\"" + whereClause;
 
-            using (var db = Open ())
-            {
-                db.Execute (query.ToString (), queryParameter);
-            }
+            var db = Open ();
+            db.Execute (query.ToString (), queryParameter);
         }
 
         /// <summary>
@@ -518,15 +490,13 @@ namespace SimpleHelpers.SQLite
             object queryParameter;
             prepareFindSqlQuery (key, parameters, sortNewestFirst, out query, out queryParameter);            
             // execute query
-            using (var db = Open ())
-            {
-                foreach (var i in db.Query<string> (query, queryParameter, null, false))
-                    yield return Newtonsoft.Json.JsonConvert.DeserializeObject<T> (i);
-            }
+            var db = Open ();
+            foreach (var i in db.Query<string> (query, queryParameter, null, false))
+                yield return Newtonsoft.Json.JsonConvert.DeserializeObject<T> (i);
         }
 
         private void prepareGetSqlQuery (object key, bool selectValueOnly, bool? sortDescendingByDate, out string sqlQuery, out object parameters)
-        {            
+        {
             System.Text.StringBuilder query = new System.Text.StringBuilder ("Select ", 100);
             if (selectValueOnly)
                 query.Append (" [Value] FROM \"");
@@ -642,9 +612,9 @@ namespace SimpleHelpers.SQLite
     }
     
     /// <summary>
-    /// SQLiteStorage options
+    /// SqlCEStorage options
     /// </summary>
-    public class SQLiteStorageOptions
+    public class SqlCEStorageOptions
     {
         private bool m_allowDuplicatedKeys;
 
@@ -653,7 +623,7 @@ namespace SimpleHelpers.SQLite
         private bool m_overwriteSimilarItems;
 
         /// <summary>
-        /// If the SQLiteStorage instance should allow duplicated keys.
+        /// If the SqlCEStorage instance should allow duplicated keys.
         /// </summary>
         public bool AllowDuplicatedKeys
         {
@@ -698,33 +668,33 @@ namespace SimpleHelpers.SQLite
         /// <summary>
         /// Uniques the keys allow only one stored item per key.
         /// </summary>
-        public static SQLiteStorageOptions UniqueKeys ()
+        public static SqlCEStorageOptions UniqueKeys ()
         {
-            return new SQLiteStorageOptions { AllowDuplicatedKeys = false };
+            return new SqlCEStorageOptions { AllowDuplicatedKeys = false };
         }
 
         /// <summary>
         /// Keep an history of items by keeping an unlimited number of stored items per key.
         /// </summary>
-        public static SQLiteStorageOptions KeepItemsHistory ()
+        public static SqlCEStorageOptions KeepItemsHistory ()
         {
-            return new SQLiteStorageOptions { AllowDuplicatedKeys = true, MaximumItemsPerKeys = -1, OverwriteSimilarItems = false };
+            return new SqlCEStorageOptions { AllowDuplicatedKeys = true, MaximumItemsPerKeys = -1, OverwriteSimilarItems = false };
         }
 
         /// <summary>
         /// Keep an history of items by keeping an unlimited number of stored items per key but removing similar items.
         /// </summary>
         /// <param name="maxItemsPerKeys">The maximum number of items per key.</param>
-        public static SQLiteStorageOptions KeepUniqueItems (int maxItemsPerKeys = -1)
+        public static SqlCEStorageOptions KeepUniqueItems (int maxItemsPerKeys = -1)
         {
-            return new SQLiteStorageOptions { AllowDuplicatedKeys = true, MaximumItemsPerKeys = maxItemsPerKeys, OverwriteSimilarItems = true };
+            return new SqlCEStorageOptions { AllowDuplicatedKeys = true, MaximumItemsPerKeys = maxItemsPerKeys, OverwriteSimilarItems = true };
         }
     }
 
     /// <summary>
     /// Item details used in the sqlite storage.
     /// </summary>
-    public class SQLiteStorageItem<T> where T : class
+    public class SqlCEStorageItem<T> where T : class
     {
         private string m_value;
         

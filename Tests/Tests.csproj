@@ -53,6 +53,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="SqlCEStorageTest.cs" />
     <Compile Include="SQLiteStorageTest.cs" />
     <Compile Include="MemoryCacheTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
