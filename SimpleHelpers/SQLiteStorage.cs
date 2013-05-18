@@ -40,7 +40,7 @@ namespace SimpleHelpers.SQLite
 {    
     /// <summary>
     /// Simple key value storage using sqlite.
-    /// All member methods are thread-safe, so a instance can be safelly be accessed by multiple threads.
+    /// All member methods are thread-safe, so any instance can be safelly be accessed by multiple threads.
     /// All stored items are serialized to json by ServiceStack.Text.
     /// Note: this nuget package contains c# source code and depends on .Net 4.0.
     /// </summary>    
@@ -173,7 +173,7 @@ namespace SimpleHelpers.SQLite
                 }
             }
         }
-        
+
         /// <summary>
         /// Helper method to optimize the sqlite file.
         /// </summary>
@@ -293,15 +293,17 @@ namespace SimpleHelpers.SQLite
         private void insertInternal (string key, string value, int count, bool isDistinct, SQLiteTransaction trans, SQLiteConnection db)
         {
             var info = new { Date = DateTime.UtcNow, Key = key, Value = value, Count = count };
+            // removal of similar item
             if (isDistinct && count != 1)
             {
                 db.Execute ("Delete From \"" + TableName + "\" Where [Key] = @Key And [Value] = @Value", info, trans);
             }
+            // insert item
             db.Execute ("INSERT INTO \"" + TableName + "\" ([Date], [Key], [Value]) values (@Date, @Key, @Value)", info, trans);
+            // removal of history items
             if (count > 0)
             {
-                db.Execute ("Delete from \"" + TableName + "\" Where [Id] in (Select [Id] FROM \"" + TableName + "\" Where [Key] = @Key Order by Key, Date DESC Limit 100000 Offset @Count)",
-                    info, trans);
+                db.Execute ("Delete from \"" + TableName + "\" Where [Id] in (Select [Id] FROM \"" + TableName + "\" Where [Key] = @Key Order by Key, Date DESC Limit 100000 Offset @Count)", info, trans);
             }
         }
 
@@ -363,6 +365,18 @@ namespace SimpleHelpers.SQLite
             using (var db = Open ())
             {
                 db.Execute ("DELETE FROM \"" + TableName + "\" Where [Id] = @Id", item);
+            }
+        }
+
+        /// <summary>
+        /// Removes the specified item.
+        /// </summary>
+        /// <param name="item">Internal item Id.</param>
+        public void Remove (Int64 id)
+        {
+            using (var db = Open ())
+            {
+                db.Execute ("DELETE FROM \"" + TableName + "\" Where [Id] = @Id", new { Id = id });
             }
         }
 
@@ -784,13 +798,14 @@ namespace SimpleHelpers.SQLite
         {
             get
             {
-                if (m_item == null)
-                    m_item = Value == null ? null : ServiceStack.Text.JsonSerializer.DeserializeFromString<T> (Value);
+                if (m_item == null && Value != null)
+                    m_item = ServiceStack.Text.JsonSerializer.DeserializeFromString<T> (Value);
                 return m_item;
             }
             set
             {
                 Value = ServiceStack.Text.JsonSerializer.SerializeToString (value);
+                m_item = null;
             }
         }
     }

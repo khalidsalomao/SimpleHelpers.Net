@@ -72,7 +72,7 @@ namespace Tests
         [TestMethod]
         public void SqlCEStoragePerformance_SimpleTest ()
         {
-            int loopCounter = 10000;
+            int loopCounter = 10000/2;
             var db = new SqlCEStorage<FFUser> (filename);
             db.Clear ();
             uniqueCounter = 0;
@@ -85,7 +85,7 @@ namespace Tests
                 start = 0;
             len = start + len;
             if (len > list.Count)
-                len = list.Count - start;            
+                len = list.Count - start;
 
             Time ("Set Test (" + loopCounter + ")", () =>
             {
@@ -133,9 +133,26 @@ namespace Tests
                     db.Set (u.Login, u);
             });
 
+            db.Clear ();
+
+            Time ("Parallel Set And Get Test for some keys (" + (loopCounter / 8) + ")", () =>
+            {
+                Assert.IsTrue (System.Threading.Tasks.Parallel.ForEach (list.Skip (loopCounter / 10).Take (loopCounter / 8),
+                    u =>
+                    {
+                        db.Set (u.Login, u);
+                        Assert.IsTrue (db.Get (u.Login).Select (i =>
+                        {
+                            Assert.IsTrue (i.Login == u.Login, "Error Parallel Set And Get Test for some keys (wrong item)");
+                            return i;
+                        }).Count () == 1, "parallel fail");
+
+                    }).IsCompleted, "error in Parallel Set And Get Test for some keys ");
+            });
+
             Time ("Vaccum", () =>
             {
-                db.Vaccum ();
+                db.Shrink ();
             });
         }
 

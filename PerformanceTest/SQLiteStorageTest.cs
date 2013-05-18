@@ -45,10 +45,16 @@ namespace PerformanceTest
             if (len > list.Count)
                 len = list.Count - start;
 
-            using (Benchmark.Start ("Insertion test"))
+            using (Benchmark.Start ("Insertion test {0}", list.Count))
             {
                 foreach (var i1 in list)
                     db.Set (i1.Login, i1);
+            }
+
+            using (Benchmark.Start ("Get All with index {0}", list.Count))
+            {
+                foreach (var i in list)
+                    db.Get (i.Login).Count ();
             }
 
             using (Benchmark.Start ("Get All with linq filter {0} x {1}", (len - start), loopCount))
@@ -56,6 +62,19 @@ namespace PerformanceTest
                 for (int i = start; i < len; i++)
                     db.Get ().Where (u => u.Login == list[i].Login).Count ();
             }
+
+            using (Benchmark.Start ("Parallel Set And Get Test for some keys ({0})", loopCount / 10))
+            {
+                var forRes = System.Threading.Tasks.Parallel.ForEach (list.Skip (loopCount / 10).Take (loopCount / 10),
+                    u =>
+                    {
+                        db.Set (u.Login, u);
+                        db.Get (u.Login).First ();
+                        db.Get (u.Login).Count ();
+                    });
+                if (!forRes.IsCompleted)
+                    throw new Exception ("Parallel execution error!");
+            };
 
             db.Clear ();
             db.Vaccum ();

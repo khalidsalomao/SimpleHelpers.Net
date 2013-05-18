@@ -40,7 +40,7 @@ namespace SimpleHelpers.SQLCE
 {    
     /// <summary>
     /// Simple key value storage using sqlce.
-    /// All member methods are NOT thread-safe, so a instance can be safelly be accessed by multiple threads.
+    /// All member methods are thread-safe, so any instance can be safelly be accessed by multiple threads.
     /// All stored items are serialized to json by json.net.
     /// Note: this nuget package contains c# source code and depends on .Net 4.0.
     /// </summary>    
@@ -171,9 +171,9 @@ namespace SimpleHelpers.SQLCE
         }
         
         /// <summary>
-        /// Helper method to optimize the sqlite file.
+        /// Helper method to optimize the sqlce file.
         /// </summary>
-        public void Vaccum ()
+        public void Shrink ()
         {            
             using (var db = new SqlCeEngine (m_connectionString))
             {
@@ -272,11 +272,14 @@ namespace SimpleHelpers.SQLCE
         private void insertInternal (string key, string value, int count, bool isDistinct, SqlCeTransaction trans, SqlCeConnection db)
         {
             var info = new { Date = DateTime.UtcNow, Key = key, Value = value, Count = count };
+            // removal of similar item
             if (isDistinct && count != 1)
             {
                 db.Execute ("Delete From \"" + TableName + "\" Where [Key] = @Key And [Value] = @Value", info, trans);
             }
+            // insert item
             db.Execute ("INSERT INTO \"" + TableName + "\" ([Date], [Key], [Value]) values (@Date, @Key, @Value)", info, trans);
+            // removal of history items
             if (count > 0)
             {
                 db.Execute ("Delete from \"" + TableName + "\" Where [Id] in (Select [Id] FROM \"" + TableName + "\" Where [Key] = @Key Order by [Key], [Date] DESC OFFSET @Count ROWS FETCH NEXT 10000 ROWS ONLY)",
@@ -328,6 +331,18 @@ namespace SimpleHelpers.SQLCE
         public void Remove (SqlCEStorageItem<T> item)
         {
             Open ().Execute ("DELETE FROM \"" + TableName + "\" Where [Id] = @Id", item);
+        }
+
+        /// <summary>
+        /// Removes the specified item.
+        /// </summary>
+        /// <param name="item">Internal item Id.</param>
+        public void Remove (Int64 id)
+        {
+            using (var db = Open ())
+            {
+                db.Execute ("DELETE FROM \"" + TableName + "\" Where [Id] = @Id", new { Id = id });
+            }
         }
 
         /// <summary>
@@ -738,13 +753,14 @@ namespace SimpleHelpers.SQLCE
         {
             get
             {
-                if (m_item == null)
-                    m_item = Value == null ? null : Newtonsoft.Json.JsonConvert.DeserializeObject<T> (Value);
+                if (m_item == null && Value != null)
+                    m_item = Newtonsoft.Json.JsonConvert.DeserializeObject<T> (Value);
                 return m_item;
             }
             set
             {
                 Value = Newtonsoft.Json.JsonConvert.SerializeObject (value);
+                m_item = null;
             }
         }
     }

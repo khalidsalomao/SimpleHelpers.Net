@@ -33,6 +33,8 @@ namespace PerformanceTest
                 logger.Fatal ("Unexpected error", ex);
             }
             // wait before exit
+            Console.WriteLine ();
+            Console.WriteLine ("Press any key to end the application...");
             Console.ReadKey ();
             // exit
             ApplicationExit (0);

@@ -23,7 +23,7 @@ namespace PerformanceTest
         public void Dispose ()
         {
             stopwatch.Stop ();
-            Common.Logging.LogManager.GetCurrentClassLogger ().Info (String.Format ("Timming for {0}:\t {1}", m_name, stopwatch.Elapsed));
+            Common.Logging.LogManager.GetCurrentClassLogger ().Info (String.Format ("Timing for {0}:\t {1}", m_name, stopwatch.Elapsed));
         }
 
         public static Benchmark Start (string name)
@@ -41,7 +41,7 @@ namespace PerformanceTest
             Stopwatch stopwatch = Stopwatch.StartNew ();
             action ();
             stopwatch.Stop ();
-            Common.Logging.LogManager.GetCurrentClassLogger ().Info (String.Format ("Timming for {0}:\t {1}", opName, stopwatch.Elapsed));
+            Common.Logging.LogManager.GetCurrentClassLogger ().Info (String.Format ("Timing for {0}:\t {1}", opName, stopwatch.Elapsed));
             return stopwatch.Elapsed;
         }
 
@@ -51,7 +51,7 @@ namespace PerformanceTest
             for (var i = 0; i < loopCount; i++)
                 action ();
             stopwatch.Stop ();
-            Common.Logging.LogManager.GetCurrentClassLogger ().Info (String.Format ("Timming for {0}:\t {1}", opName, stopwatch.Elapsed));
+            Common.Logging.LogManager.GetCurrentClassLogger ().Info (String.Format ("Timing for {0}:\t {1}", opName, stopwatch.Elapsed));
             return stopwatch.Elapsed;
         }
     }
