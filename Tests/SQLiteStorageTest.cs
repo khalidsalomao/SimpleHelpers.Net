@@ -55,6 +55,15 @@ namespace Tests
             
             var details = db.GetDetails ("1").First ();
             Assert.IsTrue (details.Date.Hour == DateTime.UtcNow.Hour, "wrong date format!");
+            
+
+            db = new SQLiteStorage<Item1> (filename, SQLiteStorageOptions.KeepItemsHistory ());
+            db.Set ("1", new Item1 { name = "xpto", counter = 1, address = "xpto" });
+            db.Set ("1", new Item1 { name = "xpto", counter = 2, address = "xpto" });
+            db.Set ("1", new Item1 { name = "xpto", counter = 3, address = "xpto" });
+            db.Set ("1", new Item1 { name = "xpto", counter = 4, address = "xpto" });
+            var list2 = db.GetAndModify ("1", i => { return true; }).ToList ();
+            Assert.IsTrue (list2.Count != 0, "wrong item count!");
         }
 
         public class Item1
@@ -122,6 +131,12 @@ namespace Tests
             {
                 for (int i = start; i < len; i++)
                     db.Get().Where (u => u.Login == list[i].Login).Count ();
+            });
+
+            Time ("GetAndModify Test ForEach Key (" + loopCounter + ")", () =>
+            {
+                foreach (var u in list)
+                    db.GetAndModify (u.Login, i => { return true; }).First ();
             });
 
             db.Clear ();

@@ -386,9 +386,12 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
         /// If the update function return true, the item is updated in the database using 
         /// the same transaction of the find operation.
         /// </summary>
+        /// <remarks>
+        /// You must enumerate the result to execute the updateAction!
+        /// </remarks>
         /// <param name="key">The key associated with the item.</param>
         /// <param name="updateAction">The update function.</param>
-        public T[] GetAndModify (string key, Func<T, bool> updateAction)
+        public IEnumerable<T> GetAndModify (string key, Func<T, bool> updateAction)
         {
             if (key == null)
                 throw new ArgumentNullException ("Key");
@@ -396,18 +399,45 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
             {
                 using (var trans = db.BeginTransaction(false))
                 {
-                    var list = getInternal (key, false, trans, db).ToArray ();
-                    for (int i = 0; i < list.Length; i++)
+                    foreach (var item in getInternal (key, false, trans, db))                    
                     {
-                        T item = list[i];
                         if (updateAction (item))
                         {
                             setInternal (key, ServiceStack.Text.JsonSerializer.SerializeToString (item), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
                         }
-                    }
-                    return list;
+                        yield return item;
+                    }                    
                 }
             }            
+        }
+
+        /// <summary>
+        /// Finds each item associated with the provided key and modifies
+        /// using the provided update function. 
+        /// If the update function return true, the item is updated in the database using 
+        /// the same transaction of the find operation.
+        /// </summary>
+        /// <remarks>
+        /// You must enumerate the result to execute the updateAction!
+        /// </remarks>
+        /// <param name="key">The key associated with the item.</param>
+        /// <param name="updateAction">The update function.</param>
+        public IEnumerable<T> GetAndModify (Func<T, bool> updateAction)
+        {
+            using (var db = Open ())
+            {
+                using (var trans = db.BeginTransaction (false))
+                {
+                    foreach (var i in getDetailsInternal (null, false, trans, db))
+                    {
+                        if (updateAction (i.Item))
+                        {
+                            setInternal (i.Key, ServiceStack.Text.JsonSerializer.SerializeToString (i.Item), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
+                        }
+                        yield return i;
+                    }
+                }
+            }
         }
 
         /// <summary>
