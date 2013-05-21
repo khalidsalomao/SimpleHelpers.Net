@@ -388,7 +388,7 @@ namespace SimpleHelpers.SQLite
         /// </summary>
         /// <param name="key">The key associated with the item.</param>
         /// <param name="updateAction">The update function.</param>
-        public T[] FindAndModify (string key, Func<T, bool> updateAction)
+        public T[] GetAndModify (string key, Func<T, bool> updateAction)
         {
             if (key == null)
                 throw new ArgumentNullException ("Key");
