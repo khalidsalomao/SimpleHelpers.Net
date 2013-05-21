@@ -220,7 +220,7 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
             {
                 using (var trans = db.BeginTransaction ())
                 {
-                    insertInternal (key, ServiceStack.Text.JsonSerializer.SerializeToString (value), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
+                    setInternal (key, ServiceStack.Text.JsonSerializer.SerializeToString (value), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
                     trans.Commit ();
                 }
             }
@@ -247,7 +247,7 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
                         ServiceStack.Text.JsonSerializer.SerializeToWriter (i.Value, stringWriter);
                         stringWriter.Flush ();
                         // insert in database
-                        insertInternal (i.Key, stringBuilder.ToString (), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
+                        setInternal (i.Key, stringBuilder.ToString (), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
                         // do a batch commit after a group of insertions
                         if (++counter % 2000 == 0)
                         {
@@ -284,13 +284,13 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
             {
                 using (var trans = db.BeginTransaction ())
                 {
-                    insertInternal (key, ServiceStack.Text.JsonSerializer.SerializeToString (value), count, isDistinct, trans, db);
+                    setInternal (key, ServiceStack.Text.JsonSerializer.SerializeToString (value), count, isDistinct, trans, db);
                     trans.Commit ();
                 }
             }
         }
 
-        private void insertInternal (string key, string value, int count, bool isDistinct, SQLiteTransaction trans, SQLiteConnection db)
+        private void setInternal (string key, string value, int count, bool isDistinct, SQLiteTransaction trans, SQLiteConnection db)
         {
             var info = new { Date = DateTime.UtcNow, Key = key, Value = value, Count = count };
             // removal of similar item
@@ -371,13 +371,43 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
         /// <summary>
         /// Removes the specified item.
         /// </summary>
-        /// <param name="item">Internal item Id.</param>
-        public void Remove (Int64 id)
+        /// <param name="internalId">Internal item Id (SQLiteStorageItem Id).</param>
+        public void Remove (Int64 internalId)
         {
             using (var db = Open ())
             {
-                db.Execute ("DELETE FROM \"" + TableName + "\" Where [Id] = @Id", new { Id = id });
+                db.Execute ("DELETE FROM \"" + TableName + "\" Where [Id] = @Id", new { Id = internalId });
             }
+        }
+
+        /// <summary>
+        /// Finds each item associated with the provided key and modifies
+        /// using the provided update function. 
+        /// If the update function return true, the item is updated in the database using 
+        /// the same transaction of the find operation.
+        /// </summary>
+        /// <param name="key">The key associated with the item.</param>
+        /// <param name="updateAction">The update function.</param>
+        public T[] FindAndModify (string key, Func<T, bool> updateAction)
+        {
+            if (key == null)
+                throw new ArgumentNullException ("Key");
+            using (var db = Open())
+            {
+                using (var trans = db.BeginTransaction(false))
+                {
+                    var list = getInternal (key, false, trans, db).ToArray ();
+                    for (int i = 0; i < list.Length; i++)
+                    {
+                        T item = list[i];
+                        if (updateAction (item))
+                        {
+                            setInternal (key, ServiceStack.Text.JsonSerializer.SerializeToString (item), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
+                        }
+                    }
+                    return list;
+                }
+            }            
         }
 
         /// <summary>
@@ -409,17 +439,28 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
             return getInternal (keys, sortNewestFirst);
         }
         
-        private IEnumerable<T> getInternal (object key, bool sortNewestFirst = true)
+        private IEnumerable<T> getInternal (object key, bool sortNewestFirst = true, SQLiteTransaction trans = null, SQLiteConnection connection = null)
         {
             // prepare SQL
             string query;
             object parameter;
             prepareGetSqlQuery (key, true, sortNewestFirst, out query, out parameter);
-            // execute query
-            using (var db = Open ())
+
+            // open connection if necessary
+            SQLiteConnection db = connection;
+            if (connection == null)
+                db = Open ();
+            try
             {
-                foreach (var item in db.Query<string> (query.ToString (), parameter, null, false))
+                // execute query
+                foreach (var item in db.Query<string> (query.ToString (), parameter, trans, false))
                     yield return ServiceStack.Text.JsonSerializer.DeserializeFromString<T> (item);
+            }
+            finally
+            {
+                // close connection if opened by this method
+                if (connection == null)
+                    db.Dispose ();
             }
         }
 
@@ -452,17 +493,28 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
             return getDetailsInternal (null, sortNewestFirst);
         }
 
-        private IEnumerable<SQLiteStorageItem<T>> getDetailsInternal (object key, bool sortNewestFirst = true)
+        private IEnumerable<SQLiteStorageItem<T>> getDetailsInternal (object key, bool sortNewestFirst = true, SQLiteTransaction trans = null, SQLiteConnection connection = null)
         {
             // prepare SQL
             string query;
-            object parameter;            
+            object parameter;
             prepareGetSqlQuery (key, false, sortNewestFirst, out query, out parameter);
-            // execute query
-            using (var db = Open ())
+
+            // open connection if necessary
+            SQLiteConnection db = connection;
+            if (connection == null)
+                db = Open ();
+            try
             {
-                foreach (var item in db.Query<SQLiteStorageItem<T>> (query.ToString (), parameter, null, false))
+                // execute query
+                foreach (var item in db.Query<SQLiteStorageItem<T>> (query.ToString (), parameter, trans, false))
                     yield return item;
+            }
+            finally
+            {
+                // close connection if opened by this method
+                if (connection == null)
+                    db.Dispose ();
             }
         }
 
