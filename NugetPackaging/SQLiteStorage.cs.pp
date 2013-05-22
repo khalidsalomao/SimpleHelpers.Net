@@ -395,18 +395,25 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
         {
             if (key == null)
                 throw new ArgumentNullException ("Key");
+
             using (var db = Open())
             {
-                using (var trans = db.BeginTransaction(false))
+                var trans = db.BeginTransaction (true);
+                try
                 {
-                    foreach (var item in getInternal (key, false, trans, db))                    
+                    foreach (var item in Get (key))
                     {
                         if (updateAction (item))
                         {
                             setInternal (key, ServiceStack.Text.JsonSerializer.SerializeToString (item), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
                         }
                         yield return item;
-                    }                    
+                    }
+                    trans.Commit ();
+                }
+                finally
+                {
+                    trans.Dispose ();
                 }
             }            
         }
@@ -426,16 +433,22 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
         {
             using (var db = Open ())
             {
-                using (var trans = db.BeginTransaction (false))
+                var trans = db.BeginTransaction (true);
+                try
                 {
-                    foreach (var i in getDetailsInternal (null, false, trans, db))
+                    foreach (var i in GetDetails ())
                     {
                         if (updateAction (i.Item))
                         {
                             setInternal (i.Key, ServiceStack.Text.JsonSerializer.SerializeToString (i.Item), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
                         }
-                        yield return i;
+                        yield return i.Item;
                     }
+                    trans.Commit ();
+                }
+                finally
+                {
+                    trans.Dispose ();
                 }
             }
         }

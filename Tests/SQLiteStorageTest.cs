@@ -55,15 +55,34 @@ namespace Tests
             
             var details = db.GetDetails ("1").First ();
             Assert.IsTrue (details.Date.Hour == DateTime.UtcNow.Hour, "wrong date format!");
-            
+
+            db.Clear ();
+
+            db.Set ("1", new Item1 { name = "luis", counter = 1, address = "raphael" });
+            db.Set ("2", new Item1 { name = "xpto", counter = 1, address = "xpto" });
+            db.Set ("3", new Item1 { name = "xpto", counter = 1, address = "xpto" });
+            db.Set ("4", new Item1 { name = "name1", counter = 1, address = "address" });
+
+            var list1 = db.Get ().ToList ();
+            var list2 = db.GetAndModify (i => { i.counter = 2; return true; }).ToList ();
+            var list3 = db.Get ().ToList ();
+            Assert.IsTrue (list2.Count == 4, "wrong item count!");
+            Assert.IsTrue (list2.Sum (i => i.counter) == 8, "wrong item counter (1)!");
+            Assert.IsTrue (list3.Sum (i => i.counter) == list2.Sum (i => i.counter), "wrong item counter (2)!");
+
+            db.GetAndModify (i => { i.counter = 0; return true; }).ToList ();
+            db.GetAndModify ("1", i => { i.counter = 4; return true; }).Count ();
+            db.GetAndModify ("4", i => { i.counter = 5; return true; }).Count ();
+            Assert.IsTrue (db.Get ().Sum (i => i.counter) == 9, "wrong item counter (3)!");
 
             db = new SQLiteStorage<Item1> (filename, SQLiteStorageOptions.KeepItemsHistory ());
+            db.Clear ();
             db.Set ("1", new Item1 { name = "xpto", counter = 1, address = "xpto" });
-            db.Set ("1", new Item1 { name = "xpto", counter = 2, address = "xpto" });
-            db.Set ("1", new Item1 { name = "xpto", counter = 3, address = "xpto" });
-            db.Set ("1", new Item1 { name = "xpto", counter = 4, address = "xpto" });
-            var list2 = db.GetAndModify ("1", i => { return true; }).ToList ();
-            Assert.IsTrue (list2.Count != 0, "wrong item count!");
+            db.Set ("1", new Item1 { name = "xpto", counter = 1, address = "xpto" });
+            db.Set ("1", new Item1 { name = "xpto", counter = 1, address = "xpto" });
+            db.Set ("1", new Item1 { name = "xpto", counter = 1, address = "xpto" });
+            db.GetAndModify ("1", i => { return true; }).Count ();
+            Assert.IsTrue (db.Get ().Sum (i => i.counter) == 8, "wrong item count (4)!");
         }
 
         public class Item1
