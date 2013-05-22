@@ -272,7 +272,8 @@ Note: this nuget package contains csharp source code and depends on .Net 4.0.
 ```csharp
 
 // setup:
-SQLiteStorage<My_Class> db = new SQLiteStorage<My_Class> ("path_to_my_file.sqlite", SQLiteStorageOptions.UniqueKeys ());
+SQLiteStorage<My_Class> db = new SQLiteStorage<My_Class> ("path_to_my_file.sqlite", 
+							  SQLiteStorageOptions.UniqueKeys ());
 
 ```
 
@@ -281,7 +282,8 @@ SQLiteStorage<My_Class> db = new SQLiteStorage<My_Class> ("path_to_my_file.sqlit
 ```csharp
 
 // create a new instance
-SQLiteStorage<My_Class> db = new SQLiteStorage<My_Class> ("path_to_my_file.sqlite", SQLiteStorageOptions.UniqueKeys ());
+SQLiteStorage<My_Class> db = new SQLiteStorage<My_Class> ("path_to_my_file.sqlite", 
+							  SQLiteStorageOptions.UniqueKeys ());
 
 // save an item with a key associated
 db.Set ("my_key_for_this_item", new My_Class ());
