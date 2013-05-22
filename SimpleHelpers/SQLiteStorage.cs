@@ -398,9 +398,11 @@ namespace SimpleHelpers.SQLite
 
             using (var db = Open())
             {
-                var trans = db.BeginTransaction (true);
-                try
+                // begin a transaction acquiring the write lock immediately
+                using (var trans = db.BeginTransaction (false))
                 {
+                    // load all selected items 
+                    // note that Get () will begin another transaction to get a consistent read
                     foreach (var item in Get (key))
                     {
                         if (updateAction (item))
@@ -410,10 +412,6 @@ namespace SimpleHelpers.SQLite
                         yield return item;
                     }
                     trans.Commit ();
-                }
-                finally
-                {
-                    trans.Dispose ();
                 }
             }            
         }
@@ -433,9 +431,11 @@ namespace SimpleHelpers.SQLite
         {
             using (var db = Open ())
             {
-                var trans = db.BeginTransaction (true);
-                try
+                // begin a transaction acquiring the write lock immediately
+                using (var trans = db.BeginTransaction (false))
                 {
+                    // load all selected items 
+                    // note that Get () will begin another transaction to get a consistent read
                     foreach (var i in GetDetails ())
                     {
                         if (updateAction (i.Item))
@@ -445,10 +445,6 @@ namespace SimpleHelpers.SQLite
                         yield return i.Item;
                     }
                     trans.Commit ();
-                }
-                finally
-                {
-                    trans.Dispose ();
                 }
             }
         }

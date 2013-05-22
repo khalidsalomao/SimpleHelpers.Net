@@ -83,6 +83,35 @@ namespace Tests
             db.Set ("1", new Item1 { name = "xpto", counter = 1, address = "xpto" });
             db.GetAndModify ("1", i => { return true; }).Count ();
             Assert.IsTrue (db.Get ().Sum (i => i.counter) == 8, "wrong item count (4)!");
+
+            // parallel tests
+            db = new SQLiteStorage<Item1> (filename, SQLiteStorageOptions.UniqueKeys ());
+            db.Clear ();
+            // populate db
+            for (int i = 0; i < 100; i++)
+            {
+                db.Set (i.ToString (), new Item1 { name = i.ToString (), counter = 1, address = "xpto" });
+            }            
+            // parallel changes
+            int loopUpperBound = 10;
+            var expectedTotal = db.Get ().Count ();
+            var expectedValue = db.Get ().Sum (i => i.counter) + loopUpperBound;
+            // thread warmup
+            System.Threading.Tasks.Parallel.For (0, loopUpperBound, i => System.Threading.Thread.Sleep (0));
+            // execute parallel operation
+            var pr = System.Threading.Tasks.Parallel.For (0, loopUpperBound, i => db.GetAndModify ("10", m => { m.counter += 1; return true; }).Count ());
+            Assert.IsTrue (pr.IsCompleted, "parallel error");
+            // check results
+            var total = db.Get ().Count ();
+            var newSum = db.Get ().Sum (i => i.counter);
+            var item = db.Get ("10").FirstOrDefault ();
+            Assert.IsTrue (total == expectedTotal, "wrong item expectedTotal (Parallel)!");
+            Assert.IsTrue (newSum == expectedValue, "wrong item expectedValue (Parallel)! {0} != {1}", newSum, expectedValue);
+            Assert.IsTrue (item.counter == (loopUpperBound + 1), "wrong item counter (Parallel)!{0} != {1}", item.counter, (loopUpperBound + 1));
+
+            // final cleanup
+            db.Clear ();
+            db.Vaccum ();
         }
 
         public class Item1
