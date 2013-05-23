@@ -111,7 +111,7 @@ namespace Tests
 
             // final cleanup
             db.Clear ();
-            db.Vaccum ();
+            db.Shrink ();
         }
 
         public class Item1
@@ -214,7 +214,7 @@ namespace Tests
 
             Time ("Vaccum", () =>
             {
-                db.Vaccum ();
+                db.Shrink ();
             });
         }
 

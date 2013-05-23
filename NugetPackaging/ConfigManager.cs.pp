@@ -66,7 +66,8 @@ namespace $rootnamespace$.SimpleHelpers
                                 name = name.Substring (0, num);
                             }
                             // check name
-                            if (name.Equals ("w3wp", StringComparison.OrdinalIgnoreCase) || name.Equals ("aspnet_wp", StringComparison.OrdinalIgnoreCase))
+                            if (name.Equals ("w3wp", StringComparison.OrdinalIgnoreCase) || name.Equals ("aspnet_wp", StringComparison.OrdinalIgnoreCase) ||
+                                name.Equals ("iisexpress", StringComparison.OrdinalIgnoreCase))
                             {   //is web app
                                 LoadConfiguration = () => System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration ("~");
                             }

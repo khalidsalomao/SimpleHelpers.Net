@@ -31,7 +31,7 @@ namespace PerformanceTest
         {
             var db = new SQLiteStorage<MockObjectGen.MockUser> (filename);
             db.Clear ();
-            db.Vaccum ();
+            db.Shrink ();
             ServiceStack.Text.JsConfig.DateHandler = ServiceStack.Text.JsonDateHandler.ISO8601;
             
             Common.Logging.LogManager.GetCurrentClassLogger ().Info (String.Format ("Initializing {0} items", loopCount));
@@ -77,7 +77,7 @@ namespace PerformanceTest
             };
 
             db.Clear ();
-            db.Vaccum ();
+            db.Shrink ();
         }
     }
 }

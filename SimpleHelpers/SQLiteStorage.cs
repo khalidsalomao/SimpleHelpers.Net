@@ -177,7 +177,7 @@ namespace SimpleHelpers.SQLite
         /// <summary>
         /// Helper method to optimize the sqlite file.
         /// </summary>
-        public void Vaccum ()
+        public void Shrink ()
         {
             SQLiteConnection.ClearAllPools ();
             using (var db = Open ())
