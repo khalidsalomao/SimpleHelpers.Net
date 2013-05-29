@@ -242,7 +242,7 @@ namespace SimpleHelpers
         /// <summary>
         /// Creates a new instance and tries to aquire a lock.
         /// </summary>
-        /// <param name="key">The named lock key.</param>
+        /// <param name="key">The name of the lock object.</param>
         /// <param name="waitTimeout">The wait timeout.</param>
         public static NamedLock CreateAndEnter (string key, TimeSpan waitTimeout)
         {
