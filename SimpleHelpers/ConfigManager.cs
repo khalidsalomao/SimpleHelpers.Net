@@ -47,6 +47,10 @@ namespace SimpleHelpers
 
         protected static Func<System.Configuration.Configuration> LoadConfiguration;
 
+        /// <summary>
+        /// Singleton initialization.
+        /// Prepares the LoadConfiguration function specific to the running environment.
+        /// </summary>
         private static System.Configuration.Configuration GetConfig ()
         {
             if (m_instance == null)
@@ -58,16 +62,19 @@ namespace SimpleHelpers
                         if (LoadConfiguration == null)
                         {
                             // get process name
-                            var name = System.Diagnostics.Process.GetCurrentProcess ().ProcessName;
+                            string processName = System.Diagnostics.Process.GetCurrentProcess ().ProcessName;
+                            string name = processName;
                             // remove extension
                             int num = name.LastIndexOf ('.');
                             if (num > 0)
                             {
                                 name = name.Substring (0, num);
                             }
-                            // check name
-                            if (name.Equals ("w3wp", StringComparison.OrdinalIgnoreCase) || name.Equals ("aspnet_wp", StringComparison.OrdinalIgnoreCase) ||
-                                name.Equals ("iisexpress", StringComparison.OrdinalIgnoreCase))
+                            // check name to decide if we are running in a web hosted environment
+                            if (name.Equals ("w3wp", StringComparison.OrdinalIgnoreCase) ||
+                                name.Equals ("aspnet_wp", StringComparison.OrdinalIgnoreCase) ||
+                                name.Equals ("iisexpress", StringComparison.OrdinalIgnoreCase) ||
+                                processName.IndexOf ("webdev.webserver", StringComparison.OrdinalIgnoreCase) == 0)
                             {   //is web app
                                 LoadConfiguration = () => System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration ("~");
                             }
