@@ -97,6 +97,18 @@ namespace SimpleHelpers
         public static bool AddNonExistingKeys { get; set; }
 
         /// <summary>
+        /// Get all configuration keys and values.
+        /// </summary>
+        public static IEnumerable<KeyValuePair<string, string>> GetAll ()
+        {
+            var cfg = GetConfig ().AppSettings.Settings;
+            foreach (string key in cfg.AllKeys)
+            {
+                yield return new KeyValuePair<string, string> (key, cfg[key].Value);
+            }
+        }
+
+        /// <summary>
         /// Gets the specified key.
         /// </summary>
         /// <param name="key">The key.</param>
@@ -159,6 +171,21 @@ namespace SimpleHelpers
                 }
             }
             mgr.Save (System.Configuration.ConfigurationSaveMode.Modified);
+        }
+
+        /// <summary>
+        /// Remove the specified key.
+        /// </summary>
+        public static void Remove (string key)
+        {
+            var mgr = GetConfig ();
+            var cfg = mgr.AppSettings.Settings;
+            var item = cfg[key];
+            if (item != null)
+            {
+                cfg.Remove (key);
+                mgr.Save (System.Configuration.ConfigurationSaveMode.Modified);
+            }
         }
 
         /// <summary>

@@ -244,7 +244,7 @@ Note: this nuget package contains csharp source code and depends on Generics int
 // setup (called once in application initialization)
 
 // set to add any new keys added during the application execution
-SimpleConfiguration.AddNonExistingKeys = true;
+ConfigManager.AddNonExistingKeys = true;
 
 ```
 
@@ -252,8 +252,8 @@ SimpleConfiguration.AddNonExistingKeys = true;
 
 ```csharp
 
-string address = SimpleConfiguration.Get ("MongoDBaddress", "localhost");
-int port = SimpleConfiguration.Get ("MongoDBport", 21766);
+string address = ConfigManager.Get ("MongoDBaddress", "localhost");
+int port = ConfigManager.Get ("MongoDBport", 21766);
 
 ```
 
