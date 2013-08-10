@@ -54,6 +54,12 @@ namespace $rootnamespace$.SimpleHelpers
         public static Func<T> DefaultInstanceFactory = null;
 
         /// <summary>
+        /// Default method to be called whenever ans instance should be disposed.<para/>
+        /// Used when the MaxCapacity is reached or when the Clear method is called.
+        /// </summary>
+        public static Action<T> DefaultInstanceDispose = null;
+
+        /// <summary>
         /// Removes a stored object from the pool and return it.
         /// If the pool is empty, instanceFactory will be called to generate a new object.
         /// </summary>
@@ -89,6 +95,7 @@ namespace $rootnamespace$.SimpleHelpers
         /// <summary>
         /// Puts the specified item in the pool.
         /// Is the 'MaxCapacity' has been reached the item is ignored.
+        /// If a Default Intance Dispose method was provided, it will be called for the ignored item.
         /// </summary>
         public static void Put (T item)
         {
@@ -97,13 +104,27 @@ namespace $rootnamespace$.SimpleHelpers
             {               
                 m_bag.Push (item);
             }
+            else if (DefaultInstanceDispose != null)
+            {
+                DefaultInstanceDispose (item);
+            }
         }
 
         /// <summary>
-        /// Clears this instance by removing all stored items.
+        /// Clears this instance by removing all stored items.<para/>
+        /// If a Default Intance Dispose method was provided, it will be called for
+        /// every remove item.
         /// </summary>
         public static void Clear ()
         {
+            if (DefaultInstanceDispose != null)
+            {
+                T item;
+                while (m_bag.TryPop (out item))
+                {
+                    DefaultInstanceDispose (item);                    
+                }
+            }
             m_bag.Clear ();
         }
 

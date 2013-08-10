@@ -25,6 +25,13 @@ namespace Tests
             logDb = new SQLiteStorage<string> (filename, "Log", SQLiteStorageOptions.KeepItemsHistory ());
         }
 
+        [ClassCleanup ()]
+        public static void ClassCleanup ()
+        {
+            logDb.Shrink ();
+            System.Data.SQLite.SQLiteConnection.ClearAllPools ();
+        }
+
         [TestMethod]
         public void SQLiteStorageTest_SimpleTest ()
         {

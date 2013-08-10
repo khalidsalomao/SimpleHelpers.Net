@@ -164,6 +164,7 @@ namespace SimpleHelpers.SQLite
         {
             using (var connection = Open ())
             {
+                connection.Execute ("PRAGMA mmap_size=268435456");
                 if (connection.Query<Int64> ("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=@table", new { table = TableName }).FirstOrDefault () == 0)
                 {
                     foreach (var sql in GetTableCreateSQL ())
