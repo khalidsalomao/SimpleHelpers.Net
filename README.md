@@ -11,14 +11,14 @@ Simple lightweight object in-memory cache, with a background timer to remove exp
 
 Fast in-memory cache for data that are expensive to create and can be used in a thread-safe manner.
 
-All stored items are kept in concurrent data structures (ConcurrentDictionary) to allow multi-thread usage of the MemoryCache static methods. Note that the stored objects must be **thread-safe**, since the same instace of an object can and will be returned by multiple calls of *Get* methods. If you wish to use non-thread safe object instances you must use the *Remove* method to atomically (safelly) get and remove the object instance from the cache.
+All stored items are kept in concurrent data structures (ConcurrentDictionary) to allow multi-thread usage of the MemoryCache static methods. Note that the stored objects must be **thread-safe**, since the same instance of an object can and will be returned by multiple calls of *Get* methods. If you wish to use non-thread safe object instances you must use the *Remove* method to atomically (safelly) get and remove the object instance from the cache.
 
 Note: this nuget package contains csharp source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
 
 **Configuration**
 
 Simple configuration of the MemoryCache settings. 
-It should be done for each type, since since the JIT compiler will generate differente code at run time, MemoryCache<string> is considered a diferent class, for example, from MemoryCache<StringBuilder> or MemoryCache<byte[]>.
+It should be done for each type, since since the JIT compiler will generate different code at run time, MemoryCache<string> is considered a different class, for example, from MemoryCache<StringBuilder> or MemoryCache<byte[]>.
 
 ```csharp
 
@@ -98,14 +98,14 @@ if (value != null)
 
 Synchronization helper: a static lock collection associated with a key.
 
-NamedLock manages the lifetime of critical sections that can be accessed by a key (name) throughout the application. It also have some helper methods to allow a maximum wait time (timeout) to aquire the lock and safelly release it.
+NamedLock manages the lifetime of critical sections that can be accessed by a key (name) throughout the application. It also have some helper methods to allow a maximum wait time (timeout) to acquire the lock and safely release it.
 	
 Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
 
 **Example**
 
-Simple usage where we try to aquire the lock for 100 ms. 
-So if somewhere else in our application this same lock was already aquired, we will wait until we aquire the lock or 100 ms has passed.
+Simple usage where we try to acquire the lock for 100 ms. 
+So if somewhere else in our application this same lock was already acquired, we will wait until we acquire the lock or 100 ms has passed.
 
 ```csharp
 
@@ -181,7 +181,7 @@ private static Random CreateRandomGenerator ()
 <h3>TimedQueue</h3>
 Simple lightweight queue that stores data in a concurrent queue and periodically process the queued items.
 
-Userful for:
+Useful for:
 * processing items in batches;
 * grouping data for later processing;
 * async processing (consumer/producer);
@@ -261,7 +261,7 @@ int port = ConfigManager.Get ("MongoDBport", 21766);
 
 Simple key value storage using sqlite.
 
-All member methods are thread-safe, so a instance can be safelly be accessed by multiple threads.
+All member methods are thread-safe, so a instance can be safely be accessed by multiple threads.
 
 All stored items are serialized to json by json.net.
 
