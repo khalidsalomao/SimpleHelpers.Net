@@ -1,0 +1,369 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Simplehelpers.net by khalidsalomao</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Simplehelpers.net</h1>
+        <p>Collection of simple pieces of utility code</p>
+
+        <p class="view"><a href="https://github.com/khalidsalomao/SimpleHelpers.Net">View the Project on GitHub <small>khalidsalomao/SimpleHelpers.Net</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/khalidsalomao/SimpleHelpers.Net/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/khalidsalomao/SimpleHelpers.Net/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/khalidsalomao/SimpleHelpers.Net">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="simplehelpersnet" class="anchor" href="#simplehelpersnet"><span class="octicon octicon-link"></span></a>SimpleHelpers.Net</h1>
+
+<p>Collection of simple pieces of utility code</p>
+
+<h2>
+<a name="description-and-examples" class="anchor" href="#description-and-examples"><span class="octicon octicon-link"></span></a>Description and Examples</h2>
+
+<h3>
+<a name="memorycache" class="anchor" href="#memorycache"><span class="octicon octicon-link"></span></a>MemoryCache</h3>
+
+<p>Simple lightweight object in-memory cache, with a background timer to remove expired objects.</p>
+
+<p>Fast in-memory cache for data that are expensive to create and can be used in a thread-safe manner.</p>
+
+<p>All stored items are kept in concurrent data structures (ConcurrentDictionary) to allow multi-thread usage of the MemoryCache static methods. Note that the stored objects must be <strong>thread-safe</strong>, since the same instance of an object can and will be returned by multiple calls of <em>Get</em> methods. If you wish to use non-thread safe object instances you must use the <em>Remove</em> method to atomically (safelly) get and remove the object instance from the cache.</p>
+
+<p>Note: this nuget package contains csharp source code and depends on System.Collections.Concurrent introduced in .Net 4.0.</p>
+
+<p><strong>Configuration</strong></p>
+
+<p>Simple configuration of the MemoryCache settings. 
+It should be done for each type, since since the JIT compiler will generate different code at run time, MemoryCache is considered a different class, for example, from MemoryCache or MemoryCache.</p>
+
+<div class="highlight"><pre>
+<span class="c1">// setup (called once in application initialization)</span>
+
+<span class="c1">// set a duration of an item in the cache to 1 second</span>
+<span class="n">MemoryCache</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;.</span><span class="n">Expiration</span> <span class="p">=</span> <span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span> <span class="p">(</span><span class="m">1</span><span class="p">);</span>
+<span class="c1">// set the internal maintenance timed task to run each 500 ms removing expired items</span>
+<span class="n">MemoryCache</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;.</span><span class="n">MaintenanceStep</span> <span class="p">=</span> <span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMilliseconds</span> <span class="p">(</span><span class="m">500</span><span class="p">);</span>
+<span class="c1">// Our event, if we want to treat the removed expired items</span>
+<span class="n">MemoryCache</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;.</span><span class="n">OnExpiration</span> <span class="p">+=</span> <span class="p">(</span><span class="kt">string</span> <span class="n">key</span><span class="p">,</span> <span class="kt">string</span> <span class="n">item</span><span class="p">)</span> <span class="p">=&gt;</span> 
+<span class="p">{</span> 
+    <span class="c1">// do something</span>
+<span class="p">};</span>
+
+</pre></div>
+
+<p><strong>Example</strong></p>
+
+<div class="highlight"><pre>
+<span class="c1">// store an item</span>
+<span class="n">MemoryCache</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;.</span><span class="n">Set</span> <span class="p">(</span><span class="s">"k1"</span><span class="p">,</span> <span class="s">"test"</span><span class="p">);</span>
+
+<span class="c1">// get it</span>
+<span class="kt">string</span> <span class="k">value</span> <span class="p">=</span> <span class="n">MemoryCache</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;.</span><span class="n">Get</span> <span class="p">(</span><span class="s">"k1"</span><span class="p">);</span>
+<span class="c1">// check if we got it</span>
+<span class="k">if</span> <span class="p">(</span><span class="k">value</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// ok we got it!</span>
+<span class="p">}</span>
+
+</pre></div>
+
+<p>Using a factory to create a new item if the in memory cache does not have it.</p>
+
+<div class="highlight"><pre>
+<span class="c1">// prepare our factory</span>
+<span class="kt">var</span> <span class="n">factory</span> <span class="p">=</span> <span class="p">(</span><span class="kt">string</span> <span class="n">key</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">key</span> <span class="p">+</span> <span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span><span class="p">.</span><span class="n">ToString</span> <span class="p">();</span>
+<span class="p">};</span>
+
+<span class="c1">// try to get the associated value if the cache does not have it</span>
+<span class="c1">// then use the factory to create a new one, store and return it.</span>
+<span class="kt">string</span> <span class="k">value</span> <span class="p">=</span> <span class="n">MemoryCache</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;.</span><span class="n">GetOrAdd</span> <span class="p">(</span><span class="s">"key2"</span><span class="p">,</span> <span class="n">factory</span><span class="p">);</span>
+
+</pre></div>
+
+<p>Using a more complex concurrent scenario where, if the item is not found, we only want to call the factory only once.
+So all concurrent calls will wait until factory (that is guaranteed to be called only once) has created and stored the new item, and will return it.</p>
+
+<div class="highlight"><pre>
+<span class="c1">// prepare our factory</span>
+<span class="kt">var</span> <span class="n">factory</span> <span class="p">=</span> <span class="p">(</span><span class="kt">string</span> <span class="n">key</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">key</span> <span class="p">+</span> <span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span><span class="p">.</span><span class="n">ToString</span> <span class="p">();</span>
+<span class="p">};</span>
+
+<span class="c1">// try to get the associated value if the cache does not have it</span>
+<span class="c1">// then use the factory to create a new one, store and return it.</span>
+<span class="c1">// It the factory takes more than 250 milliseconds to create then new instance,</span>
+<span class="c1">// it will exit returning the default value for the class</span>
+<span class="kt">string</span> <span class="k">value</span> <span class="p">=</span> <span class="n">MemoryCache</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;.</span><span class="n">GetOrSyncAdd</span> <span class="p">(</span><span class="s">"key2"</span><span class="p">,</span> <span class="n">factory</span><span class="p">,</span> <span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMilliseconds</span> <span class="p">(</span><span class="m">250</span><span class="p">));</span>
+
+<span class="c1">// check if we got it</span>
+<span class="k">if</span> <span class="p">(</span><span class="k">value</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// ok we got it!</span>
+<span class="p">}</span>
+
+</pre></div>
+
+<h3>
+<a name="namedlock" class="anchor" href="#namedlock"><span class="octicon octicon-link"></span></a>NamedLock</h3>
+
+<p>Synchronization helper: a static lock collection associated with a key.</p>
+
+<p>NamedLock manages the lifetime of critical sections that can be accessed by a key (name) throughout the application. It also have some helper methods to allow a maximum wait time (timeout) to acquire the lock and safely release it.</p>
+
+<p>Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.</p>
+
+<p><strong>Example</strong></p>
+
+<p>Simple usage where we try to acquire the lock for 100 ms. 
+So if somewhere else in our application this same lock was already acquired, we will wait until we acquire the lock or 100 ms has passed.</p>
+
+<div class="highlight"><pre>
+<span class="kt">string</span> <span class="n">key</span> <span class="p">=</span> <span class="s">"our lock name"</span><span class="p">;</span>
+
+<span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">padlock</span> <span class="p">=</span> <span class="k">new</span> <span class="n">NamedLock</span> <span class="p">(</span><span class="n">key</span><span class="p">))</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">padlock</span><span class="p">.</span><span class="n">Enter</span> <span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMilliseconds</span> <span class="p">(</span><span class="m">100</span><span class="p">)))</span>
+    <span class="p">{</span>
+        <span class="c1">// do something as we now own the lock</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="c1">// do some other thing since we could not aquire the lock</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</pre></div>
+
+<p>Another usage example with a static helper method.</p>
+
+<div class="highlight"><pre>
+<span class="kt">string</span> <span class="n">key</span> <span class="p">=</span> <span class="s">"our lock name"</span><span class="p">;</span>
+
+<span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">padlock</span> <span class="p">=</span> <span class="n">NamedLock</span><span class="p">.</span><span class="n">CreateAndEnter</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMilliseconds</span> <span class="p">(</span><span class="m">100</span><span class="p">)))</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">padlock</span><span class="p">.</span><span class="n">IsLocked</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// do something                    </span>
+    <span class="p">}</span>                
+<span class="p">}</span>
+
+</pre></div>
+
+<h3>
+<a name="objectpool" class="anchor" href="#objectpool"><span class="octicon octicon-link"></span></a>ObjectPool</h3>
+
+<p>A simple lightweight object pool for fast and simple object reuse.</p>
+
+<p>Fast lightweight thread-safe object pool for objects that are expensive to create or could efficiently be reused.</p>
+
+<p>Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.</p>
+
+<p><strong>Example</strong></p>
+
+<div class="highlight"><pre>
+<span class="c1">// Get or create a new random generator</span>
+<span class="n">Random</span> <span class="n">rnd</span> <span class="p">=</span> <span class="n">ObjectPool</span><span class="p">&lt;</span><span class="n">Random</span><span class="p">&gt;.</span><span class="n">Get</span> <span class="p">(</span><span class="n">CreateRandomGenerator</span><span class="p">);</span>
+<span class="c1">// start generating random numbers</span>
+<span class="k">try</span>
+<span class="p">{</span>   
+    <span class="c1">// ...</span>
+
+    <span class="kt">var</span> <span class="n">num</span> <span class="p">=</span> <span class="n">rnd</span><span class="p">.</span><span class="n">Next</span> <span class="p">(</span><span class="n">max</span><span class="p">);</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+<span class="k">finally</span>
+<span class="p">{</span>
+    <span class="c1">// Release the random generator by putting it back in the object pool</span>
+    <span class="n">ObjectPool</span><span class="p">&lt;</span><span class="n">Random</span><span class="p">&gt;.</span><span class="n">Put</span> <span class="p">(</span><span class="n">rnd</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// our factory</span>
+<span class="k">private</span> <span class="k">static</span> <span class="n">Random</span> <span class="nf">CreateRandomGenerator</span> <span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">Random</span> <span class="p">((</span><span class="kt">int</span><span class="p">)</span><span class="n">DateTime</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">.</span><span class="n">Ticks</span><span class="p">);</span>
+<span class="p">}</span>
+
+</pre></div>
+
+<h3>
+<a name="timedqueue" class="anchor" href="#timedqueue"><span class="octicon octicon-link"></span></a>TimedQueue</h3>
+
+<p>Simple lightweight queue that stores data in a concurrent queue and periodically process the queued items.</p>
+
+<p>Useful for:</p>
+
+<ul>
+<li>processing items in batches;</li>
+<li>grouping data for later processing;</li>
+<li>async processing (consumer/producer);</li>
+<li>etc.</li>
+</ul><p>Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.</p>
+
+<p><strong>Configuration</strong></p>
+
+<p>Simple configuration of the TimedQueue settings. 
+It should be done for each type, since since the JIT compiler will generate differente code at run time, TimedQueue is considered a diferent class, for example, from TimedQueue or TimedQueue.</p>
+
+<div class="highlight"><pre>
+<span class="c1">// setup (called once in application initialization)</span>
+
+<span class="c1">// set the queue timed task to run each 500 ms executing the registered action</span>
+<span class="n">SimpleHelpers</span><span class="p">.</span><span class="n">TimedQueue</span><span class="p">&lt;</span><span class="n">Our_Object</span><span class="p">&gt;.</span><span class="n">TimerStep</span> <span class="p">=</span> <span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMilliseconds</span> <span class="p">(</span><span class="m">500</span><span class="p">);</span>
+<span class="c1">// Our event, if we want to treat the removed expired items</span>
+<span class="n">MemoryCache</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;.</span><span class="n">OnExecution</span> <span class="p">+=</span> <span class="p">(</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">Our_Object</span><span class="p">&gt;</span> <span class="n">items</span><span class="p">)</span> <span class="p">=&gt;</span> 
+<span class="p">{</span> 
+    <span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">evt</span> <span class="k">in</span> <span class="n">items</span><span class="p">)</span>
+        <span class="c1">// do something</span>
+<span class="p">};</span>
+
+</pre></div>
+
+<p><strong>Example</strong></p>
+
+<div class="highlight"><pre>
+<span class="c1">// our method that does an network call to store out object </span>
+<span class="c1">// and keeps retrying in case of failure</span>
+<span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">SaveEvent</span> <span class="p">(</span><span class="n">Our_Object</span> <span class="n">evt</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// try to save</span>
+    <span class="k">try</span>
+    <span class="p">{</span>
+        <span class="n">SaveOverTheInternet</span> <span class="p">(</span><span class="n">evt</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">catch</span> <span class="p">(</span><span class="n">System</span><span class="p">.</span><span class="n">IO</span><span class="p">.</span><span class="n">IOException</span> <span class="n">ex</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// log.Error (ex);</span>
+        <span class="n">SimpleHelpers</span><span class="p">.</span><span class="n">TimedQueue</span><span class="p">&lt;</span><span class="n">Our_Object</span><span class="p">&gt;.</span><span class="n">Put</span> <span class="p">(</span><span class="n">evt</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</pre></div>
+
+<h3>
+<a name="configmanager" class="anchor" href="#configmanager"><span class="octicon octicon-link"></span></a>ConfigManager</h3>
+
+<p>Simple configuration manager to get and set the values in the AppSettings section of the default configuration file.</p>
+
+<p>Note: this nuget package contains csharp source code and depends on Generics introduced in .Net 2.0.</p>
+
+<p><strong>Configuration</strong></p>
+
+<div class="highlight"><pre>
+<span class="c1">// setup (called once in application initialization)</span>
+
+<span class="c1">// set to add any new keys added during the application execution</span>
+<span class="n">ConfigManager</span><span class="p">.</span><span class="n">AddNonExistingKeys</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+
+</pre></div>
+
+<p>** Example **</p>
+
+<div class="highlight"><pre>
+<span class="kt">string</span> <span class="n">address</span> <span class="p">=</span> <span class="n">ConfigManager</span><span class="p">.</span><span class="n">Get</span> <span class="p">(</span><span class="s">"MongoDBaddress"</span><span class="p">,</span> <span class="s">"localhost"</span><span class="p">);</span>
+<span class="kt">int</span> <span class="n">port</span> <span class="p">=</span> <span class="n">ConfigManager</span><span class="p">.</span><span class="n">Get</span> <span class="p">(</span><span class="s">"MongoDBport"</span><span class="p">,</span> <span class="m">21766</span><span class="p">);</span>
+
+</pre></div>
+
+<h3>
+<a name="sqlitestorage" class="anchor" href="#sqlitestorage"><span class="octicon octicon-link"></span></a>SQLiteStorage</h3>
+
+<p>Simple key value storage using sqlite.</p>
+
+<p>All member methods are thread-safe, so a instance can be safely be accessed by multiple threads.</p>
+
+<p>All stored items are serialized to json by json.net.</p>
+
+<p>Note: this nuget package contains csharp source code and depends on .Net 4.0.</p>
+
+<p><strong>Configuration</strong></p>
+
+<div class="highlight"><pre>
+<span class="c1">// setup:</span>
+<span class="n">SQLiteStorage</span><span class="p">&lt;</span><span class="n">My_Class</span><span class="p">&gt;</span> <span class="n">db</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SQLiteStorage</span><span class="p">&lt;</span><span class="n">My_Class</span><span class="p">&gt;</span> <span class="p">(</span><span class="s">"path_to_my_file.sqlite"</span><span class="p">,</span> 
+                              <span class="n">SQLiteStorageOptions</span><span class="p">.</span><span class="n">UniqueKeys</span> <span class="p">());</span>
+
+</pre></div>
+
+<p>** Example **</p>
+
+<div class="highlight"><pre>
+<span class="c1">// create a new instance</span>
+<span class="n">SQLiteStorage</span><span class="p">&lt;</span><span class="n">My_Class</span><span class="p">&gt;</span> <span class="n">db</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SQLiteStorage</span><span class="p">&lt;</span><span class="n">My_Class</span><span class="p">&gt;</span> <span class="p">(</span><span class="s">"path_to_my_file.sqlite"</span><span class="p">,</span> 
+                              <span class="n">SQLiteStorageOptions</span><span class="p">.</span><span class="n">UniqueKeys</span> <span class="p">());</span>
+
+<span class="c1">// save an item with a key associated</span>
+<span class="n">db</span><span class="p">.</span><span class="n">Set</span> <span class="p">(</span><span class="s">"my_key_for_this_item"</span><span class="p">,</span> <span class="k">new</span> <span class="n">My_Class</span> <span class="p">());</span>
+<span class="c1">// get it back</span>
+<span class="n">My_Class</span> <span class="n">my_obj</span> <span class="p">=</span> <span class="n">db</span><span class="p">.</span><span class="n">Get</span> <span class="p">(</span><span class="s">"my_key_for_this_item"</span><span class="p">).</span><span class="n">FirstOrDefault</span> <span class="p">();</span>
+
+<span class="c1">// to save any changes, just call set again</span>
+<span class="n">db</span><span class="p">.</span><span class="n">Set</span> <span class="p">(</span><span class="s">"my_key_for_this_item"</span><span class="p">,</span> <span class="n">my_obj</span><span class="p">);</span>
+
+<span class="c1">// get all stored items</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">item</span> <span class="k">in</span> <span class="n">db</span><span class="p">.</span><span class="n">Get</span> <span class="p">())</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+
+<h3>
+<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+
+<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+
+<pre><code>$ cd your_repo_root/repo_name
+$ git fetch origin
+$ git checkout gh-pages
+</code></pre>
+
+<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+
+<h3>
+<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+
+<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+
+<h3>
+<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+
+<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+
+<h3>
+<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+
+<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+
+<h3>
+<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+
+<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/khalidsalomao">khalidsalomao</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
