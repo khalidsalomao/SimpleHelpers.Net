@@ -152,7 +152,7 @@ namespace $rootnamespace$.SimpleHelpers
         /// <param name="data">Stored value.</param>
         public static void Set (string key, T data)
         {
-            if (key == null | key.Length == 0 | data == null)
+            if (key == null | key.Length == 0)
                 throw new System.ArgumentNullException ("key");
             // add or update item
             m_cacheMap[key] = new CachedItem
