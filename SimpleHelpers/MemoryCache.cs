@@ -71,6 +71,8 @@ namespace SimpleHelpers
         private static TimeSpan m_timeout = TimeSpan.FromMinutes (5);
         
         private static TimeSpan m_maintenanceStep = TimeSpan.FromMinutes (5);
+        
+        private static bool m_ignoreNullValues = true;
 
         /// <summary>
         /// Expiration TimeSpan of stored items.
@@ -98,6 +100,16 @@ namespace SimpleHelpers
                     StartMaintenance ();
                 }
             }
+        }
+        
+        /// <summary>
+        /// If the Set method should silently ignore any null value.
+        /// Default value is true.
+        /// </summary>
+        public static bool IgnoreNullValues 
+        { 
+            get { return m_ignoreNullValues; }            
+            set { m_ignoreNullValues = value; } 
         }
 
         #region *   Events and Event Handlers   *
@@ -154,6 +166,8 @@ namespace SimpleHelpers
         {
             if (key == null | key.Length == 0)
                 throw new System.ArgumentNullException ("key");
+            if (m_ignoreNullValues && data == null)
+                return;
             // add or update item
             m_cacheMap[key] = new CachedItem
             {
