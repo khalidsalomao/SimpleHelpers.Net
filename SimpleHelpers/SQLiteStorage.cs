@@ -41,7 +41,7 @@ namespace SimpleHelpers.SQLite
     /// <summary>
     /// Simple key value storage using sqlite.
     /// All member methods are thread-safe, so any instance can be safelly be accessed by multiple threads.
-    /// All stored items are serialized to json by ServiceStack.Text.
+    /// All stored items are serialized to json by Newtonsoft.Json.
     /// Note: this nuget package contains c# source code and depends on .Net 4.0.
     /// </summary>    
     /// <example>
@@ -52,9 +52,6 @@ namespace SimpleHelpers.SQLite
     /// // get it back
     /// var my_obj = db.Get ("my_key_for_this_item").FirstOrDefault ();    
     /// </example>
-    /// <remarks>
-    /// Switched from json.net to ServiceStack.Text because the benchmark result demonstrated a 2x speedup in SQLiteStorage Get performance.
-    /// </remarks>
     public class SQLiteStorage<T> where T : class
     {
         protected const int cacheSize = 1000;
@@ -143,8 +140,6 @@ namespace SimpleHelpers.SQLite
             sb.DateTimeFormat = SQLiteDateFormats.ISO8601;
             sb.DefaultIsolationLevel = System.Data.IsolationLevel.ReadCommitted;
             m_connectionString = sb.ToString ();
-            // configure serializer date format
-            ServiceStack.Text.JsConfig.DateHandler = ServiceStack.Text.JsonDateHandler.ISO8601;
             // execute initialization
             CreateTable ();
         }
@@ -164,7 +159,12 @@ namespace SimpleHelpers.SQLite
         {
             using (var connection = Open ())
             {
-                connection.Execute ("PRAGMA mmap_size=268435456");
+                // check if we should try to use memory mapper I/O
+                if (defaultOptions.UseMemoryMappedIO)
+                {
+                    connection.Execute ("PRAGMA mmap_size=268435456");
+                }
+                // check table if table exists
                 if (connection.Query<Int64> ("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=@table", new { table = TableName }).FirstOrDefault () == 0)
                 {
                     foreach (var sql in GetTableCreateSQL ())
@@ -221,7 +221,7 @@ namespace SimpleHelpers.SQLite
             {
                 using (var trans = db.BeginTransaction ())
                 {
-                    setInternal (key, ServiceStack.Text.JsonSerializer.SerializeToString (value), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
+                    setInternal (key, Newtonsoft.Json.JsonConvert.SerializeObject (value), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
                     trans.Commit ();
                 }
             }
@@ -238,17 +238,12 @@ namespace SimpleHelpers.SQLite
             {
                 var trans = db.BeginTransaction ();
                 try
-                {
-                    System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder ();
-                    System.IO.StringWriter stringWriter = new System.IO.StringWriter (stringBuilder, System.Globalization.CultureInfo.InvariantCulture);
+                {                    
                     foreach (var i in items)
                     {                        
-                        // serialize
-                        stringBuilder.Clear ();                                                
-                        ServiceStack.Text.JsonSerializer.SerializeToWriter (i.Value, stringWriter);
-                        stringWriter.Flush ();
+                        // serialize &&
                         // insert in database
-                        setInternal (i.Key, stringBuilder.ToString (), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
+                        setInternal (i.Key, Newtonsoft.Json.JsonConvert.SerializeObject (i.Value), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
                         // do a batch commit after a group of insertions
                         if (++counter % 2000 == 0)
                         {
@@ -285,7 +280,7 @@ namespace SimpleHelpers.SQLite
             {
                 using (var trans = db.BeginTransaction ())
                 {
-                    setInternal (key, ServiceStack.Text.JsonSerializer.SerializeToString (value), count, isDistinct, trans, db);
+                    setInternal (key, Newtonsoft.Json.JsonConvert.SerializeObject (value), count, isDistinct, trans, db);
                     trans.Commit ();
                 }
             }
@@ -408,7 +403,7 @@ namespace SimpleHelpers.SQLite
                     {
                         if (updateAction (item))
                         {
-                            setInternal (key, ServiceStack.Text.JsonSerializer.SerializeToString (item), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
+                            setInternal (key, Newtonsoft.Json.JsonConvert.SerializeObject (item), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
                         }
                         yield return item;
                     }
@@ -441,7 +436,7 @@ namespace SimpleHelpers.SQLite
                     {
                         if (updateAction (i.Item))
                         {
-                            setInternal (i.Key, ServiceStack.Text.JsonSerializer.SerializeToString (i.Item), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
+                            setInternal (i.Key, Newtonsoft.Json.JsonConvert.SerializeObject (i.Item), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
                         }
                         yield return i.Item;
                     }
@@ -494,7 +489,7 @@ namespace SimpleHelpers.SQLite
             {
                 // execute query
                 foreach (var item in db.Query<string> (query.ToString (), parameter, trans, false))
-                    yield return ServiceStack.Text.JsonSerializer.DeserializeFromString<T> (item);
+                    yield return Newtonsoft.Json.JsonConvert.DeserializeObject<T> (item);
             }
             finally
             {
@@ -579,7 +574,7 @@ namespace SimpleHelpers.SQLite
             using (var db = Open ())
             {
                 return db.Query<string> (query, new { Key = key, value = prepareSearchParam (fieldName, fieldValue) })
-                    .Select (i => ServiceStack.Text.JsonSerializer.DeserializeFromString<T> (i));
+                    .Select (i => Newtonsoft.Json.JsonConvert.DeserializeObject <T> (i));
             }
         }
 
@@ -643,7 +638,7 @@ namespace SimpleHelpers.SQLite
             using (var db = Open ())
             {
                 foreach (var i in db.Query<string> (query, queryParameter, null, false))
-                    yield return ServiceStack.Text.JsonSerializer.DeserializeFromString<T> (i);
+                    yield return Newtonsoft.Json.JsonConvert.DeserializeObject<T> (i);
             }
         }
 
@@ -720,7 +715,7 @@ namespace SimpleHelpers.SQLite
                     if (i > 1 || key != null)
                         query.Append (" AND");
                     query.Append (" [Value] LIKE @").Append (vName);
-                    values.Add (new KeyValuePair<string, object> (vName, "%\"" + property.Name + "\":" + ServiceStack.Text.JsonSerializer.SerializeToString (value) + "%"));
+                    values.Add (new KeyValuePair<string, object> (vName, "%\"" + property.Name + "\":" + Newtonsoft.Json.JsonConvert.SerializeObject (value) + "%"));
                 }
                 queryParameter = createAnonymousType (values);
             }
@@ -748,7 +743,7 @@ namespace SimpleHelpers.SQLite
 
         static string prepareSearchParam (string fieldName, object fieldValue)
         {
-            return "%\"" + fieldName + "\":" + ServiceStack.Text.JsonSerializer.SerializeToString (fieldValue) + "%";
+            return "%\"" + fieldName + "\":" + Newtonsoft.Json.JsonConvert.SerializeObject (fieldValue) + "%";
         }
 
         static object createAnonymousType (IEnumerable<KeyValuePair<string, object>> dict)
@@ -773,6 +768,8 @@ namespace SimpleHelpers.SQLite
         private int m_maximumItemsPerKeys;
 
         private bool m_overwriteSimilarItems;
+
+        private bool m_useMemoryMappedIO = true;
 
         /// <summary>
         /// If the SQLiteStorage instance should allow duplicated keys.
@@ -815,6 +812,12 @@ namespace SimpleHelpers.SQLite
         {
             get { return m_overwriteSimilarItems; }
             set { m_overwriteSimilarItems = value; }
+        }
+
+        public bool UseMemoryMappedIO
+        {
+            get { return m_useMemoryMappedIO; }
+            set { m_useMemoryMappedIO = value; }
         }
 
         /// <summary>
@@ -891,12 +894,12 @@ namespace SimpleHelpers.SQLite
             get
             {
                 if (m_item == null && Value != null)
-                    m_item = ServiceStack.Text.JsonSerializer.DeserializeFromString<T> (Value);
+                    m_item = Newtonsoft.Json.JsonConvert.DeserializeObject<T> (Value);
                 return m_item;
             }
             set
             {
-                Value = ServiceStack.Text.JsonSerializer.SerializeToString (value);
+                Value = Newtonsoft.Json.JsonConvert.SerializeObject (value);
                 m_item = null;
             }
         }
