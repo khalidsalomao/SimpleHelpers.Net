@@ -395,7 +395,7 @@ namespace SimpleHelpers.SQLite
             using (var db = Open())
             {
                 // begin a transaction acquiring the write lock immediately
-                using (var trans = db.BeginTransaction (false))
+                using (var trans = db.BeginTransaction (System.Data.IsolationLevel.ReadCommitted))
                 {
                     // load all selected items 
                     // note that Get () will begin another transaction to get a consistent read
@@ -428,7 +428,7 @@ namespace SimpleHelpers.SQLite
             using (var db = Open ())
             {
                 // begin a transaction acquiring the write lock immediately
-                using (var trans = db.BeginTransaction (false))
+                using (var trans = db.BeginTransaction (System.Data.IsolationLevel.ReadCommitted))
                 {
                     // load all selected items 
                     // note that Get () will begin another transaction to get a consistent read

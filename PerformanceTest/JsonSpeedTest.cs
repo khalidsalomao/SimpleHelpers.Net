@@ -42,6 +42,24 @@ namespace PerformanceTest
                 }
             }
 
+            using (Benchmark.Start ("JsonSpeedTest.fastJSON.Serialize"))
+            {
+                for (var i = 0; i < loopCount; i++)
+                {
+                    for (int i1 = 0; i1 < list.Count; i1++)
+                        txt[i1] = fastJSON.JSON.Instance.ToJSON (list[i1]);
+                }
+            }
+
+            using (Benchmark.Start ("JsonSpeedTest.fastJSON.Deserialize"))
+            {
+                for (var i = 0; i < loopCount; i++)
+                {
+                    for (int i1 = 0; i1 < txt.Length; i1++)
+                        fastJSON.JSON.Instance.ToObject <PerformanceTest.MockObjectGen.MockUser> (txt[i1]);
+                }
+            }
+
             using (Benchmark.Start ("JsonSpeedTest.ServiceStack.Serialize"))
             {
                 for (var i = 0; i < loopCount; i++)
