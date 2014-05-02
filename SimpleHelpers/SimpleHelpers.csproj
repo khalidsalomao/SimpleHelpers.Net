@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ObjectDiffPatch.cs" />
     <Compile Include="SimpleIncrementer.cs" />
     <Compile Include="SqlCEStorage.cs" />
     <Compile Include="ObjectExtensions.cs" />
