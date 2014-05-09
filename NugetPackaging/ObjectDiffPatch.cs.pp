@@ -54,8 +54,8 @@ namespace $rootnamespace$.SimpleHelpers
             // ensure the serializer will not ignore null values
             var writer = GetJsonSerializer ();
             // parse our objects
-            var originalJson = Newtonsoft.Json.Linq.JObject.FromObject (original, writer);
-            var updatedJson = Newtonsoft.Json.Linq.JObject.FromObject (updated, writer);
+            JObject originalJson = original != null ? Newtonsoft.Json.Linq.JObject.FromObject (original, writer) : null;
+            JObject updatedJson = updated != null ? Newtonsoft.Json.Linq.JObject.FromObject (updated, writer) : null;
             // analyse their differences!
             var result =  Diff (originalJson, updatedJson);
             result.Type = typeof (T);
@@ -84,10 +84,10 @@ namespace $rootnamespace$.SimpleHelpers
         /// <returns></returns>
         public static T PatchObject<T> (T source, JObject diffJson) where T : class
         {
-            var sourceJson = Newtonsoft.Json.Linq.JObject.FromObject (source, GetJsonSerializer ());
+            var sourceJson = source != null ? Newtonsoft.Json.Linq.JObject.FromObject (source, GetJsonSerializer ()) : null;
             var resultJson = Patch (sourceJson, diffJson);
 
-            return resultJson.ToObject<T> ();
+            return resultJson != null ? resultJson.ToObject<T> () : null;
         }
 
         private static ObjectDiffPatchResult Diff (JObject source, JObject target)
