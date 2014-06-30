@@ -151,9 +151,12 @@ namespace $rootnamespace$.SimpleHelpers
         /// <returns>Stored value for the key or default value if not found</returns>
         public static T Get (string key)
         {
-            CachedItem item;
-            if (m_cacheMap.TryGetValue (key, out item))
-                return item.Data;
+            if (key != null)
+            {
+                CachedItem item;
+                if (m_cacheMap.TryGetValue (key, out item))
+                    return item.Data;
+            }
             return null;
         }
 
@@ -164,10 +167,13 @@ namespace $rootnamespace$.SimpleHelpers
         /// <param name="data">Stored value.</param>
         public static void Set (string key, T data)
         {
-            if (key == null | key.Length == 0)
-                throw new System.ArgumentNullException ("key");
-            if (m_ignoreNullValues && data == null)
-                return;
+            if (key == null || key.Length == 0 || data == null)
+            {
+                if (m_ignoreNullValues)
+                    return;
+                else
+                    throw new System.ArgumentNullException ("key");
+            }
             // add or update item
             m_cacheMap[key] = new CachedItem
             {
