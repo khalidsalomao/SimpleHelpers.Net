@@ -54,8 +54,17 @@ namespace $rootnamespace$.SimpleHelpers
             // ensure the serializer will not ignore null values
             var writer = GetJsonSerializer ();
             // parse our objects
-            JObject originalJson = original != null ? Newtonsoft.Json.Linq.JObject.FromObject (original, writer) : null;
-            JObject updatedJson = updated != null ? Newtonsoft.Json.Linq.JObject.FromObject (updated, writer) : null;
+            JObject originalJson, updatedJson;
+            if (typeof (JObject).IsAssignableFrom (typeof (T)))
+            {
+                originalJson = original as JObject;
+                updatedJson = updated as JObject;                
+            }
+            else
+            {
+                originalJson = original != null ? Newtonsoft.Json.Linq.JObject.FromObject (original, writer) : null;
+                updatedJson = updated != null ? Newtonsoft.Json.Linq.JObject.FromObject (updated, writer) : null;
+            }
             // analyse their differences!
             var result =  Diff (originalJson, updatedJson);
             result.Type = typeof (T);
@@ -222,6 +231,11 @@ namespace $rootnamespace$.SimpleHelpers
                 settings = new JsonSerializerSettings ();
             settings.NullValueHandling = NullValueHandling.Include;
             settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            settings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+            settings.Formatting = Formatting.None;
+            settings.MissingMemberHandling = MissingMemberHandling.Ignore;
+            settings.ObjectCreationHandling = ObjectCreationHandling.Replace;
+			
             // create our custom serializer
             var writer = JsonSerializer.Create (settings);
             return writer;
