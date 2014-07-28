@@ -73,6 +73,24 @@ namespace $rootnamespace$.SimpleHelpers
             var ude = new Ude.CharsetDetector ();
             ude.Feed (inputStream);
             ude.DataEnd ();
+            // if the file has multiple encodings... try again with only the begining...
+            if (ude.Charset == null)
+            {
+                inputStream.Position = 0;
+                byte[] buf = new byte[4 * 1024];
+                int sz = inputStream.Read (buf, 0, buf.Length);
+                return DetectFileEncoding(buf, 0, sz);
+            }
+            // return detected chaset
+            return TreatDetectedCharset (ude.Charset);
+        }
+        
+        public static string DetectFileEncoding (byte[] inputData, int start, int count)
+        {
+            // execute charset detector
+            var ude = new Ude.CharsetDetector ();
+            ude.Feed (inputData, start, count);
+            ude.DataEnd ();
             // return detected chaset
             return TreatDetectedCharset (ude.Charset);
         }
