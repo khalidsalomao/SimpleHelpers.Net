@@ -53,12 +53,10 @@ namespace SimpleHelpers.SQLite
     /// var my_obj = db.Get ("my_key_for_this_item").FirstOrDefault ();    
     /// </example>
     public class SQLiteStorage<T> where T : class
-    {
-        protected const int cacheSize = 1000;
-        
+    {        
         protected string m_connectionString = null; 
         
-        protected SQLiteStorageOptions defaultOptions = null;
+        protected SQLiteStorageOptions m_options = null;
 
         public string TableName { get; set; }
 
@@ -78,7 +76,7 @@ namespace SimpleHelpers.SQLite
         /// <param name="count">The count.</param>
         /// <param name="isDistinct">The is distinct.</param>
         public SQLiteStorage (string filename, int count, bool isDistinct)
-            : this (filename, typeof (T).Name, new SQLiteStorageOptions { MaximumItemsPerKeys = count, OverwriteSimilarItems = isDistinct})
+            : this (filename, typeof (T).Name, new SQLiteStorageOptions { MaximumItemsPerKeys = count, OverwriteSimilarItems = isDistinct })
         {
         }
 
@@ -102,25 +100,25 @@ namespace SimpleHelpers.SQLite
         {
             if (String.IsNullOrEmpty (tableName))
                 throw new ArgumentNullException ("TableName");
-            defaultOptions = options ?? SQLiteStorageOptions.UniqueKeys ();
+            m_options = options ?? SQLiteStorageOptions.UniqueKeys ();
             TableName = tableName;
-            Configure (filename, cacheSize);
+            Configure (filename, m_options.CacheSize);
         }
 
         /// <summary>
         /// Default behavior of how SQLiteStorage store items.
         /// </summary>
-        public SQLiteStorageOptions DefaultOptions
+        public SQLiteStorageOptions Options
         {
-            get { return defaultOptions; }
+            get { return m_options; }
             set
             {                
                 if (value == null) throw new ArgumentNullException("DefaultOptions"); 
-                defaultOptions = value;
+                m_options = value;
             }
         }
 
-        protected void Configure (string filename, int cacheSize = 1500)
+        protected void Configure (string filename, int cacheSize)
         {
             // sanity check
             if (String.IsNullOrEmpty (filename))
@@ -159,11 +157,18 @@ namespace SimpleHelpers.SQLite
         {
             using (var connection = Open ())
             {
+                // additional configuration
+                // https://wiki.mozilla.org/Performance/Avoid_SQLite_In_Your_Next_Firefox_Feature
+                /* wal_autocheckpoint: number of 32KiB pages in the journal */
+                /* journal_size_limit: size the sqlite will try to maintain the journal */
+                connection.Execute ("PRAGMA wal_autocheckpoint=32; PRAGMA journal_size_limit = 2048;"); 
+
                 // check if we should try to use memory mapper I/O
-                if (defaultOptions.UseMemoryMappedIO)
+                if (m_options.UseMemoryMappedIO)
                 {
                     connection.Execute ("PRAGMA mmap_size=268435456");
-                }
+                }                
+                
                 // check table if table exists
                 if (connection.Query<Int64> ("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=@table", new { table = TableName }).FirstOrDefault () == 0)
                 {
@@ -221,7 +226,7 @@ namespace SimpleHelpers.SQLite
             {
                 using (var trans = db.BeginTransaction ())
                 {
-                    setInternal (key, Newtonsoft.Json.JsonConvert.SerializeObject (value), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
+                    setInternal (key, Newtonsoft.Json.JsonConvert.SerializeObject (value), Options.MaximumItemsPerKeys, Options.OverwriteSimilarItems, trans, db);
                     trans.Commit ();
                 }
             }
@@ -243,7 +248,7 @@ namespace SimpleHelpers.SQLite
                     {                        
                         // serialize &&
                         // insert in database
-                        setInternal (i.Key, Newtonsoft.Json.JsonConvert.SerializeObject (i.Value), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
+                        setInternal (i.Key, Newtonsoft.Json.JsonConvert.SerializeObject (i.Value), Options.MaximumItemsPerKeys, Options.OverwriteSimilarItems, trans, db);
                         // do a batch commit after a group of insertions
                         if (++counter % 2000 == 0)
                         {
@@ -403,7 +408,7 @@ namespace SimpleHelpers.SQLite
                     {
                         if (updateAction (item))
                         {
-                            setInternal (key, Newtonsoft.Json.JsonConvert.SerializeObject (item), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
+                            setInternal (key, Newtonsoft.Json.JsonConvert.SerializeObject (item), Options.MaximumItemsPerKeys, Options.OverwriteSimilarItems, trans, db);
                         }
                         yield return item;
                     }
@@ -436,7 +441,7 @@ namespace SimpleHelpers.SQLite
                     {
                         if (updateAction (i.Item))
                         {
-                            setInternal (i.Key, Newtonsoft.Json.JsonConvert.SerializeObject (i.Item), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
+                            setInternal (i.Key, Newtonsoft.Json.JsonConvert.SerializeObject (i.Item), Options.MaximumItemsPerKeys, Options.OverwriteSimilarItems, trans, db);
                         }
                         yield return i.Item;
                     }
@@ -771,6 +776,8 @@ namespace SimpleHelpers.SQLite
 
         private bool m_useMemoryMappedIO = true;
 
+        private int m_cacheSize = 500;
+
         /// <summary>
         /// If the SQLiteStorage instance should allow duplicated keys.
         /// </summary>
@@ -814,10 +821,26 @@ namespace SimpleHelpers.SQLite
             set { m_overwriteSimilarItems = value; }
         }
 
+        /// <summary>
+        /// Enables the use memory mapped IO.
+        /// Defaults to disabled.
+        /// </summary>
+        /// <value>The use memory mapped IO.</value>
         public bool UseMemoryMappedIO
         {
             get { return m_useMemoryMappedIO; }
             set { m_useMemoryMappedIO = value; }
+        }
+
+        /// <summary>
+        /// The number of 32k pages that the SQLite will keep in loaded in memory for fast access.
+        /// Defaults to 500 (16 Mb).
+        /// </summary>
+        /// <value>The size of the cache.</value>
+        public int CacheSize
+        {
+            get { return m_cacheSize; }
+            set { m_cacheSize = value; }
         }
 
         /// <summary>
