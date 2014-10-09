@@ -181,11 +181,23 @@ namespace SimpleHelpers.SQLite
         }
 
         /// <summary>
-        /// Helper method to optimize the sqlite file.
+        /// Helper method to optimize the sqlite file.<para/>
+        /// Executes 'Analyze' to gather index statistics and 
+        /// 'Vacuum' to defragment the data file.
         /// </summary>
+        /// <remarks>
+        /// This method is costly, so use with care!
+        /// </remarks>
         public void Shrink ()
         {
+            // first run analyze to rebuild index statistics
+            using (var db = Open ())
+            {
+                db.Execute ("ANALYZE");
+            }
+            // try to close all connections to allow vaccum to proceed
             SQLiteConnection.ClearAllPools ();
+            // run vaccum (may not work if there is an open connection)
             using (var db = Open ())
             {
                 db.Execute ("vacuum");
