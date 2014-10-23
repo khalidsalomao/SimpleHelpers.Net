@@ -192,7 +192,7 @@ Note: this nuget package contains c# source code and depends on System.Collectio
 **Configuration**
 
 Simple configuration of the TimedQueue settings. 
-It should be done for each type, since since the JIT compiler will generate differente code at run time, TimedQueue<string> is considered a diferent class, for example, from TimedQueue<StringBuilder> or TimedQueue<byte[]>.
+It should be done for each type, since since the JIT compiler will generate differente code at run time, TimedQueue&lt;string&gt; is considered a diferent class, for example, from TimedQueue&lt;StringBuilder&gt; or TimedQueue&lt;byte[]&gt;.
 
 ```csharp
 
@@ -201,7 +201,7 @@ It should be done for each type, since since the JIT compiler will generate diff
 // set the queue timed task to run each 500 ms executing the registered action
 SimpleHelpers.TimedQueue<Our_Object>.TimerStep = TimeSpan.FromMilliseconds (500);
 // Our event, if we want to treat the removed expired items
-MemoryCache<string>.OnExecution += (IEnumerable<Our_Object> items) => 
+SimpleHelpers.TimedQueue<Our_Object>.OnExecution += (IEnumerable<Our_Object> items) => 
 { 
 	foreach (var evt in items)
 		// do something
