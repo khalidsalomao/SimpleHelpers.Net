@@ -192,7 +192,7 @@ Note: this nuget package contains c# source code and depends on System.Collectio
 **Configuration**
 
 Simple configuration of the TimedQueue settings. 
-It should be done for each type, since since the JIT compiler will generate differente code at run time, TimedQueue&lt;string&gt; is considered a diferent class, for example, from TimedQueue&lt;StringBuilder&gt; or TimedQueue&lt;byte[]&gt;.
+It should be done for each type, since the JIT compiler will generate differente code at run time, TimedQueue&lt;string&gt; is considered a different class, for example, from TimedQueue&lt;StringBuilder&gt; or TimedQueue&lt;byte[]&gt;.
 
 ```csharp
 
