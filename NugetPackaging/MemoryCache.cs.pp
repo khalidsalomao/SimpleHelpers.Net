@@ -198,6 +198,19 @@ namespace $rootnamespace$.SimpleHelpers
             return default (T);
         }
 
+		/// <summary>
+        /// Remove all cached items with the matching prefix.
+        /// </summary>
+        /// <param name="prefix">The prefix.</param>
+        /// <param name="comparison">The comparison method.</param>
+        public static void ClearByPrefix (string prefix, StringComparison comparison = StringComparison.Ordinal)
+        {
+            CachedItem item;
+            foreach (var i in m_cacheMap)
+                if (i.Key.StartsWith (prefix, comparison))
+                    m_cacheMap.TryRemove (i.Key, out item);
+        }
+
         /// <summary>
         /// Remove all cached items.
         /// </summary>
