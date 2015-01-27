@@ -214,9 +214,9 @@ namespace SimpleHelpers
                 if (sourceJson.Type == JTokenType.Array)
                 {                    
                     int sz = 0;
-					bool foundArraySize = diffObj.TryGetValue(PREFIX_ARRAY_SIZE, out token);
-					if (foundArraySize)
-					{
+                    bool foundArraySize = diffObj.TryGetValue(PREFIX_ARRAY_SIZE, out token);
+                    if (foundArraySize)
+                    {
                         diffObj.Remove (PREFIX_ARRAY_SIZE);
                         sz = token.Value<int> ();                        
                     }
@@ -243,7 +243,7 @@ namespace SimpleHelpers
                 }
                 else
                 {
-					var sourceObj = sourceJson as JObject ?? new JObject();
+                    var sourceObj = sourceJson as JObject ?? new JObject();
                     // remove fields
                     if (diffObj.TryGetValue (PREFIX_REMOVED_FIELDS, out token))
                     {
