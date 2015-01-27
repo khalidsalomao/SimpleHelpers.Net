@@ -161,13 +161,14 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
                 // https://wiki.mozilla.org/Performance/Avoid_SQLite_In_Your_Next_Firefox_Feature
                 /* wal_autocheckpoint: number of 32KiB pages in the journal */
                 /* journal_size_limit: size the sqlite will try to maintain the journal */
-                connection.Execute ("PRAGMA wal_autocheckpoint=32; PRAGMA journal_size_limit = 2048;"); 
+                // ensures we have a 2 sec retry/timeout in case of database heavy use                
+                var pragmas = "PRAGMA wal_autocheckpoint=32; PRAGMA journal_size_limit = 4096; PRAGMA busy_timeout=2000;";
 
                 // check if we should try to use memory mapper I/O
-                if (m_options.UseMemoryMappedIO)
-                {
-                    connection.Execute ("PRAGMA mmap_size=268435456");
-                }                
+                 if (m_options.UseMemoryMappedIO)
+                     pragmas += " PRAGMA mmap_size=" + 32 * 1024 * 1024  + ";";
+                
+                connection.Execute (pragmas);        
                 
                 // check table if table exists
                 if (connection.Query<Int64> ("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=@table", new { table = TableName }).FirstOrDefault () == 0)
