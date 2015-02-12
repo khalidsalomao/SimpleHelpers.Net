@@ -59,26 +59,26 @@ namespace $rootnamespace$.SimpleHelpers
             }
         }
 
-        public static string DetectFileEncoding (string inputFilename)
+        public static string DetectFileEncoding (string inputFilename, string defaultIfNotDetected = "ISO-8859-1")
         {
             using (var stream = new System.IO.FileStream (inputFilename, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite | System.IO.FileShare.Delete, DEFAULT_BUFFER_SIZE))
             {
-                return DetectFileEncoding (stream);
+                return DetectFileEncoding (stream) ?? defaultIfNotDetected;
             }
         }
 
-        public static string DetectFileEncoding (Stream inputStream)
+        public static string DetectFileEncoding (Stream inputStream, string defaultIfNotDetected = "ISO-8859-1")
         {
             var det = new FileEncoding ();
             det.Detect (inputStream);
-            return det.Complete ();
+            return det.Complete () ?? defaultIfNotDetected;
         }
-        
-        public static string DetectFileEncoding (byte[] inputData, int start, int count)
+
+        public static string DetectFileEncoding (byte[] inputData, int start, int count, string defaultIfNotDetected = "ISO-8859-1")
         {
             var det = new FileEncoding ();
             det.Detect (inputData, start, count);
-            return det.Complete ();            
+            return det.Complete () ?? defaultIfNotDetected;            
         }
 
         public static string TreatDetectedCharset (string detectedCharset, string defaultIfNotDetected = null)
