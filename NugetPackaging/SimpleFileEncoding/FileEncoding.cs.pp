@@ -1,6 +1,6 @@
 ﻿#region *   License     *
 /*
-    SimpleHelpers - ScriptEvaluator   
+    SimpleHelpers - FileEncoding   
 
     Copyright © 2014 Khalid Salomão
 
@@ -42,24 +42,13 @@ namespace $rootnamespace$.SimpleHelpers
     {
         const int DEFAULT_BUFFER_SIZE = 256 * 1024;
 
-        public static bool HasByteOrderMarkUtf8 (string inputFilename)
-        {
-            using (var stream = System.IO.File.OpenRead (inputFilename))
-            {
-                var preamble = new System.Text.UTF8Encoding (true).GetPreamble ();
-                var buffer = new byte[preamble.Length];
-                var len = stream.Read (buffer, 0, buffer.Length);
-                if (len < buffer.Length)
-                    return false;
-
-                for (var i = 0; i < preamble.Length; i++)
-                    if (preamble[i] != buffer[i])
-                        return false;
-                return true;
-            }
-        }
-
-        public static string DetectFileEncoding (string inputFilename, string defaultIfNotDetected = "ISO-8859-1")
+        /// <summary>
+        /// Tries to detect the file encoding.
+        /// </summary>
+        /// <param name="inputFilename">The input filename.</param>
+        /// <param name="defaultIfNotDetected">The default encoding if none was detected.</param>
+        /// <returns></returns>
+        public static Encoding DetectFileEncoding (string inputFilename, Encoding defaultIfNotDetected = null)
         {
             using (var stream = new System.IO.FileStream (inputFilename, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite | System.IO.FileShare.Delete, DEFAULT_BUFFER_SIZE))
             {
@@ -67,41 +56,49 @@ namespace $rootnamespace$.SimpleHelpers
             }
         }
 
-        public static string DetectFileEncoding (Stream inputStream, string defaultIfNotDetected = "ISO-8859-1")
+        /// <summary>
+        /// Tries to detect the file encoding.
+        /// </summary>
+        /// <param name="inputStream">The input stream.</param>
+        /// <param name="defaultIfNotDetected">The default encoding if none was detected.</param>
+        /// <returns></returns>
+        public static Encoding DetectFileEncoding (Stream inputStream, Encoding defaultIfNotDetected = null)
         {
             var det = new FileEncoding ();
             det.Detect (inputStream);
             return det.Complete () ?? defaultIfNotDetected;
         }
 
-        public static string DetectFileEncoding (byte[] inputData, int start, int count, string defaultIfNotDetected = "ISO-8859-1")
+        /// <summary>
+        /// Tries to detect the file encoding.
+        /// </summary>
+        /// <param name="inputData">The input data.</param>
+        /// <param name="start">The start.</param>
+        /// <param name="count">The count.</param>
+        /// <param name="defaultIfNotDetected">The default encoding if none was detected.</param>
+        /// <returns></returns>
+        public static Encoding DetectFileEncoding (byte[] inputData, int start, int count, Encoding defaultIfNotDetected = null)
         {
             var det = new FileEncoding ();
             det.Detect (inputData, start, count);
             return det.Complete () ?? defaultIfNotDetected;            
         }
 
-        public static string TreatDetectedCharset (string detectedCharset, string defaultIfNotDetected = null)
-        {
-            // in case of null charset, assume the file is binary or has a wierd charset
-            if (String.IsNullOrWhiteSpace (detectedCharset))
-            {
-                return defaultIfNotDetected;
-            }
-            // in case of ASCII, assume the more comprehesive ISO-8859-1 charset
-            if (detectedCharset == "ASCII")
-            {
-                detectedCharset = "ISO-8859-1";
-            }
-
-            return detectedCharset;
-        }
-
+        /// <summary>
+        /// Detects if contains textual data.
+        /// </summary>
+        /// <param name="rawData">The raw data.</param>
         public static bool CheckForTextualData (byte[] rawData)
         {
             return CheckForTextualData (rawData, 0, rawData.Length);
         }
 
+        /// <summary>
+        /// Detects if contains textual data.
+        /// </summary>
+        /// <param name="rawData">The raw data.</param>
+        /// <param name="start">The start.</param>
+        /// <param name="count">The count.</param>
         public static bool CheckForTextualData (byte[] rawData, int start, int count)
         {
             if (rawData.Length < count || count < 4 || start + 1 >= count)
@@ -135,6 +132,12 @@ namespace $rootnamespace$.SimpleHelpers
             return nullSequences == 0 && (controlSequences <= (rawData.Length / 10));
         }
   
+        /// <summary>
+        /// Detects if data has bytes order mark to indicate its encoding for textual data.
+        /// </summary>
+        /// <param name="rawData">The raw data.</param>
+        /// <param name="start">The start.</param>
+        /// <returns></returns>
         private static bool CheckForByteOrderMark (byte[] rawData, int start = 0)
         {
             if (rawData.Length - start < 4)
@@ -166,13 +169,34 @@ namespace $rootnamespace$.SimpleHelpers
 
         Ude.CharsetDetector ude = new Ude.CharsetDetector ();
         bool _started = false;
+        
+
+        /// <summary>
+        /// If the detection has reached a decision.
+        /// </summary>
+        /// <value>The done.</value>
         public bool Done { get; set; }
-        public string Encoding { get; set; }
+
+        /// <summary>
+        /// Detected encoding name.
+        /// </summary>
+        public string EncodingName { get; set; }
+
+        /// <summary>
+        /// If the data contains textual data.
+        /// </summary>
         public bool IsText { get; set; }
+
+        /// <summary>
+        /// If the file or data has any mark indicating encoding information (byte order mark).
+        /// </summary>
         public bool HasByteOrderMark { get; set; }
 
         List<string> singleEncodings = new List<string> ();
 
+        /// <summary>
+        /// Resets this instance.
+        /// </summary>
         public void Reset ()
         {
             _started = false;
@@ -180,9 +204,14 @@ namespace $rootnamespace$.SimpleHelpers
             HasByteOrderMark = false;
             singleEncodings.Clear ();
             ude.Reset ();
-            Encoding = null;
+            EncodingName = null;
         }
 
+        /// <summary>
+        /// Detects the encoding of textual data of the specified input data.
+        /// </summary>
+        /// <param name="inputData">The input data.</param>
+        /// <returns>Detected encoding name</returns>
         public string Detect (Stream inputData)
         {
             const int bufferSize = 16 * 1024;
@@ -201,13 +230,20 @@ namespace $rootnamespace$.SimpleHelpers
                     break;
             }
             Complete ();
-            return Encoding;
+            return EncodingName;
         }
 
+        /// <summary>
+        /// Detects the encoding of textual data of the specified input data.
+        /// </summary>
+        /// <param name="inputData">The input data.</param>
+        /// <param name="start">The start.</param>
+        /// <param name="count">The count.</param>
+        /// <returns>Detected encoding name</returns>
         public string Detect (byte[] inputData, int start, int count)
         {
             if (Done)
-                return Encoding;
+                return EncodingName;
             if (!_started)
             {
                 Reset ();
@@ -216,7 +252,7 @@ namespace $rootnamespace$.SimpleHelpers
                 {
                     IsText = false;
                     Done = true;
-                    return Encoding;
+                    return EncodingName;
                 }
                 HasByteOrderMark = CheckForByteOrderMark (inputData, start);
                 IsText = true;
@@ -228,7 +264,7 @@ namespace $rootnamespace$.SimpleHelpers
             if (ude.IsDone () && !String.IsNullOrEmpty (ude.Charset))
             {
                 Done = true;
-                return Encoding;
+                return EncodingName;
             }
 
             const int bufferSize = 4 * 1024;
@@ -250,21 +286,25 @@ namespace $rootnamespace$.SimpleHelpers
                         singleEncodings.Add (u.Charset);
                 }
             }
-            return Encoding;
+            return EncodingName;
         }
 
-        public string Complete ()
+        /// <summary>
+        /// Finalize detection phase and gets detected encoding name.
+        /// </summary>
+        /// <returns></returns>
+        public Encoding Complete ()
         {
             Done = true;
             ude.DataEnd ();
             if (ude.IsDone () && !String.IsNullOrEmpty (ude.Charset))
             {
-                Encoding = ude.Charset;
+                EncodingName = ude.Charset;
             }
             else if (singleEncodings.Count > 0)
             {
                 // vote for best encoding
-                Encoding = singleEncodings.GroupBy (i => i)
+                EncodingName = singleEncodings.GroupBy (i => i)
                     .OrderByDescending (i => i.Count () * 
                     (i.Key.StartsWith ("UTF-32") ? 2 :
                     i.Key.StartsWith ("UTF-16") ? 1.8 :
@@ -273,7 +313,9 @@ namespace $rootnamespace$.SimpleHelpers
                     i.Key != ("ASCII") ? 1 : 0.2))
                     .Select (i => i.Key).FirstOrDefault ();
             }
-            return Encoding;
+            if (!String.IsNullOrEmpty (EncodingName))
+                Encoding.GetEncoding (EncodingName);
+            return null;
         }
     }
 }
