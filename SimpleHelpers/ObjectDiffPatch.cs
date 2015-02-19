@@ -1,4 +1,36 @@
-﻿using Newtonsoft.Json;
+﻿#region *   License     *
+/*
+    SimpleHelpers - ObjectDiffPatch   
+
+    Copyright © 2014 Khalid Salomão
+
+    Permission is hereby granted, free of charge, to any person
+    obtaining a copy of this software and associated documentation
+    files (the “Software”), to deal in the Software without
+    restriction, including without limitation the rights to use,
+    copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following
+    conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+    OTHER DEALINGS IN THE SOFTWARE. 
+
+    License: http://www.opensource.org/licenses/mit-license.php
+    Website: https://github.com/khalidsalomao/SimpleHelpers.Net
+ */
+#endregion
+
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -22,8 +54,17 @@ namespace SimpleHelpers
             // ensure the serializer will not ignore null values
             var writer = GetJsonSerializer ();
             // parse our objects
-            JObject originalJson = original != null ? Newtonsoft.Json.Linq.JObject.FromObject (original, writer) : null;
-            JObject updatedJson = updated != null ? Newtonsoft.Json.Linq.JObject.FromObject (updated, writer) : null;
+            JObject originalJson, updatedJson;
+            if (typeof (JObject).IsAssignableFrom (typeof (T)))
+            {
+                originalJson = original as JObject;
+                updatedJson = updated as JObject;                
+            }
+            else
+            {
+                originalJson = original != null ? Newtonsoft.Json.Linq.JObject.FromObject (original, writer) : null;
+                updatedJson = updated != null ? Newtonsoft.Json.Linq.JObject.FromObject (updated, writer) : null;
+            }
             // analyse their differences!
             var result =  Diff (originalJson, updatedJson);
             result.Type = typeof (T);
@@ -190,6 +231,11 @@ namespace SimpleHelpers
                 settings = new JsonSerializerSettings ();
             settings.NullValueHandling = NullValueHandling.Include;
             settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            settings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+            settings.Formatting = Formatting.None;
+            settings.MissingMemberHandling = MissingMemberHandling.Ignore;
+            settings.ObjectCreationHandling = ObjectCreationHandling.Replace;
+			
             // create our custom serializer
             var writer = JsonSerializer.Create (settings);
             return writer;
