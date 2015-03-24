@@ -40,7 +40,7 @@ namespace $rootnamespace$.SimpleHelpers
 {
     public class FileEncoding
     {
-        const int DEFAULT_BUFFER_SIZE = 256 * 1024;
+        const int DEFAULT_BUFFER_SIZE = 128 * 1024;
 
         /// <summary>
         /// Tries to detect the file encoding.
@@ -314,7 +314,7 @@ namespace $rootnamespace$.SimpleHelpers
                     .Select (i => i.Key).FirstOrDefault ();
             }
             if (!String.IsNullOrEmpty (EncodingName))
-                Encoding.GetEncoding (EncodingName);
+                return Encoding.GetEncoding (EncodingName);
             return null;
         }
     }
