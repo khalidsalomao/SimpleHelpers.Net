@@ -14,26 +14,53 @@ namespace PerformanceTest
         public Benchmark (string opName)
         {
             m_name = opName;
-            stopwatch = new Stopwatch ();
-            GC.Collect ();
-            GC.WaitForPendingFinalizers ();
-            stopwatch.Start ();
+            stopwatch = new Stopwatch ();            
         }
 
         public void Dispose ()
         {
             stopwatch.Stop ();
-            Common.Logging.LogManager.GetCurrentClassLogger ().Info (String.Format ("Timing for {0}:\t {1}", m_name, stopwatch.Elapsed));
+            Common.Logging.LogManager.GetCurrentClassLogger ().Info (ToString ());
+        }
+
+        public override string ToString ()
+        {
+            return string.Format (String.Format ("Timing for {0}:\t {1}", m_name, stopwatch.Elapsed));
+        }
+
+        public Benchmark Start (bool runGCbeforeStart = false)
+        {
+            if (runGCbeforeStart)
+                PrepareSystemForBenchmark ();
+            stopwatch.Start ();
+            return this;
+        }
+
+        public TimeSpan Stop()
+        {
+            stopwatch.Stop ();
+            return stopwatch.Elapsed;
+        }
+
+        /// <summary>
+        /// Prepares the system for benchmark will force Garbage Collection to run
+        /// with maximum generation and wait it to finish.
+        /// </summary>
+        public static void PrepareSystemForBenchmark ()
+        {
+            GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
+            GC.WaitForPendingFinalizers ();
+            System.Threading.Thread.Sleep (0);
         }
 
         public static Benchmark Start (string name)
         {
-            return new Benchmark (name);
+            return new Benchmark (name).Start();
         }
 
         public static Benchmark Start (string name, params object[] arguments)
         {
-            return new Benchmark (String.Format (name, arguments));
+            return new Benchmark (String.Format (name, arguments)).Start ();
         }
 
         public static TimeSpan Time (string opName, Action action)
@@ -51,7 +78,7 @@ namespace PerformanceTest
             for (var i = 0; i < loopCount; i++)
                 action ();
             stopwatch.Stop ();
-            Common.Logging.LogManager.GetCurrentClassLogger ().Info (String.Format ("Timing for {0}:\t {1}", opName, stopwatch.Elapsed));
+            Common.Logging.LogManager.GetCurrentClassLogger ().Info (String.Format ("Timing for {0} run {1} times:\t {1}", opName, loopCount, stopwatch.Elapsed));
             return stopwatch.Elapsed;
         }
     }
