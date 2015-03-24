@@ -151,9 +151,12 @@ namespace SimpleHelpers
         /// <returns>Stored value for the key or default value if not found</returns>
         public static T Get (string key)
         {
-            CachedItem item;
-            if (m_cacheMap.TryGetValue (key, out item))
-                return item.Data;
+            if (key != null)
+            {
+                CachedItem item;
+                if (m_cacheMap.TryGetValue (key, out item))
+                    return item.Data;
+            }
             return null;
         }
 
@@ -164,10 +167,12 @@ namespace SimpleHelpers
         /// <param name="data">Stored value.</param>
         public static void Set (string key, T data)
         {
-            if (key == null | key.Length == 0)
+            if (key == null || key.Length == 0 || data == null)
+            {
+                if (m_ignoreNullValues)
+                    return;
                 throw new System.ArgumentNullException ("key");
-            if (m_ignoreNullValues && data == null)
-                return;
+            }
             // add or update item
             m_cacheMap[key] = new CachedItem
             {
@@ -179,6 +184,19 @@ namespace SimpleHelpers
         }
 
         /// <summary>
+        /// Renews the expiration due time for the specified cached item.
+        /// </summary>
+        /// <param name="key">The cached item key.</param>
+        public static void Renew (string key)
+        {
+            if (key == null)
+                return;
+            CachedItem item;
+            if (m_cacheMap.TryGetValue (key, out item))
+                item.Updated = DateTime.UtcNow;
+        }
+
+        /// <summary>
         /// Removes and returns the value associated with the specified key.
         /// Return the default value if not found.
         /// </summary>
@@ -186,9 +204,12 @@ namespace SimpleHelpers
         /// <returns>Stored value for the key or default value if not found</returns>
         public static T Remove (string key)
         {
-            CachedItem item;
-            if (m_cacheMap.TryRemove (key, out item))                
-                return item.Data;
+            if (key != null)
+            {
+                CachedItem item;
+                if (m_cacheMap.TryRemove (key, out item))                
+                    return item.Data;
+            }
             return default (T);
         }
 
@@ -199,6 +220,8 @@ namespace SimpleHelpers
         /// <param name="comparison">The comparison method.</param>
         public static void ClearByPrefix (string prefix, StringComparison comparison = StringComparison.Ordinal)
         {
+            if (prefix == null)
+                return;
             CachedItem item;
             foreach (var i in m_cacheMap)
                 if (i.Key.StartsWith (prefix, comparison))
@@ -222,6 +245,8 @@ namespace SimpleHelpers
         /// <returns>Stored value for the key or default value if not found</returns>
         public static T GetOrAdd (string key, Func<string, T> valueFactory)
         { 
+            if (key == null)
+                return default (T);
             CachedItem item;
             if (!m_cacheMap.TryGetValue (key, out item))
             {
@@ -231,7 +256,8 @@ namespace SimpleHelpers
                 T data = valueFactory (key);
                 // add or update cache
                 Set (key, data);
-                return data;
+                // get again to ensure we have the correct item
+                return Get (key);
             }
             else
             {
@@ -268,6 +294,8 @@ namespace SimpleHelpers
         /// <returns>Stored value for the key or default value if not found</returns>
         public static T GetOrSyncAdd (string key, Func<string, T> valueFactory, int waitTimeoutMilliseconds)
         {
+            if (key == null)
+                return default (T);
             CachedItem item;
             if (!m_cacheMap.TryGetValue (key, out item))
             {
