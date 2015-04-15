@@ -45,17 +45,17 @@ namespace SimpleHelpers
     /// * etc.
     /// Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
     /// </summary>    
-    public class TimedQueue<T> where T : class
+    public class TimedQueue<T> : IDisposable where T : class
     {
-        private static TimeSpan m_timerStep = TimeSpan.FromMilliseconds (1000);
+        private TimeSpan m_timerStep = TimeSpan.FromMilliseconds (1000);
 
-        private static System.Collections.Concurrent.ConcurrentQueue<T> m_queue = new System.Collections.Concurrent.ConcurrentQueue<T> ();
+        private System.Collections.Concurrent.ConcurrentQueue<T> m_queue = new System.Collections.Concurrent.ConcurrentQueue<T> ();
 
         /// <summary>
         /// Interval duration between OnExecution calls by the internal timer thread.
         /// Default value is 1000 milliseconds.
         /// </summary>
-        public static TimeSpan TimerStep
+        public TimeSpan TimerStep
         {
             get { return m_timerStep; }
             set
@@ -69,6 +69,11 @@ namespace SimpleHelpers
             }
         }
 
+        public int Count
+        {
+            get { return m_queue.Count; }
+        }
+
         #region *   Events and Event Handlers   *
 
         public delegate void SimpleTimedQueueEventHandler (IEnumerable<T> items);
@@ -77,23 +82,14 @@ namespace SimpleHelpers
         /// Event fired for every timer step.
         /// Note: the IEnumerable must be consumed to clear the queued items.
         /// </summary>
-        public static event SimpleTimedQueueEventHandler OnExecution;
-
-        private static int EventListenersCount ()
-        {
-            if (OnExecution != null)
-            {
-                return OnExecution.GetInvocationList ().Length;
-            }
-            return 0;
-        }
+        public SimpleTimedQueueEventHandler OnExecution { get; set; }
 
         #endregion
 
         /// <summary>
         /// Puts the specified data in the timed queue.
         /// </summary>
-        public static void Put (T data)
+        public void Put (T data)
         {
             if (data == null)
                 return;
@@ -104,7 +100,7 @@ namespace SimpleHelpers
         /// <summary>
         /// Clears this instance.
         /// </summary>
-        public static void Clear ()
+        public void Clear ()
         {
             System.Threading.Interlocked.Exchange (ref m_queue, new System.Collections.Concurrent.ConcurrentQueue<T> ());
         }
@@ -112,19 +108,28 @@ namespace SimpleHelpers
         /// <summary>
         /// Flushes the current queue by firing the event OnExecute.
         /// </summary>
-        public static void Flush ()
-        {
+        public void Flush ()
+        {            
             ExecuteMaintenance (null);
+            StopMaintenance ();
+        }
+
+        /// <summary>
+        /// Flushes the current enqueued events.
+        /// </summary>
+        public void Dispose () 
+        {
+            Flush ();
         }
 
         #region *   Scheduled Task  *
 
-        private static System.Threading.Timer m_scheduledTask = null;
-        private static readonly object m_lock = new object ();
-        private static int m_executing = 0;
-        private static int m_idleCounter = 0;
+        private System.Threading.Timer m_scheduledTask = null;
+        private readonly object m_lock = new object ();
+        private int m_executing = 0;
+        private int m_idleCounter = 0;
 
-        private static void StartMaintenance ()
+        private void StartMaintenance ()
         {
             if (m_scheduledTask == null)
             {
@@ -138,18 +143,17 @@ namespace SimpleHelpers
             }
         }
 
-        private static void StopMaintenance ()
+        private void StopMaintenance ()
         {
             lock (m_lock)
             {
                 if (m_scheduledTask != null)
                     m_scheduledTask.Dispose ();
                 m_scheduledTask = null;
-                m_takeCache = null;
             }
         }
 
-        private static void ExecuteMaintenance (object state)
+        private void ExecuteMaintenance (object state)
         {
             // check if a step is executing
             if (System.Threading.Interlocked.CompareExchange (ref m_executing, 1, 0) != 0)
@@ -166,24 +170,20 @@ namespace SimpleHelpers
                 }
                 else
                 {
-                    // clear idle queue marker
-                    m_idleCounter = 0;
-                    // check for the listenners
-                    int count = EventListenersCount ();
                     // fire event
-                    if (count == 1)
+                    if (OnExecution != null)
                     {
-                        OnExecution (TakeQueuedItems ());
-                    }
-                    else if (count > 0)
-                    {
-                        // if we have more than one listenner, then we need to maintain the consistent view of the queue
-                        OnExecution (TakeQueuedItemsAsList ());
-                    }
+                        // clear idle queue marker
+                        m_idleCounter = 0;
+
+                        // execute event handler
+                        OnExecution (TakeQueuedItems ());    
+                    }                    
                     else
                     {
                         // simply clear the queue if there is no event listenning
                         Clear ();
+                        StopMaintenance ();
                     }
                 }
             }
@@ -193,27 +193,13 @@ namespace SimpleHelpers
             }
         }
 
-        private static IEnumerable<T> TakeQueuedItems ()
+        private IEnumerable<T> TakeQueuedItems ()
         {
             T obj;
             while (m_queue.TryDequeue (out obj))
                 yield return obj;
         }
 
-        static List<T> m_takeCache = null;
-
-        private static IEnumerable<T> TakeQueuedItemsAsList ()
-        {
-            // check 
-            if (m_takeCache != null)
-                m_takeCache = new List<T> ();
-            else
-                m_takeCache.Clear ();
-            T obj;
-            while (m_queue.TryDequeue (out obj))
-                m_takeCache.Add (obj);
-            return m_takeCache;
-        }
         #endregion
     }
 }
