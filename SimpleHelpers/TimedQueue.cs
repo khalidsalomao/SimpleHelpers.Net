@@ -78,7 +78,9 @@ namespace SimpleHelpers
         }
 
         /// <summary>
-        /// Removes the specified key.
+        /// Removes the specified TimedQueue by key.<para/>
+        /// Note: the TimedQueue will safely be removed and disposed. 
+        /// If the queue was already removed, this will be a NOP.
         /// </summary>
         /// <param name="key">The TimedQueue associated key.</param>
         public static void Remove (string key)
