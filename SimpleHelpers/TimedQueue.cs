@@ -45,6 +45,14 @@ namespace SimpleHelpers
     {
         private static System.Collections.Concurrent.ConcurrentDictionary<string, TimedQueue<T>> m_map = new System.Collections.Concurrent.ConcurrentDictionary<string, TimedQueue<T>> (StringComparer.Ordinal);
 
+        /// <summary>
+        /// Configures a stored TimedQueue by its key.<para/>
+        /// Note: if the queue does not exists, it will be created.
+        /// </summary>
+        /// <param name="key">The TimedQueue associated key.</param>
+        /// <param name="timerStep">The interval between OnExecution calls by the internal timer thread.</param>
+        /// <param name="action">The OnExecution action fired for every timer step.</param>
+        /// <returns></returns>
         public static TimedQueue<T> Configure (string key, TimeSpan timerStep, Action<IEnumerable<T>> action)
         {
             TimedQueue<T> q = Get(key);
@@ -53,6 +61,11 @@ namespace SimpleHelpers
             return q;
         }
 
+        /// <summary>
+        /// Gets a stored TimedQueue by its key.<para/>
+        /// Note: if the queue does not exists, it will be created.
+        /// </summary>
+        /// <param name="key">The TimedQueue associated key.</param>
         public static TimedQueue<T> Get (string key)
         {
             TimedQueue<T> q;
@@ -64,6 +77,10 @@ namespace SimpleHelpers
             return q;
         }
 
+        /// <summary>
+        /// Removes the specified key.
+        /// </summary>
+        /// <param name="key">The TimedQueue associated key.</param>
         public static void Remove (string key)
         {
             TimedQueue<T> q;
