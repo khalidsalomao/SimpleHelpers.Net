@@ -36,6 +36,44 @@ using System.Linq;
 
 namespace SimpleHelpers
 {
+
+    /// <summary>
+    /// TimedQueueManager is a helper class that stores instances of TimedQueue by a key.
+    /// </summary>
+    /// <typeparam name="T">The type used on the TimedQueue.</typeparam>
+    public class TimedQueueManager<T> where T : class
+    {
+        private static System.Collections.Concurrent.ConcurrentDictionary<string, TimedQueue<T>> m_map = new System.Collections.Concurrent.ConcurrentDictionary<string, TimedQueue<T>> (StringComparer.Ordinal);
+
+        public static TimedQueue<T> Configure (string key, TimeSpan timerStep, Action<IEnumerable<T>> action)
+        {
+            TimedQueue<T> q = Get(key);
+            q.TimerStep = timerStep;
+            q.OnExecution = action;
+            return q;
+        }
+
+        public static TimedQueue<T> Get (string key)
+        {
+            TimedQueue<T> q;
+            if (!m_map.TryGetValue (key, out q))
+            {
+                q = new TimedQueue<T> ();
+                m_map[key] = q;
+            }
+            return q;
+        }
+
+        public static void Remove (string key)
+        {
+            TimedQueue<T> q;
+            if (!m_map.TryRemove (key, out q))
+            {
+                q.Dispose ();
+            }
+        }
+    }
+
     /// <summary>
     /// Simple lightweight queue that stores data in a concurrent queue and periodically process the queued items.
     /// Userful for:
@@ -69,25 +107,40 @@ namespace SimpleHelpers
             }
         }
 
+        /// <summary>
+        /// Gets the number of queued items.
+        /// </summary>
         public int Count
         {
             get { return m_queue.Count; }
         }
 
-        #region *   Events and Event Handlers   *
-
-        public delegate void SimpleTimedQueueEventHandler (IEnumerable<T> items);
-
         /// <summary>
         /// Event fired for every timer step.
         /// Note: the IEnumerable must be consumed to clear the queued items.
         /// </summary>
-        public SimpleTimedQueueEventHandler OnExecution { get; set; }
-
-        #endregion
+        public Action<IEnumerable<T>> OnExecution { get; set; }
 
         /// <summary>
-        /// Puts the specified data in the timed queue.
+        /// Initializes a new instance of the <see cref="TimedQueue" /> class.
+        /// </summary>
+        public TimedQueue ()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TimedQueue" /> class.
+        /// </summary>
+        /// <param name="timerStep">The interval between OnExecution calls by the internal timer thread.</param>
+        /// <param name="action">The OnExecution action fired for every timer step.</param>
+        public TimedQueue (TimeSpan timerStep, Action<IEnumerable<T>> action)
+        {
+            TimerStep = timerStep;
+            OnExecution = action;
+        }
+
+        /// <summary>
+        /// Puts the specified data in the timed queue for processing.
         /// </summary>
         public void Put (T data)
         {
@@ -109,9 +162,9 @@ namespace SimpleHelpers
         /// Flushes the current queue by firing the event OnExecute.
         /// </summary>
         public void Flush ()
-        {            
-            ExecuteMaintenance (null);
+        {
             StopMaintenance ();
+            ExecuteMaintenance (null);            
         }
 
         /// <summary>
@@ -120,6 +173,7 @@ namespace SimpleHelpers
         public void Dispose () 
         {
             Flush ();
+            StopMaintenance ();
         }
 
         #region *   Scheduled Task  *
@@ -181,8 +235,7 @@ namespace SimpleHelpers
                     }                    
                     else
                     {
-                        // simply clear the queue if there is no event listenning
-                        Clear ();
+                        // simply stop the queue if there is no event listening
                         StopMaintenance ();
                     }
                 }
