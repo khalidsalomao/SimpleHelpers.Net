@@ -36,6 +36,61 @@ using System.Linq;
 
 namespace $rootnamespace$.SimpleHelpers
 {
+
+    /// <summary>
+    /// TimedQueueManager is a helper class that stores instances of TimedQueue by a key.
+    /// </summary>
+    /// <typeparam name="T">The type used on the TimedQueue.</typeparam>
+    public class TimedQueueManager<T> where T : class
+    {
+        private static System.Collections.Concurrent.ConcurrentDictionary<string, TimedQueue<T>> m_map = new System.Collections.Concurrent.ConcurrentDictionary<string, TimedQueue<T>> (StringComparer.Ordinal);
+
+        /// <summary>
+        /// Configures a stored TimedQueue by its key.<para/>
+        /// Note: if the queue does not exists, it will be created.
+        /// </summary>
+        /// <param name="key">The TimedQueue associated key.</param>
+        /// <param name="timerStep">The interval between OnExecution calls by the internal timer thread.</param>
+        /// <param name="action">The OnExecution action fired for every timer step.</param>
+        /// <returns></returns>
+        public static TimedQueue<T> Configure (string key, TimeSpan timerStep, Action<IEnumerable<T>> action)
+        {
+            TimedQueue<T> q = Get(key);
+            q.TimerStep = timerStep;
+            q.OnExecution = action;
+            return q;
+        }
+
+        /// <summary>
+        /// Gets a stored TimedQueue by its key.<para/>
+        /// Note: if the queue does not exists, it will be created.
+        /// </summary>
+        /// <param name="key">The TimedQueue associated key.</param>
+        public static TimedQueue<T> Get (string key)
+        {
+            TimedQueue<T> q;
+            if (!m_map.TryGetValue (key, out q))
+            {
+                q = new TimedQueue<T> ();
+                m_map[key] = q;
+            }
+            return q;
+        }
+
+        /// <summary>
+        /// Removes the specified key.
+        /// </summary>
+        /// <param name="key">The TimedQueue associated key.</param>
+        public static void Remove (string key)
+        {
+            TimedQueue<T> q;
+            if (!m_map.TryRemove (key, out q))
+            {
+                q.Dispose ();
+            }
+        }
+    }
+
     /// <summary>
     /// Simple lightweight queue that stores data in a concurrent queue and periodically process the queued items.
     /// Userful for:
@@ -45,17 +100,17 @@ namespace $rootnamespace$.SimpleHelpers
     /// * etc.
     /// Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
     /// </summary>    
-    public class TimedQueue<T> where T : class
+    public class TimedQueue<T> : IDisposable where T : class
     {
-        private static TimeSpan m_timerStep = TimeSpan.FromMilliseconds (1000);
+        private TimeSpan m_timerStep = TimeSpan.FromMilliseconds (1000);
 
-        private static System.Collections.Concurrent.ConcurrentQueue<T> m_queue = new System.Collections.Concurrent.ConcurrentQueue<T> ();
+        private System.Collections.Concurrent.ConcurrentQueue<T> m_queue = new System.Collections.Concurrent.ConcurrentQueue<T> ();
 
         /// <summary>
         /// Interval duration between OnExecution calls by the internal timer thread.
         /// Default value is 1000 milliseconds.
         /// </summary>
-        public static TimeSpan TimerStep
+        public TimeSpan TimerStep
         {
             get { return m_timerStep; }
             set
@@ -69,31 +124,42 @@ namespace $rootnamespace$.SimpleHelpers
             }
         }
 
-        #region *   Events and Event Handlers   *
-
-        public delegate void SimpleTimedQueueEventHandler (IEnumerable<T> items);
+        /// <summary>
+        /// Gets the number of queued items.
+        /// </summary>
+        public int Count
+        {
+            get { return m_queue.Count; }
+        }
 
         /// <summary>
         /// Event fired for every timer step.
         /// Note: the IEnumerable must be consumed to clear the queued items.
         /// </summary>
-        public static event SimpleTimedQueueEventHandler OnExecution;
-
-        private static int EventListenersCount ()
-        {
-            if (OnExecution != null)
-            {
-                return OnExecution.GetInvocationList ().Length;
-            }
-            return 0;
-        }
-
-        #endregion
+        public Action<IEnumerable<T>> OnExecution { get; set; }
 
         /// <summary>
-        /// Puts the specified data in the timed queue.
+        /// Initializes a new instance of the <see cref="TimedQueue" /> class.
         /// </summary>
-        public static void Put (T data)
+        public TimedQueue ()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TimedQueue" /> class.
+        /// </summary>
+        /// <param name="timerStep">The interval between OnExecution calls by the internal timer thread.</param>
+        /// <param name="action">The OnExecution action fired for every timer step.</param>
+        public TimedQueue (TimeSpan timerStep, Action<IEnumerable<T>> action)
+        {
+            TimerStep = timerStep;
+            OnExecution = action;
+        }
+
+        /// <summary>
+        /// Puts the specified data in the timed queue for processing.
+        /// </summary>
+        public void Put (T data)
         {
             if (data == null)
                 return;
@@ -104,7 +170,7 @@ namespace $rootnamespace$.SimpleHelpers
         /// <summary>
         /// Clears this instance.
         /// </summary>
-        public static void Clear ()
+        public void Clear ()
         {
             System.Threading.Interlocked.Exchange (ref m_queue, new System.Collections.Concurrent.ConcurrentQueue<T> ());
         }
@@ -112,19 +178,29 @@ namespace $rootnamespace$.SimpleHelpers
         /// <summary>
         /// Flushes the current queue by firing the event OnExecute.
         /// </summary>
-        public static void Flush ()
+        public void Flush ()
         {
-            ExecuteMaintenance (null);
+            StopMaintenance ();
+            ExecuteMaintenance (null);            
+        }
+
+        /// <summary>
+        /// Flushes the current enqueued events.
+        /// </summary>
+        public void Dispose () 
+        {
+            Flush ();
+            StopMaintenance ();
         }
 
         #region *   Scheduled Task  *
 
-        private static System.Threading.Timer m_scheduledTask = null;
-        private static readonly object m_lock = new object ();
-        private static int m_executing = 0;
-        private static int m_idleCounter = 0;
+        private System.Threading.Timer m_scheduledTask = null;
+        private readonly object m_lock = new object ();
+        private int m_executing = 0;
+        private int m_idleCounter = 0;
 
-        private static void StartMaintenance ()
+        private void StartMaintenance ()
         {
             if (m_scheduledTask == null)
             {
@@ -138,18 +214,17 @@ namespace $rootnamespace$.SimpleHelpers
             }
         }
 
-        private static void StopMaintenance ()
+        private void StopMaintenance ()
         {
             lock (m_lock)
             {
                 if (m_scheduledTask != null)
                     m_scheduledTask.Dispose ();
                 m_scheduledTask = null;
-                m_takeCache = null;
             }
         }
 
-        private static void ExecuteMaintenance (object state)
+        private void ExecuteMaintenance (object state)
         {
             // check if a step is executing
             if (System.Threading.Interlocked.CompareExchange (ref m_executing, 1, 0) != 0)
@@ -166,24 +241,19 @@ namespace $rootnamespace$.SimpleHelpers
                 }
                 else
                 {
-                    // clear idle queue marker
-                    m_idleCounter = 0;
-                    // check for the listenners
-                    int count = EventListenersCount ();
                     // fire event
-                    if (count == 1)
+                    if (OnExecution != null)
                     {
-                        OnExecution (TakeQueuedItems ());
-                    }
-                    else if (count > 0)
-                    {
-                        // if we have more than one listenner, then we need to maintain the consistent view of the queue
-                        OnExecution (TakeQueuedItemsAsList ());
-                    }
+                        // clear idle queue marker
+                        m_idleCounter = 0;
+
+                        // execute event handler
+                        OnExecution (TakeQueuedItems ());    
+                    }                    
                     else
                     {
-                        // simply clear the queue if there is no event listenning
-                        Clear ();
+                        // simply stop the queue if there is no event listening
+                        StopMaintenance ();
                     }
                 }
             }
@@ -193,27 +263,13 @@ namespace $rootnamespace$.SimpleHelpers
             }
         }
 
-        private static IEnumerable<T> TakeQueuedItems ()
+        private IEnumerable<T> TakeQueuedItems ()
         {
             T obj;
             while (m_queue.TryDequeue (out obj))
                 yield return obj;
         }
 
-        static List<T> m_takeCache = null;
-
-        private static IEnumerable<T> TakeQueuedItemsAsList ()
-        {
-            // check 
-            if (m_takeCache != null)
-                m_takeCache = new List<T> ();
-            else
-                m_takeCache.Clear ();
-            T obj;
-            while (m_queue.TryDequeue (out obj))
-                m_takeCache.Add (obj);
-            return m_takeCache;
-        }
         #endregion
     }
 }
