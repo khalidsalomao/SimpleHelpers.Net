@@ -136,7 +136,7 @@ namespace SimpleHelpers.SQLite
             sb.SyncMode = SynchronizationModes.Normal;
             sb.DateTimeKind = DateTimeKind.Utc;
             sb.DateTimeFormat = SQLiteDateFormats.ISO8601;
-            sb.DefaultIsolationLevel = System.Data.IsolationLevel.ReadCommitted;
+            sb.DefaultIsolationLevel = System.Data.IsolationLevel.ReadUncommitted; // for avoiding db access serialization
             m_connectionString = sb.ToString ();
             // execute initialization
             CreateTable ();
@@ -161,8 +161,8 @@ namespace SimpleHelpers.SQLite
                 // https://wiki.mozilla.org/Performance/Avoid_SQLite_In_Your_Next_Firefox_Feature
                 /* wal_autocheckpoint: number of 32KiB pages in the journal */
                 /* journal_size_limit: size the sqlite will try to maintain the journal */
-                // ensures we have a 2 sec retry/timeout in case of database heavy use                
-                var pragmas = "PRAGMA wal_autocheckpoint=32; PRAGMA journal_size_limit = 4096; PRAGMA busy_timeout=2000;";
+                // ensures we have a 2.5 sec retry/timeout in case of database heavy use                
+                var pragmas = "PRAGMA wal_autocheckpoint=32; PRAGMA journal_size_limit = 4096; PRAGMA busy_timeout=2500;";
 
                 // check if we should try to use memory mapper I/O
                  if (m_options.UseMemoryMappedIO)

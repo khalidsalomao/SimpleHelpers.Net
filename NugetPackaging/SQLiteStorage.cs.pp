@@ -1,12 +1,12 @@
-#region *   License     *
+ï»¿#region *   License     *
 /*
     SimpleHelpers - SQLiteStorage   
 
-    Copyright © 2013 Khalid Salomão
+    Copyright Â© 2013 Khalid SalomÃ£o
 
     Permission is hereby granted, free of charge, to any person
     obtaining a copy of this software and associated documentation
-    files (the “Software”), to deal in the Software without
+    files (the "Software"), to deal in the Software without
     restriction, including without limitation the rights to use,
     copy, modify, merge, publish, distribute, sublicense, and/or sell
     copies of the Software, and to permit persons to whom the
@@ -16,7 +16,7 @@
     The above copyright notice and this permission notice shall be
     included in all copies or substantial portions of the Software.
 
-    THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -136,7 +136,7 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
             sb.SyncMode = SynchronizationModes.Normal;
             sb.DateTimeKind = DateTimeKind.Utc;
             sb.DateTimeFormat = SQLiteDateFormats.ISO8601;
-            sb.DefaultIsolationLevel = System.Data.IsolationLevel.ReadCommitted;
+            sb.DefaultIsolationLevel = System.Data.IsolationLevel.ReadUncommitted; // for avoiding db access serialization
             m_connectionString = sb.ToString ();
             // execute initialization
             CreateTable ();
@@ -161,8 +161,8 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
                 // https://wiki.mozilla.org/Performance/Avoid_SQLite_In_Your_Next_Firefox_Feature
                 /* wal_autocheckpoint: number of 32KiB pages in the journal */
                 /* journal_size_limit: size the sqlite will try to maintain the journal */
-                // ensures we have a 2 sec retry/timeout in case of database heavy use                
-                var pragmas = "PRAGMA wal_autocheckpoint=32; PRAGMA journal_size_limit = 4096; PRAGMA busy_timeout=2000;";
+                // ensures we have a 2.5 sec retry/timeout in case of database heavy use                
+                var pragmas = "PRAGMA wal_autocheckpoint=32; PRAGMA journal_size_limit = 4096; PRAGMA busy_timeout=2500;";
 
                 // check if we should try to use memory mapper I/O
                  if (m_options.UseMemoryMappedIO)
