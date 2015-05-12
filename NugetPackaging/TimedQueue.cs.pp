@@ -46,6 +46,14 @@ namespace $rootnamespace$.SimpleHelpers
         private static System.Collections.Concurrent.ConcurrentDictionary<string, TimedQueue<T>> m_map = new System.Collections.Concurrent.ConcurrentDictionary<string, TimedQueue<T>> (StringComparer.Ordinal);
 
         /// <summary>
+        /// Gets all registered queue names.
+        /// </summary>
+        public static IEnumerable<string> Queues
+        {
+            get { return m_map.Keys; }
+        }
+
+        /// <summary>
         /// Configures a stored TimedQueue by its key.<para/>
         /// Note: if the queue does not exists, it will be created.
         /// </summary>
@@ -78,7 +86,9 @@ namespace $rootnamespace$.SimpleHelpers
         }
 
         /// <summary>
-        /// Removes the specified key.
+        /// Removes the specified TimedQueue by key.<para/>
+        /// Note: the TimedQueue will safely be removed and disposed. 
+        /// If the queue was already removed, this will be a NOP.
         /// </summary>
         /// <param name="key">The TimedQueue associated key.</param>
         public static void Remove (string key)
@@ -88,6 +98,16 @@ namespace $rootnamespace$.SimpleHelpers
             {
                 q.Dispose ();
             }
+        }
+
+        /// <summary>
+        /// Removes and dispose of all TimedQueues.
+        /// Note: the TimedQueue will safely be removed and disposed. 
+        /// </summary>
+        public static void Clear ()
+        {
+            foreach (var q in m_map.ToList ())
+                Remove (q.Key);
         }
     }
 
