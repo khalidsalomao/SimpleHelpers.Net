@@ -66,7 +66,7 @@ namespace $rootnamespace$.SimpleHelpers
             if (!Console.IsOutputRedirected)
             {
                 ConsoleUtils.DisplayHeader (
-                    typeof (Program).Namespace,
+                    typeof(ConsoleUtils).Namespace.Replace(".SimpleHelpers", ""),
                     "options: " + (ProgramOptions == null ? "none" : "\n#    " + String.Join ("\n#    ", ProgramOptions.Options.Select (i => i.Key + "=" + i.Value))));
             }
 
@@ -103,7 +103,9 @@ namespace $rootnamespace$.SimpleHelpers
         {
             // default parameters initialization from config file
             if (String.IsNullOrEmpty (logFileName))
-                logFileName = System.Configuration.ConfigurationManager.AppSettings["logFilename"] ?? ("${basedir}/log/" + typeof (Program).Namespace + ".log");
+                logFileName = System.Configuration.ConfigurationManager.AppSettings["logFilename"];
+			if (String.IsNullOrEmpty (logFileName))
+                logFileName = ("${basedir}/log/" + typeof (ConsoleUtils).Namespace.Replace(".SimpleHelpers", "") + ".log");
             if (String.IsNullOrEmpty (logLevel))
                 logLevel = System.Configuration.ConfigurationManager.AppSettings["logLevel"] ?? "Info";
 
@@ -137,7 +139,7 @@ namespace $rootnamespace$.SimpleHelpers
 
             // file output
             var fileTarget = new NLog.Targets.FileTarget ();
-            fileTarget.FileName = "${basedir}/log/" + typeof (Program).Namespace + ".log";
+            fileTarget.FileName = logFileName;
             fileTarget.Layout = "${longdate}\t${callsite}\t${level}\t\"${message}${onexception: \t [Exception] ${exception:format=tostring}}\"";
             fileTarget.ConcurrentWrites = true;
             fileTarget.AutoFlush = true;
@@ -153,8 +155,7 @@ namespace $rootnamespace$.SimpleHelpers
 
             config.AddTarget ("file", fileTarget);
 
-            // configure log from configuration file            
-            fileTarget.FileName = logFileName;
+            // configure log from configuration file
             var rule2 = new NLog.Config.LoggingRule ("*", currentLogLevel, fileTarget);
             config.LoggingRules.Add (rule2);
 
@@ -166,7 +167,7 @@ namespace $rootnamespace$.SimpleHelpers
         /// Execute some housekeeping and closes the application.
         /// </summary>
         /// <param name="exitCode">The exit code.</param>
-        internal static void CloseApplication (int exitCode, bool exitApplication)
+        public static void CloseApplication (int exitCode, bool exitApplication)
         {
             System.Threading.Thread.Sleep (0);
             // log error code and close log
