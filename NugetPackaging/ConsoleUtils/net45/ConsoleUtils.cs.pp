@@ -56,7 +56,7 @@ namespace $rootnamespace$.SimpleHelpers
 
             ProgramOptions = CheckCommandLineParams (args, thrownOnError);
 
-            if (ProgramOptions.Get<bool> ("help", false))
+            if (ProgramOptions.Get<bool> ("help", false) || ProgramOptions.Get<bool> ("h", false))
             {
                 show_help ("");
                 CloseApplication (0, true);
@@ -394,9 +394,11 @@ namespace $rootnamespace$.SimpleHelpers
 
         private static void show_help (string message, bool isError = false)
         {
-            var files = new string[] { "Help.md", "Configuration.md" };
-            var file = "README.md";
+            // files with help text in order of priority
+            var files = new string[] { "help", "help.txt", "Configuration.md", "README.md" };
             var text = "Help command line arguments";
+            string file = files.FirstOrDefault ();
+            // check which file exists
             foreach (var f in files)
             {
                 if (System.IO.File.Exists (f))
@@ -408,21 +410,22 @@ namespace $rootnamespace$.SimpleHelpers
                     file = ".docs/" + f; break;
                 }
             }
-
+            // try to load help text
             if (System.IO.File.Exists (file))
                 text = ReadFileAllText (file);
-            if (message == null) return;
+
+            // display message parameter
             if (isError)
             {
-                Console.Error.WriteLine (message);
-                Console.Error.WriteLine (text);
+                Console.Error.WriteLine (message);                
             }
             else
             {
                 Console.WriteLine (message);
-                Console.WriteLine (text);
             }
-            CloseApplication (0, true);
+            
+            // display help text
+            Console.Error.WriteLine (text);
         }
 
         public static string ReadFileAllText (string filename)

@@ -1,6 +1,6 @@
 ﻿#region *   License     *
 /*
-    SimpleHelpers - ConsoleUtils   
+    SimpleHelpers - FlexibleOptions   
 
     Copyright © 2015 Khalid Salomão
 
@@ -52,6 +52,15 @@ namespace $rootnamespace$.SimpleHelpers
                 return _options;
             }
             set { _options = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="string" /> with the specified key.
+        /// </summary>
+        public string this[string key]
+        {
+            get { return Get (key); }
+            set { Set (key, value); }
         }
 
         /// <summary>
