@@ -148,8 +148,8 @@ namespace $rootnamespace$.SimpleHelpers
         private void Initialize (int numberOfThreads, int queueBoundedCapacity, Action<T> action)
         {
             // sanity check            
-            if (numberOfThreads < 1)
-                throw new ArgumentOutOfRangeException ("Number of threads cannot be less than 1.", "numberOfThreads");
+            if (numberOfThreads < 0)
+                throw new ArgumentOutOfRangeException ("Number of threads cannot negative.", "numberOfThreads");
             if (action == null)
                 throw new ArgumentNullException ("action");
 
