@@ -57,7 +57,7 @@ namespace $rootnamespace$.SimpleHelpers
         /// <remarks>The internal queue has a default bounded capacity of twice the number of threads.</remarks>
         public static void Process (IEnumerable<T> items, int numberOfThreads, Action<T> action)
         {
-            Process (items, numberOfThreads, 0, 0, action);
+            Process (items, numberOfThreads, numberOfThreads, 0, action);
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace $rootnamespace$.SimpleHelpers
 
             // adjust blocking collection capacity
             if (queueBoundedCapacity == 0)
-                queueBoundedCapacity = (numberOfThreads * 2) + 1;
+                queueBoundedCapacity = (_maxNumberOfThreads * 2) + 1;
             if (queueBoundedCapacity == 1)
                 queueBoundedCapacity++;
 
