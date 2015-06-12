@@ -200,8 +200,16 @@ namespace $rootnamespace$.SimpleHelpers
         /// <exception cref="InvalidOperationException">If this instance is Disposed, any subsequent call may raise this exception.</exception>
         public void AddTask (T task)
         {
-            if (m_threads.Count < _maxNumberOfThreads && m_tasks.Count > 0)
-                CreateThreads (1, _action);
+            // check if we have room for threads
+            if (m_threads.Count < _maxNumberOfThreads)
+            {
+                // if there is no thread, we must start one rigth now
+                if (m_threads.Count == 0)
+                    CreateThreads (1, _action);
+                // signal for thread creation
+                StartMaintenance ();
+            }
+            // finally add the task
             m_tasks.Add (task);
         }
 
@@ -254,11 +262,17 @@ namespace $rootnamespace$.SimpleHelpers
         {
             if (m_tasks != null)
             {
+                // signal that there is no more items
                 m_tasks.CompleteAdding ();
 
+                // check thread creation task
+                ExecuteMaintenance (null);
+                StopMaintenance ();
+
+                // wait for work completion
                 if (waitForWorkToFinish)
                 {
-                foreach (var thread in m_threads)
+                    foreach (var thread in m_threads)
                         thread.Wait ();
                 }
                 else
@@ -267,6 +281,7 @@ namespace $rootnamespace$.SimpleHelpers
                         thread.Wait (0);
                 }
                 
+                // clean up
                 m_tasks.Dispose ();
                 m_tasks = null;
                 m_threads.Clear ();
@@ -288,5 +303,74 @@ namespace $rootnamespace$.SimpleHelpers
         {
             Close (false);
         }
+
+        #region *   Async Thread/Workers Creation  *
+
+        private System.Threading.Timer m_maintenanceTask = null;
+        private readonly object m_lock = new object ();
+        private int m_executing = 0;
+        private int m_idleCounter = 0;
+
+        private void StartMaintenance ()
+        {
+            if (m_maintenanceTask == null)
+            {
+                lock (m_lock)
+                {
+                    if (m_maintenanceTask == null)
+                    {
+                        m_maintenanceTask = new System.Threading.Timer (ExecuteMaintenance, null, 0, 100);
+                    }
+                }
+            }
+        }
+
+        private void StopMaintenance ()
+        {
+            lock (m_lock)
+            {
+                if (m_maintenanceTask != null)
+                    m_maintenanceTask.Dispose ();
+                m_maintenanceTask = null;
+            }
+        }
+
+        private void ExecuteMaintenance (object state)
+        {
+            // check if a step is already executing
+            if (System.Threading.Interlocked.CompareExchange (ref m_executing, 1, 0) != 0)
+                return;
+            // try to fire OnExpiration event
+            try
+            {
+                // stop timed task we have a full thread pool
+                if (m_threads.Count >= _maxNumberOfThreads)
+                {
+                    StopMaintenance ();
+                }
+                else if (m_tasks.Count == 0)
+                {
+                    // after 3 tries with empty queue, stop timer
+                    if (m_idleCounter++ > 2)
+                        StopMaintenance ();
+                }
+                else
+                {                    
+                    // create threads while there is tasks to be processed
+                    do
+                        CreateThreads (1, _action);
+                    while (m_threads.Count < _maxNumberOfThreads && m_tasks.Count > 0);
+                    // clear idle queue marker
+                    m_idleCounter = 0;
+                }   
+            }
+            finally
+            {
+                // release lock
+                System.Threading.Interlocked.Exchange (ref m_executing, 0);
+            }           
+        }
+
+        #endregion
     }
 }
