@@ -178,7 +178,6 @@ namespace $rootnamespace$.SimpleHelpers
         {
             System.Threading.Thread.Sleep (0);
             // log error code and close log
-            Console.WriteLine ("ExitCode = " + exitCode.ToString ());
             if (exitCode == 0)
                 LogManager.GetCurrentClassLogger ().Info ("ExitCode " + exitCode.ToString ());
             else
