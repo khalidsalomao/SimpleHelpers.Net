@@ -149,6 +149,8 @@ namespace $rootnamespace$.SimpleHelpers
             fileTarget.FileName = logFileName;
             fileTarget.Layout = "${longdate}\t${callsite}\t${level}\t\"${message}${onexception: \t [Exception] ${exception:format=tostring}}\"";
             fileTarget.ConcurrentWrites = true;
+			fileTarget.ConcurrentWriteAttemptDelay = 10;
+            fileTarget.ConcurrentWriteAttempts = 8;
             fileTarget.AutoFlush = true;
             fileTarget.KeepFileOpen = true;
             fileTarget.DeleteOldFileOnStartup = false;
@@ -183,7 +185,8 @@ namespace $rootnamespace$.SimpleHelpers
             else
                 LogManager.GetCurrentClassLogger ().Error ("ExitCode " + exitCode.ToString ());
             LogManager.Flush ();
-            // force garbage collector run
+            System.Threading.Thread.Sleep (0);
+			// force garbage collector run
             // usefull for clearing COM interfaces or any other similar resource
             GC.Collect ();
             GC.WaitForPendingFinalizers ();
