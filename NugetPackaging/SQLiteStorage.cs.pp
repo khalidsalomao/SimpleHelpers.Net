@@ -204,6 +204,19 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
                 db.Execute ("vacuum");
             }
         }
+		
+		/// <summary>
+        /// Helper method to clear connection pool.<para/>
+        /// Useful for closing sqlite file if it is no longer used.
+        /// </summary>
+		public void CloseAll ()
+        {
+            SQLiteConnection.ClearAllPools();
+            System.Threading.Thread.Sleep(0);
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            System.Threading.Thread.Sleep(0);
+        }
         
         protected string[] GetTableCreateSQL ()
         {
