@@ -85,6 +85,28 @@ namespace $rootnamespace$.SimpleHelpers
         }
 
         /// <summary>
+        /// Tries to load file content with the correct encoding.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        /// <param name="defaultValue">The default value if unable to load file content.</param>
+        /// <returns>File content</returns>
+        public static string TryLoadFile (string filename, string defaultValue = "")
+        {
+            try
+            {
+                if (System.IO.File.Exists (filename))
+                {
+                    // enable file encoding detection
+                    var encoding = SimpleHelpers.FileEncoding.DetectFileEncoding (filename);
+                    // Load data based on parameters
+                    return System.IO.File.ReadAllText (filename, encoding);
+                }
+            }
+            catch { }
+            return defaultValue;
+        }
+
+        /// <summary>
         /// Detects if contains textual data.
         /// </summary>
         /// <param name="rawData">The raw data.</param>
