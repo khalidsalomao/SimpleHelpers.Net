@@ -49,7 +49,7 @@ namespace $rootnamespace$.SimpleHelpers
         public string MainClassName { get; set; }
 
         private Mono.CSharp.CompiledMethod _createMethod;
-        private List<Assembly> _assemblies = new List<Assembly> ();
+        private HashSet<Assembly> _assemblies = new HashSet<Assembly> ();
 
         public Mono.CSharp.CompiledMethod CreateMethod
         {
@@ -97,12 +97,12 @@ namespace $rootnamespace$.SimpleHelpers
 
                 var scriptEngine = new Mono.CSharp.Evaluator (ctx);
 
-                AddReference (this.GetType ());
+                AddDefaultReferences ();                
 
                 // add assemblies
-                for (int i = 0; i < _assemblies.Count; i++)
+                foreach (var i in _assemblies)
                 {
-                    scriptEngine.ReferenceAssembly (_assemblies[i]);   
+                    scriptEngine.ReferenceAssembly (i);   
                 }
                 
                 if (String.IsNullOrWhiteSpace (Script))
@@ -135,13 +135,21 @@ namespace $rootnamespace$.SimpleHelpers
             return this;
         }
 
+        private void AddDefaultReferences ()
+        {
+            AddReference (this.GetType ());
+            // System
+            AddReference (typeof(Uri));
+            // System.Core
+            AddReference (typeof (Action));
+        }
+
         /// <summary>
         /// Try to add an assembly to the evaluator by checking first if it was already added.
         /// </summary>
         public ScriptEvaluator AddReference (Assembly assembly)
         {
-            if (!_assemblies.Any (i => i.FullName == assembly.FullName))
-                _assemblies.Add (assembly);
+            _assemblies.Add (assembly);
             return this;
         }
 
