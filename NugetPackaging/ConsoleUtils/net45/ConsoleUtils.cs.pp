@@ -48,11 +48,36 @@ namespace $rootnamespace$.SimpleHelpers
 
         public static FlexibleOptions ProgramOptions { get; private set; }
 
-        public static FlexibleOptions Initialize (string[] args, bool thrownOnError)
+        private static InitializationOptions InitOptions = null;
+
+        public class InitializationOptions
         {
+            public bool overrideNLogFileConfiguration = true;
+            public List<NLog.Targets.Target> targets;
+
+            public InitializationOptions OverrideNLogFileConfiguration (bool Override)
+            {
+                overrideNLogFileConfiguration = Override;
+                return this;
+            }
+
+            public InitializationOptions AddNLogTarget (params NLog.Targets.Target[] Targets)
+            {
+                if (Targets != null)
+                {
+                    if (targets == null)
+                        targets = new List<NLog.Targets.Target> ();
+                    targets.AddRange (Targets);
+                }
+                return this;
+            }
+        }
+
+        public static FlexibleOptions Initialize (string[] args, bool thrownOnError, InitializationOptions options = null)
+        {
+            InitOptions = options;
             DefaultProgramInitialization ();
 
-            InitializeLog ();
 
             ProgramOptions = CheckCommandLineParams (args, thrownOnError);
 
@@ -71,7 +96,7 @@ namespace $rootnamespace$.SimpleHelpers
             }
             else
             {
-                var logger = LogManager.GetCurrentClassLogger ();
+                var logger = GetLogger ();
                 if (logger.IsDebugEnabled)
                 {
                     logger.Debug ("options: " + (ProgramOptions == null ? "none" : "\n#    " + String.Join ("\n#    ", ProgramOptions.Options.Select (i => i.Key + "=" + i.Value))));
@@ -103,11 +128,20 @@ namespace $rootnamespace$.SimpleHelpers
         static string _logFileName;
         static string _logLevel;
 
+        private static Logger GetLogger ()
+        {
+            if (_logFileName == null)
+                InitializeLog (null, null, InitOptions);
+            return LogManager.GetCurrentClassLogger ();
+        }
         /// <summary>
         /// Log initialization.
         /// </summary>
-        internal static void InitializeLog (string logFileName = null, string logLevel = null)
+        internal static void InitializeLog (string logFileName = null, string logLevel = null, InitializationOptions options = null)
         {
+            if (options != null && !options.overrideNLogFileConfiguration && LogManager.Configuration == null)
+                return;
+
             // default parameters initialization from config file
             if (String.IsNullOrEmpty (logFileName))
                 logFileName = System.Configuration.ConfigurationManager.AppSettings["logFilename"];
@@ -154,9 +188,9 @@ namespace $rootnamespace$.SimpleHelpers
             fileTarget.AutoFlush = true;
             fileTarget.KeepFileOpen = true;
             fileTarget.DeleteOldFileOnStartup = false;
-            fileTarget.ArchiveAboveSize = 2 * 1024 * 1024;  // 2 Mb
+            fileTarget.ArchiveAboveSize = 4 * 1024 * 1024;  // 4 Mb
             fileTarget.MaxArchiveFiles = 10;
-            fileTarget.ArchiveNumbering = NLog.Targets.ArchiveNumberingMode.Date;
+            fileTarget.ArchiveNumbering = NLog.Targets.ArchiveNumberingMode.DateAndSequence;
             fileTarget.ArchiveDateFormat = "yyyyMMdd_HHmmss";
 
             // set file output to be async (commented out since doesn't work on mono)
@@ -167,6 +201,16 @@ namespace $rootnamespace$.SimpleHelpers
             // configure log from configuration file
             var rule2 = new NLog.Config.LoggingRule ("*", currentLogLevel, fileTarget);
             config.LoggingRules.Add (rule2);
+
+            // External Log Target
+            if (options != null && options.targets != null)
+            {
+                foreach (var t in options.targets)
+                {                    
+                    config.AddTarget (t);
+                    config.LoggingRules.Add (new NLog.Config.LoggingRule ("*", currentLogLevel, t));
+                }
+            }
 
             // set configuration options
             LogManager.Configuration = config;
@@ -181,9 +225,9 @@ namespace $rootnamespace$.SimpleHelpers
             System.Threading.Thread.Sleep (0);
             // log error code and close log
             if (exitCode == 0)
-                LogManager.GetCurrentClassLogger ().Info ("ExitCode " + exitCode.ToString ());
+                GetLogger ().Debug ("ExitCode " + exitCode.ToString ());
             else
-                LogManager.GetCurrentClassLogger ().Error ("ExitCode " + exitCode.ToString ());
+                GetLogger ().Error ("ExitCode " + exitCode.ToString ());
             LogManager.Flush ();
             System.Threading.Thread.Sleep (0);
 			// force garbage collector run
@@ -228,7 +272,7 @@ namespace $rootnamespace$.SimpleHelpers
                 {
                     if (thrownOnError)
                         throw;
-                    LogManager.GetCurrentClassLogger ().Warn (appSettingsEx);
+                    GetLogger ().Warn (appSettingsEx);
                 }
 
                 // parse console arguments
@@ -248,16 +292,19 @@ namespace $rootnamespace$.SimpleHelpers
                 {
                     foreach (var file in externalConfigFile.Trim(' ', '\'', '"', '[', ']').Split (',', ';'))
                     {
-                        LogManager.GetCurrentClassLogger ().Info ("Loading configuration file from {0} ...", externalConfigFile);
+                        GetLogger ().Debug ("Loading configuration file from {0} ...", externalConfigFile);
                         externalLoadedOptions = FlexibleOptions.Merge (externalLoadedOptions, LoadExtenalConfigurationFile (file.Trim (' ', '\'', '"'), configAbortOnError));
                     }
                 }
             }
             catch (Exception ex)
             {
+                // initialize log before dealing with exceptions
+                if (mergedOptions != null)
+                    InitializeLog (mergedOptions.Get ("logFilename"), mergedOptions.Get ("logLevel", "Info"), InitOptions);
                 if (thrownOnError)
                     throw;
-                LogManager.GetCurrentClassLogger ().Error (ex);
+                GetLogger ().Error (ex);
             }
 
             // merge options with the following priority:
@@ -267,7 +314,7 @@ namespace $rootnamespace$.SimpleHelpers
             mergedOptions = FlexibleOptions.Merge (mergedOptions, externalLoadedOptions, argsOptions);
 
             // reinitialize log options if different from local configuration file
-            InitializeLog (mergedOptions.Get ("logFilename"), mergedOptions.Get ("logLevel", "Info"));
+            InitializeLog (mergedOptions.Get ("logFilename"), mergedOptions.Get ("logLevel", "Info"), InitOptions);
 
             // return final merged options
             ProgramOptions = mergedOptions;
@@ -337,7 +384,7 @@ namespace $rootnamespace$.SimpleHelpers
                 {
                     if (thrownOnError)
                         throw;
-                    LogManager.GetCurrentClassLogger ().Error (ex);
+                    GetLogger ().Error (ex);
                     return new FlexibleOptions ();
                 }
             }            
@@ -345,24 +392,17 @@ namespace $rootnamespace$.SimpleHelpers
 
         private static FlexibleOptions LoadFileSystemConfigurationFile (string filePath, bool thrownOnError)
         {
-            using (WebClient client = new WebClient ())
-            {
                 try
                 {
-                    string text;
-                    using (var file = new System.IO.StreamReader (filePath, Encoding.GetEncoding ("ISO-8859-1"), true))
-                    {
-                        text = file.ReadToEnd ();
-                    }
-                    return parseFile (client.DownloadString (filePath));                    
+                	string text = ReadFileAllText (filePath);
+                	return parseFile (text);
                 }
                 catch (Exception ex)
                 {
                     if (thrownOnError)
                         throw;
-                    LogManager.GetCurrentClassLogger ().Error (ex);
+                    GetLogger ().Error (ex);
                     return new FlexibleOptions ();
-                }
             }
         }
 

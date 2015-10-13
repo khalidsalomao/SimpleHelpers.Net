@@ -106,7 +106,7 @@ namespace $rootnamespace$.SimpleHelpers
         /// <summary>
         /// Check if a key exists.
         /// </summary>
-        /// <param name="key">The associated key, which is case sensitive.</param>
+        /// <param name="key">The associated key, which is case insensitive.</param>
         /// <returns></returns>
         public bool HasOption (string key)
         {
@@ -153,7 +153,7 @@ namespace $rootnamespace$.SimpleHelpers
         /// <summary>
         /// Get the option as string. If the key doen't exist, String.Empty is returned.
         /// </summary>
-        /// <param name="key">The key, which is case sensitive.</param>
+        /// <param name="key">The key, which is case insensitive.</param>
         /// <remarks>
         /// Since data is stored internally as string, the data will be returned directly.
         /// If the desired type is String, a conversion will only happen if the string has quotation marks, in which case json deserialization will take place.
@@ -170,7 +170,7 @@ namespace $rootnamespace$.SimpleHelpers
         /// The type convertion uses the Json.Net serialization to try to convert.
         /// </summary>
         /// <typeparam name="T">The desired type to return the data.</typeparam>
-        /// <param name="key">The key, which is case sensitive.</param>
+        /// <param name="key">The key, which is case insensitive.</param>
         /// <param name="defaultValue">The default value to be used if the data doesn't exists or the type conversion fails.</param>
         /// <remarks>
         /// Since data is stored internally as string, the data will be returned directly.
@@ -188,7 +188,7 @@ namespace $rootnamespace$.SimpleHelpers
         /// The type convertion uses the Json.Net serialization to try to convert.
         /// </summary>
         /// <typeparam name="T">The desired type to return the data.</typeparam>
-        /// <param name="key">The key, which is case sensitive.</param>
+        /// <param name="key">The key, which is case insensitive.</param>
         /// <param name="defaultValue">The default value to be used if the data doesn't exists or the type conversion fails.</param>
         /// <param name="preserveQuotes">The preserve quotes in case of string.</param>
         /// <remarks>
@@ -263,6 +263,44 @@ namespace $rootnamespace$.SimpleHelpers
                 catch { /* ignore and return default value */ }
             }
             return defaultValue;
+        }
+
+        static char[] defaultDelimiter = new char[] { ',' };
+
+        /// <summary>
+        /// Get the option as an array of strings. If the key doen't exist, a zero length array is returned.
+        /// </summary>
+        /// <param name="key">The key, which is case insensitive.</param>
+        /// <remarks>
+        /// If the data is in between [], we will try to deserialize as json, else the string will be splited by the delimiters.
+        /// </remarks>
+        /// <returns>The data as string[].</returns>
+        public string[] GetAsList (string key)
+        {
+            return GetAsList (key, defaultDelimiter);
+        }
+
+        /// <summary>
+        /// Get the option as an array of strings. If the key doen't exist, a zero length array is returned.
+        /// </summary>
+        /// <param name="key">The key, which is case insensitive.</param>
+        /// <param name="delimiters">The delimiters.</param>
+        /// <remarks>
+        /// If the data is in between [], we will try to deserialize as json, else the string will be splited by the delimiters.
+        /// </remarks>
+        /// <returns>The data as string[].</returns>
+        public string[] GetAsList (string key, char[] delimiters)
+        {
+            var v = Get<string> (key, String.Empty);
+            // test javascript array
+            var v1 = v.Trim ();
+            if (v1.StartsWith ("[") && v1.EndsWith ("]"))
+            {
+                var r = Get<string[]> (key, null);
+                if (r != null)
+                    return r;
+            }
+            return v.Split (delimiters != null && delimiters.Length > 0 ? delimiters : defaultDelimiter, StringSplitOptions.None);
         }
 
         /// <summary>
