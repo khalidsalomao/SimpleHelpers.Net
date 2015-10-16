@@ -247,18 +247,27 @@ namespace $rootnamespace$.SimpleHelpers
             }
         }
 
-        private void SearchForImplementations (Type[] listOfInterfaces)
+        private void SearchForImplementations (IList<string> fullTypeNameList)
+        {
+            List<Type> list = new List<Type> ();
+            foreach (var name in fullTypeNameList)
+            {
+                Type t = SearchForType (name);
+                if (t != null)
+                    list.Add (t);                
+            }
+
+            SearchForImplementations (list);
+        }
+
+        private void SearchForImplementations (IList<Type> listOfInterfaces)
         {
             // sanity check
-            if (listOfInterfaces == null || listOfInterfaces.Length == 0)
+            if (listOfInterfaces == null || listOfInterfaces.Count == 0)
                 return;
 
-            // check if first assembly scan was executed
-            if (loadedAssemblies == null)
-                ContainerInitialization (null, listOfInterfaces);
-
             // prepare list of loaded interfaces
-            for (int i = 0; i < listOfInterfaces.Length; i++)
+            for (int i = 0; i < listOfInterfaces.Count; i++)
             {
                 if (!exportedTypesByBaseType.ContainsKey (listOfInterfaces[i].FullName))
                 {
@@ -266,75 +275,97 @@ namespace $rootnamespace$.SimpleHelpers
                 }
             }
 
-            Assembly lastAssembly = null;
-            // try to load derived types
+             // try to load derived types
             try
             {
+                // try to load derived types            
                 List<Type> implementationsList;
                 ModuleInfo info;
 
-                // search listed assemblies
-                foreach (var a in validAssemblies)
+                foreach (var t in ListLoadedAssemblyTypes())
                 {
-                    lastAssembly = a;
-                    // dynamic assemblies don't have GetExportedTypes method
-                    if (a.IsDynamic)
+                    if (t == null || t.IsAbstract || t.IsGenericTypeDefinition || !t.IsClass) //t.IsInterface
                         continue;
-
-                    // try to list public types
-                    // only .net 4.5+ has this method implemented!
-                    Type[] types = null;
-                    try
+                    for (int j = 0; j < listOfInterfaces.Count; j++)
                     {
-                        types = a.GetExportedTypes ();
-                    }
-                    catch (Exception ex)
-                    {
-                        FireModuleLoadingError ("Assembly .net version lower than .net 4.5. Assembly: " + a.FullName + ", location: " + a.Location.Replace (AppDomain.CurrentDomain.BaseDirectory, "./").Replace ('\\', '/'), ex);
-                    }
-
-                    // check if types were listed!
-                    if (types == null)
-                        continue;
-
-                    // search for types derived from desired types list (listOfInterfaces)
-                    for (int i = 0; i < types.Length; i++)
-                    {
-                        Type t = types[i];
-                        if (t == null || t.IsAbstract || t.IsGenericTypeDefinition || !t.IsClass) //t.IsInterface
-                            continue;
-                        for (int j = 0; j < listOfInterfaces.Length; j++)
+                        if (listOfInterfaces[j].IsAssignableFrom (t))
                         {
-                            if (listOfInterfaces[j].IsAssignableFrom (t))
+                            // register type in exportedModules map
+                            if (!exportedModules.TryGetValue (t.FullName, out info))
                             {
-                                // register type in exportedModules map
-                                if (!exportedModules.TryGetValue (t.FullName, out info))
-                                {
-                                    info = new ModuleInfo { TypeInfo = t };
-                                    // register type by fullName (namespace + name) and name
-                                    exportedModules[t.FullName] = info;
-                                    exportedModules[t.Name] = info;
-                                }
-
-                                // add to interface list of types                                
-                                if (!exportedTypesByBaseType.TryGetValue (listOfInterfaces[j].FullName, out implementationsList))
-                                {
-                                    implementationsList = new List<Type> ();
-                                    exportedTypesByBaseType[listOfInterfaces[j].FullName] = implementationsList;
-                                }
-                                implementationsList.Add (t);
+                                info = new ModuleInfo { TypeInfo = t };
+                                // register type by fullName (namespace + name) and name
+                                exportedModules[t.FullName] = info;
+                                exportedModules[t.Name] = info;
                             }
+
+                            // add to interface list of types                                
+                            if (!exportedTypesByBaseType.TryGetValue (listOfInterfaces[j].FullName, out implementationsList))
+                            {
+                                implementationsList = new List<Type> ();
+                                exportedTypesByBaseType[listOfInterfaces[j].FullName] = implementationsList;
+                            }
+                            implementationsList.Add (t);
                         }
                     }
                 }
+
             }
             catch (Exception ex)
             {
-                if (lastAssembly != null)
-                    FireModuleLoadingError ("Error loading assembly types. Assembly: " + lastAssembly.FullName + ", location: " + lastAssembly.Location.Replace (AppDomain.CurrentDomain.BaseDirectory, "./").Replace ('\\', '/'), ex);
-                else
-                    FireModuleLoadingError ("Error loading assembly types.", ex);
+                FireModuleLoadingError ("Error loading assembly types.", ex);
             }
+        }
+
+        private Type SearchForType (string fullTypeName)
+        {
+            // search loaded types (slow)
+            foreach (var t in ListLoadedAssemblyTypes ())
+            { 
+                if (fullTypeName == t.FullName)
+                {
+                    return t;
+                }
+            }
+
+            return null;
+        }
+
+        private IEnumerable<Type> ListLoadedAssemblyTypes()
+        {
+            // check if first assembly scan was executed
+            if (loadedAssemblies == null)
+                ContainerInitialization (null, null);
+
+            // search listed assemblies
+            foreach (var a in validAssemblies)
+            {
+                // dynamic assemblies don't have GetExportedTypes method
+                if (a.IsDynamic)
+                    continue;
+
+                // try to list public types
+                // only .net 4.5+ has this method implemented!
+                Type[] types = null;
+                try
+                {
+                    types = a.GetExportedTypes ();
+                }
+                catch (Exception ex)
+                {
+                    FireModuleLoadingError ("Assembly .net version lower than .net 4.5. Assembly: " + a.FullName + ", location: " + a.Location.Replace (AppDomain.CurrentDomain.BaseDirectory, "./").Replace ('\\', '/'), ex);
+                }
+
+                // check if types were listed!
+                if (types == null)
+                    continue;
+
+                // search for types derived from desired types list (listOfInterfaces)
+                for (int i = 0; i < types.Length; i++)
+                {
+                    yield return types[i];                        
+                }
+            }           
         }
 
         private Assembly CurrentDomain_AssemblyResolve (object sender, ResolveEventArgs args)
@@ -515,7 +546,7 @@ namespace $rootnamespace$.SimpleHelpers
         public object GetInstance (Type type)
         {
             // if none was found, it was not initilized yet...
-            if (!exportedModules.ContainsKey (type.FullName))                
+            if (!exportedModules.ContainsKey (type.FullName))
                 SearchForImplementations (new[] { type });
             return GetInstance (type.FullName);
         }
@@ -528,6 +559,9 @@ namespace $rootnamespace$.SimpleHelpers
         public object GetInstance (string fullTypeName)
         {
             ModuleInfo module;
+            // if none was found, it was not initilized yet...
+            if (!exportedModules.ContainsKey (fullTypeName))
+                SearchForImplementations (new[] { fullTypeName });
             // if we have the type, lets get it
             if (exportedModules.TryGetValue (fullTypeName, out module))
             {

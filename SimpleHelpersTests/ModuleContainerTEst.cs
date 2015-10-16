@@ -24,8 +24,7 @@ namespace SimpleHelpersTests
         [Fact]
         public void getInstanceAs ()
         {
-            ModuleContainer.Instance.GetTypesOf<Test1> ().Count();
-            var instance = ModuleContainer.Instance.GetInstanceAs<IModuleTeste> ("Test1");
+            var instance = ModuleContainer.Instance.GetInstanceAs<IModuleTeste> ("SimpleHelpersTests.Test1");
 
             Assert.NotNull (instance);
 
