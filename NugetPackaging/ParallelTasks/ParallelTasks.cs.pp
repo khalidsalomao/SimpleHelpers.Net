@@ -265,9 +265,13 @@ namespace $rootnamespace$.SimpleHelpers
                 // signal that there is no more items
                 m_tasks.CompleteAdding ();
 
-                // check thread creation task
-                ExecuteMaintenance (null);
+                // stop internal timer
                 StopMaintenance ();
+
+                // run internal execute, to ensure we have running threads
+                // here we have to wait for the thread creation queue to flush
+                while (!TryProcessThreadCreationQueue ())
+                    Thread.Sleep (0);
 
                 // wait for work completion
                 if (waitForWorkToFinish)
@@ -319,7 +323,7 @@ namespace $rootnamespace$.SimpleHelpers
                 {
                     if (m_maintenanceTask == null)
                     {
-                        m_maintenanceTask = new System.Threading.Timer (ExecuteMaintenance, null, 0, 100);
+                        m_maintenanceTask = new System.Threading.Timer (ThreadCreationQueueEventHandler, null, 0, 100);
                     }
                 }
             }
@@ -335,11 +339,16 @@ namespace $rootnamespace$.SimpleHelpers
             }
         }
 
-        private void ExecuteMaintenance (object state)
+        private void ThreadCreationQueueEventHandler (object state)
+        {
+            TryProcessThreadCreationQueue ();
+        }
+
+        private bool TryProcessThreadCreationQueue ()
         {
             // check if a step is already executing
             if (System.Threading.Interlocked.CompareExchange (ref m_executing, 1, 0) != 0)
-                return;
+                return false;
             // try to fire OnExpiration event
             try
             {
@@ -369,6 +378,7 @@ namespace $rootnamespace$.SimpleHelpers
                 // release lock
                 System.Threading.Interlocked.Exchange (ref m_executing, 0);
             }           
+            return true;
         }
 
         #endregion
