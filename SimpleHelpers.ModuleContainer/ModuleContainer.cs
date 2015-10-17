@@ -6,7 +6,7 @@
 
     Permission is hereby granted, free of charge, to any person
     obtaining a copy of this software and associated documentation
-    files (the “Software”), to deal in the Software without
+    files (the "Software"), to deal in the Software without
     restriction, including without limitation the rights to use,
     copy, modify, merge, publish, distribute, sublicense, and/or sell
     copies of the Software, and to permit persons to whom the
@@ -16,7 +16,7 @@
     The above copyright notice and this permission notice shall be
     included in all copies or substantial portions of the Software.
 
-    THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -30,7 +30,8 @@
  */
 #endregion
 
-﻿using System;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -54,9 +55,9 @@ namespace SimpleHelpers
         Dictionary<string, Assembly> loadedAssemblies;
         List<Assembly> validAssemblies = new List<Assembly> (30);
 
-        Dictionary<string, List<Type>> exportedTypesByBaseType = new Dictionary<string, List<Type>> (StringComparer.Ordinal);
+        ConcurrentDictionary<string, List<Type>> exportedTypesByBaseType = new ConcurrentDictionary<string, List<Type>> (StringComparer.Ordinal);
 
-        Dictionary<string, ModuleInfo> exportedModules = new Dictionary<string, ModuleInfo> (StringComparer.Ordinal);
+        ConcurrentDictionary<string, ModuleInfo> exportedModules = new ConcurrentDictionary<string, ModuleInfo> (StringComparer.Ordinal);
 
         #region *   Events and Event Handlers   *
 
@@ -105,10 +106,7 @@ namespace SimpleHelpers
         /// <param name="listOfInterfaces">The list of interfaces or base types.</param>
         public void LoadModules (string[] modulesFolder, Type[] listOfInterfaces = null)
         {
-            lock (padlock)
-            {
-                ContainerInitialization (modulesFolder, listOfInterfaces);
-            }
+            ContainerInitialization (modulesFolder, listOfInterfaces);
         }
 
         /// <summary>
@@ -120,80 +118,80 @@ namespace SimpleHelpers
         /// <param name="listOfInterfaces">The list of interfaces or base types.</param>
         public void LoadModules (string modulesFolder, Type[] listOfInterfaces = null)
         {
-            lock (padlock)
-            {
-                ContainerInitialization (new string[] { modulesFolder }, listOfInterfaces);
-            }
+            ContainerInitialization (new string[] { modulesFolder }, listOfInterfaces);
         }
 
         private void ContainerInitialization (string[] modulesFolder, Type[] listOfInterfaces)
         {
-            if (loadedAssemblies == null)
-                loadedAssemblies = new Dictionary<string, Assembly> (StringComparer.Ordinal);
-
-            // prepare extension folder
-            if (modulesFolder == null || modulesFolder.Length == 0 || (modulesFolder.Length == 1 && String.IsNullOrEmpty (modulesFolder[0])))
-                modulesFolder = new string[] { };//new string[] { AppDomain.CurrentDomain.BaseDirectory };
-
-            // get mscorelib assembly
-            //Assembly mscorelib = 333.GetType ().Assembly;
-            int oldAssembliesCount = loadedAssemblies.Count;
-
-            if (loadedAssemblies.Count == 0)
+            lock (padlock)
             {
-                // register assembly resolution for our loaded modules
-                AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
-                AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
-            }
+                if (loadedAssemblies == null)
+                    loadedAssemblies = new Dictionary<string, Assembly> (StringComparer.Ordinal);
 
-            // load current assemblies code to register their types and avoid duplicity
-            foreach (var a in AppDomain.CurrentDomain.GetAssemblies ())
-            {
-                if (!a.IsDynamic && !loadedAssemblies.ContainsKey (a.FullName))
+                // prepare extension folder
+                if (modulesFolder == null || modulesFolder.Length == 0 || (modulesFolder.Length == 1 && String.IsNullOrEmpty (modulesFolder[0])))
+                    modulesFolder = new string[] { };//new string[] { AppDomain.CurrentDomain.BaseDirectory };
+
+                // get mscorelib assembly
+                //Assembly mscorelib = 333.GetType ().Assembly;
+                int oldAssembliesCount = loadedAssemblies.Count;
+
+                if (loadedAssemblies.Count == 0)
                 {
-                    loadedAssemblies[a.FullName] = a;
-                    if (!a.GlobalAssemblyCache && !blackListedAssemblies.Contains (ParseAssemblyName (a.FullName)))
-                        validAssemblies.Add (a);
+                    // register assembly resolution for our loaded modules
+                    AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
+                    AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
                 }
-            }
 
-            HashSet<string> parsedAssemblies = new HashSet<string> (StringComparer.OrdinalIgnoreCase);
-
-            // check the directory exists
-            foreach (var folder in modulesFolder)
-            {
-                var path = PrepareFilePath (folder);
-                if (path == null || parsedAssemblies.Contains (path.Item1 + path.Item2))
-                    continue;
-                parsedAssemblies.Add (path.Item1 + path.Item2);
-
-                // check folder existance
-                var directoryInfo = new DirectoryInfo (path.Item1);
-                if (!directoryInfo.Exists)
-                    continue;
-
-                // read all files in modules folder, looking for assemblies
-                // let's read all files, since linux use case sensitive search wich could lead
-                // to case problems like ".dll" and ".Dll"            
-                foreach (var file in directoryInfo.EnumerateFiles (path.Item2, SearchOption.AllDirectories))
+                // load current assemblies code to register their types and avoid duplicity
+                foreach (var a in AppDomain.CurrentDomain.GetAssemblies ())
                 {
-                    // check if file has a valid assembly extension
-                    if (!file.Extension.EndsWith (".dll", StringComparison.OrdinalIgnoreCase) &&
-                        !file.Extension.EndsWith (".exe", StringComparison.OrdinalIgnoreCase))
+                    if (!a.IsDynamic && !loadedAssemblies.ContainsKey (a.FullName))
+                    {
+                        loadedAssemblies[a.FullName] = a;
+                        if (!a.GlobalAssemblyCache && !blackListedAssemblies.Contains (ParseAssemblyName (a.FullName)))
+                            validAssemblies.Add (a);
+                    }
+                }
+
+                HashSet<string> parsedAssemblies = new HashSet<string> (StringComparer.OrdinalIgnoreCase);
+
+                // check the directory exists
+                foreach (var folder in modulesFolder)
+                {
+                    var path = PrepareFilePath (folder);
+                    if (path == null || parsedAssemblies.Contains (path.Item1 + path.Item2))
+                        continue;
+                    parsedAssemblies.Add (path.Item1 + path.Item2);
+
+                    // check folder existance
+                    var directoryInfo = new DirectoryInfo (path.Item1);
+                    if (!directoryInfo.Exists)
                         continue;
 
-                    // check list of parsed files
-                    LoadAssembly (file, parsedAssemblies);
+                    // read all files in modules folder, looking for assemblies
+                    // let's read all files, since linux use case sensitive search wich could lead
+                    // to case problems like ".dll" and ".Dll"            
+                    foreach (var file in directoryInfo.EnumerateFiles (path.Item2, SearchOption.AllDirectories))
+                    {
+                        // check if file has a valid assembly extension
+                        if (!file.Extension.EndsWith (".dll", StringComparison.OrdinalIgnoreCase) &&
+                            !file.Extension.EndsWith (".exe", StringComparison.OrdinalIgnoreCase))
+                            continue;
+
+                        // check list of parsed files
+                        LoadAssembly (file, parsedAssemblies);
+                    }
                 }
-            }
 
-            if (oldAssembliesCount != loadedAssemblies.Count)
-            {
-                exportedTypesByBaseType.Clear ();
-            }
+                if (oldAssembliesCount != loadedAssemblies.Count)
+                {
+                    exportedTypesByBaseType.Clear ();
+                }
 
-            // try to load derived types
-            SearchForImplementations (listOfInterfaces);
+                // try to load derived types
+                SearchForImplementations (listOfInterfaces);
+            }
         }
 
         private void LoadAssembly (FileInfo file, HashSet<string> parsedAssemblies)
@@ -249,15 +247,7 @@ namespace SimpleHelpers
 
         private void SearchForImplementations (IList<string> fullTypeNameList)
         {
-            List<Type> list = new List<Type> ();
-            foreach (var name in fullTypeNameList)
-            {
-                Type t = SearchForType (name);
-                if (t != null)
-                    list.Add (t);                
-            }
-
-            SearchForImplementations (list);
+            SearchForImplementations (SearchForType (fullTypeNameList).ToArray ());
         }
 
         private void SearchForImplementations (IList<Type> listOfInterfaces)
@@ -327,8 +317,18 @@ namespace SimpleHelpers
                     return t;
                 }
             }
-
             return null;
+        }
+
+        private IEnumerable<Type> SearchForType (IList<string> fullTypeNameList)
+        {            
+            foreach (var name in fullTypeNameList)
+            {
+                // search loaded types (slow)
+                var t = SearchForType (name);
+                if (t != null)
+                    yield return t;
+            }
         }
 
         private IEnumerable<Type> ListLoadedAssemblyTypes()
@@ -545,10 +545,8 @@ namespace SimpleHelpers
         /// <returns></returns>
         public object GetInstance (Type type)
         {
-            // if none was found, it was not initilized yet...
-            if (!exportedModules.ContainsKey (type.FullName))
-                SearchForImplementations (new[] { type });
-            return GetInstance (type.FullName);
+            var ctor = GetConstructor (type);
+            return ctor != null ? ctor () : null;
         }
 
         /// <summary>
@@ -558,20 +556,8 @@ namespace SimpleHelpers
         /// <returns></returns>
         public object GetInstance (string fullTypeName)
         {
-            ModuleInfo module;
-            // if none was found, it was not initilized yet...
-            if (!exportedModules.ContainsKey (fullTypeName))
-                SearchForImplementations (new[] { fullTypeName });
-            // if we have the type, lets get it
-            if (exportedModules.TryGetValue (fullTypeName, out module))
-            {
-                if (module.Factory == null)
-                {
-                    module.Factory = CreateFactory (module.TypeInfo);
-                }
-                return module.Factory ();
-            }
-            return null;
+            var ctor = GetConstructor (fullTypeName);
+            return ctor != null ? ctor () : null;
         }
 
         /// <summary>
@@ -634,7 +620,23 @@ namespace SimpleHelpers
         /// <returns></returns>
         public Func<object> GetConstructor (Type type)
         {
-            return GetConstructor (type.FullName);
+            ModuleInfo module;
+            // check type registration, if none was found, it was not initilized yet...
+            if (!exportedModules.TryGetValue (type.FullName, out module))
+            {
+                SearchForImplementations (new[] { type });
+                exportedModules.TryGetValue (type.FullName, out module);
+            }
+            // if we have the type, lets get it
+            if (module != null)
+            {
+                if (module.Factory == null)
+                {
+                    module.Factory = CreateFactory (module.TypeInfo);
+                }
+                return module.Factory;
+            }
+            return null;
         }
 
         /// <summary>
@@ -645,8 +647,14 @@ namespace SimpleHelpers
         public Func<object> GetConstructor (string fullTypeName)
         {
             ModuleInfo module;
+            // check type registration, if none was found, it was not initilized yet...
+            if (!exportedModules.TryGetValue (fullTypeName, out module))
+            {
+                SearchForImplementations (new[] { fullTypeName });
+                exportedModules.TryGetValue (fullTypeName, out module);
+            }
             // if we have the type, lets get it
-            if (exportedModules.TryGetValue (fullTypeName, out module))
+            if (module != null)
             {
                 if (module.Factory == null)
                 {
