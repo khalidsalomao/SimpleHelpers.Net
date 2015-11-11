@@ -321,13 +321,15 @@ namespace SimpleHelpers
         }
 
         private IEnumerable<Type> SearchForType (IList<string> fullTypeNameList)
-        {            
-            foreach (var name in fullTypeNameList)
+        { 
+            // search loaded types (slow)
+            foreach (var t in ListLoadedAssemblyTypes ())
             {
-                // search loaded types (slow)
-                var t = SearchForType (name);
-                if (t != null)
-                    yield return t;
+                foreach (var name in fullTypeNameList)
+                {
+                    if (name == t.FullName)                    
+                        yield return t;
+                }
             }
         }
 
