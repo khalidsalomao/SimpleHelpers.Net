@@ -91,7 +91,7 @@ namespace $rootnamespace$.SimpleHelpers
             if (!Console.IsOutputRedirected)
             {
                 ConsoleUtils.DisplayHeader (
-                    typeof(ConsoleUtils).Namespace.Replace(".SimpleHelpers", ""),
+                    typeof(ConsoleUtils).Namespace.Replace (".SimpleHelpers", ""),
                     "options: " + (ProgramOptions == null ? "none" : "\n#    " + String.Join ("\n#    ", ProgramOptions.Options.Select (i => i.Key + "=" + i.Value))));
             }
             else
@@ -144,24 +144,25 @@ namespace $rootnamespace$.SimpleHelpers
 
             // default parameters initialization from config file
             if (String.IsNullOrEmpty (logFileName))
-                logFileName = System.Configuration.ConfigurationManager.AppSettings["logFilename"];
+                logFileName = _logFileName ?? System.Configuration.ConfigurationManager.AppSettings["logFilename"];
 			if (String.IsNullOrEmpty (logFileName))
-                logFileName = ("${basedir}/log/" + typeof (ConsoleUtils).Namespace.Replace(".SimpleHelpers", "") + ".log");
+                logFileName = ("${basedir}/log/" + typeof (ConsoleUtils).Namespace.Replace (".SimpleHelpers", "") + ".log");
             if (String.IsNullOrEmpty (logLevel))
-                logLevel = System.Configuration.ConfigurationManager.AppSettings["logLevel"] ?? "Info";
+                logLevel = _logLevel ?? (System.Configuration.ConfigurationManager.AppSettings["logLevel"] ?? "Info");
 
             // check if log was initialized with same options
-            if (_logFileName == logFileName && _logLevel == logLevel) 
+            if (_logFileName == logFileName && _logLevel == logLevel)
                 return;
 
-            // save current log configuration
-            _logFileName = logFileName;
-            _logLevel = logLevel;
 
             // try to parse loglevel
             LogLevel currentLogLevel;
             try { currentLogLevel = LogLevel.FromString (logLevel); }
             catch { currentLogLevel = LogLevel.Info; }
+
+            // save current log configuration
+            _logFileName = logFileName;
+            _logLevel = currentLogLevel.ToString ();
 
             // prepare log configuration
             var config = new NLog.Config.LoggingConfiguration ();
@@ -206,7 +207,7 @@ namespace $rootnamespace$.SimpleHelpers
             if (options != null && options.targets != null)
             {
                 foreach (var t in options.targets)
-                {                    
+                {
                     config.AddTarget (t);
                     config.LoggingRules.Add (new NLog.Config.LoggingRule ("*", currentLogLevel, t));
                 }
@@ -238,7 +239,7 @@ namespace $rootnamespace$.SimpleHelpers
 
             // set exit code and exit
             System.Environment.ExitCode = exitCode;
-            if (exitApplication) 
+            if (exitApplication)
                 System.Environment.Exit (exitCode);
         }
 
@@ -341,7 +342,7 @@ namespace $rootnamespace$.SimpleHelpers
                         argsOptions.Set (arg.Substring (0, p).Trim ().TrimStart ('-', '/'), arg.Substring (p + 1).Trim ());
                         lastTag = null;
                         openTag = false;
-                    }                    
+                    }
                     // search for tag stating with special character
                     else if (hasStartingMarker)
                     {
@@ -354,7 +355,7 @@ namespace $rootnamespace$.SimpleHelpers
                     {
                         argsOptions.Set (lastTag, arg.Trim ());
                         openTag = false;
-                    }                    
+                    }
                 }
             }
             return argsOptions;
@@ -387,22 +388,22 @@ namespace $rootnamespace$.SimpleHelpers
                     GetLogger ().Error (ex);
                     return new FlexibleOptions ();
                 }
-            }            
+            }
         }
 
         private static FlexibleOptions LoadFileSystemConfigurationFile (string filePath, bool thrownOnError)
         {
-                try
-                {
-                	string text = ReadFileAllText (filePath);
-                	return parseFile (text);
-                }
-                catch (Exception ex)
-                {
-                    if (thrownOnError)
-                        throw;
-                    GetLogger ().Error (ex);
-                    return new FlexibleOptions ();
+            try
+            {
+            	string text = ReadFileAllText (filePath);
+            	return parseFile (text);
+            }
+            catch (Exception ex)
+            {
+                if (thrownOnError)
+                    throw;
+                GetLogger ().Error (ex);
+                return new FlexibleOptions ();
             }
         }
 
@@ -411,7 +412,7 @@ namespace $rootnamespace$.SimpleHelpers
             var options = new FlexibleOptions ();
 
             // detect xml
-            if (content.TrimStart().StartsWith ("<"))
+            if (content.TrimStart ().StartsWith ("<"))
             {
                 var xmlDoc = System.Xml.Linq.XDocument.Parse (content);
                 var root = xmlDoc.Descendants ("config").FirstOrDefault ();
@@ -459,7 +460,7 @@ namespace $rootnamespace$.SimpleHelpers
             // display message parameter
             if (isError)
             {
-                Console.Error.WriteLine (message);                
+                Console.Error.WriteLine (message);
             }
             else
             {
