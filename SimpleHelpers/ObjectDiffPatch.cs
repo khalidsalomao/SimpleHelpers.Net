@@ -245,7 +245,7 @@ namespace SimpleHelpers
         {
             JToken token;
             // deal with null values
-            if (sourceJson == null || diffJson == null)
+            if (sourceJson == null || diffJson == null || !sourceJson.HasValues)
             {
                 return diffJson;
             }

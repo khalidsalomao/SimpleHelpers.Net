@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using SimpleHelpers;
+using System.Linq;
 
 namespace Tests
 {
@@ -140,7 +141,35 @@ namespace Tests
 			Assert.AreEqual(testObj.ListOfObjectProperty[2].StringProperty, revertedObj.ListOfObjectProperty[2].StringProperty);
 			Assert.AreEqual(testObj.ListOfObjectProperty[2].DoubleProperty, revertedObj.ListOfObjectProperty[2].DoubleProperty);
 		}
-	}
+
+        [TestMethod]
+        public void AbleToAddObjectListItemThenApplyViaPatch()
+        {
+            var testObj = GetSimpleTestObject();
+            PopulateObjectListOnTestClass(testObj);
+
+            var updatedTestObj = GetSimpleTestObject();
+            PopulateObjectListOnTestClass(updatedTestObj);
+
+            updatedTestObj.ListOfObjectProperty.Add(new TestClass { StringProperty = "added" });
+
+            var diff = ObjectDiffPatch.GenerateDiff(testObj, updatedTestObj);
+
+            var updatePatch = JsonConvert.SerializeObject(diff.NewValues);
+
+            var objToUpdate = GetSimpleTestObject();
+            PopulateObjectListOnTestClass(objToUpdate);
+
+            var updatedObj = ObjectDiffPatch.PatchObject(objToUpdate, updatePatch);
+
+            Assert.AreEqual(updatedTestObj.ListOfObjectProperty.Count, updatedObj.ListOfObjectProperty.Count);
+
+            var addedListItem = updatedObj.ListOfObjectProperty.SingleOrDefault(obj => obj != null && obj.StringProperty == "added");
+
+            Assert.IsNotNull(addedListItem);
+
+        }
+    }
 
 	public class TestClass
 	{
