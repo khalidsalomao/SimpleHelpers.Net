@@ -262,11 +262,16 @@ namespace $rootnamespace$.SimpleHelpers
         {
             if (m_tasks != null)
             {
-                // signal that there is no more items
-                m_tasks.CompleteAdding ();
 
                 // stop internal timer
                 StopMaintenance ();
+
+                // signal that there is no more items
+                m_tasks.CompleteAdding ();                
+
+                // flush queue if waitForWorkToFinish is false
+                if (!waitForWorkToFinish)
+                    Clear ();
 
                 // run internal execute, to ensure we have running threads
                 // here we have to wait for the thread creation queue to flush
@@ -274,6 +279,7 @@ namespace $rootnamespace$.SimpleHelpers
                     Thread.Sleep (0);
 
                 // wait for work completion
+                Thread.Sleep (0);
                 if (waitForWorkToFinish)
                 {
                     foreach (var thread in m_threads)
