@@ -154,7 +154,6 @@ namespace $rootnamespace$.SimpleHelpers
             if (_logFileName == logFileName && _logLevel == logLevel)
                 return;
 
-
             // try to parse loglevel
             LogLevel currentLogLevel;
             try { currentLogLevel = LogLevel.FromString (logLevel); }
@@ -189,10 +188,11 @@ namespace $rootnamespace$.SimpleHelpers
             fileTarget.AutoFlush = true;
             fileTarget.KeepFileOpen = true;
             fileTarget.DeleteOldFileOnStartup = false;
-            fileTarget.ArchiveAboveSize = 4 * 1024 * 1024;  // 4 Mb
+            fileTarget.ArchiveAboveSize = 5 * 1024 * 1024;  // 5 Mb
             fileTarget.MaxArchiveFiles = 10;
             fileTarget.ArchiveNumbering = NLog.Targets.ArchiveNumberingMode.DateAndSequence;
-            fileTarget.ArchiveDateFormat = "yyyyMMdd_HHmmss";
+            fileTarget.ArchiveDateFormat = "yyyyMMdd";
+            fileTarget.ArchiveFileName = System.IO.Path.ChangeExtension (logFileName, ".{#}" + System.IO.Path.GetExtension (logFileName));
 
             // set file output to be async (commented out since doesn't work on mono)
             // var wrapper = new NLog.Targets.Wrappers.AsyncTargetWrapper (fileTarget);
@@ -344,7 +344,8 @@ namespace $rootnamespace$.SimpleHelpers
                         openTag = false;
                     }
                     // search for tag stating with special character
-                    else if (hasStartingMarker)
+                    // a linux path should be valid: -path /home/file
+                    else if (hasStartingMarker && !(openTag && arg[0] == '/'))
                     {
                         lastTag = arg.Trim ().TrimStart ('-', '/');
                         argsOptions.Set (lastTag, "true");
@@ -473,6 +474,8 @@ namespace $rootnamespace$.SimpleHelpers
 
         public static string ReadFileAllText (string filename)
         {
+            if (!System.IO.File.Exists (filename))
+                return String.Empty;
             // enable file encoding detection
             var encoding = SimpleHelpers.FileEncoding.DetectFileEncoding (filename);
             // Load data based on parameters
@@ -481,6 +484,8 @@ namespace $rootnamespace$.SimpleHelpers
 
         public static string[] ReadFileAllLines (string filename)
         {
+            if (!System.IO.File.Exists (filename))
+                return new string[0];
             // enable file encoding detection
             var encoding = SimpleHelpers.FileEncoding.DetectFileEncoding (filename);
             // Load data based on parameters
