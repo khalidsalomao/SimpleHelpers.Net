@@ -6,6 +6,9 @@ List of Parameters
 	-logFilename : name of the log file. Defaults to "${basedir}/log/aplication_name.log".
 	-config : Address to an external file with a json format configuration options. At service start up the file will be loaded and parsed. 
 	-waitForKeyBeforeExit : If the console application should ask for user input at the end, before exiting the application.
-	
+	-disableLogFile : If the local log file should be disabled. Defaults to enabled.	
+	-disableLogTargets : List of Log targets that should be disabled.
+	-enableLogTargets : List of target to be enabled. This option takes precedence over `disableLogTargets` and `disableLogFile`.
+
 
 ##########################################

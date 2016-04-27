@@ -46,41 +46,98 @@ namespace $rootnamespace$.SimpleHelpers
         public static readonly CultureInfo cultureUS = new CultureInfo ("en-US");
         public static readonly CultureInfo cultureBR = new CultureInfo ("pt-BR");
 
+        /// <summary>Parsed arguments by Initialize method call.</summary>
         public static FlexibleOptions ProgramOptions { get; private set; }
 
         private static InitializationOptions InitOptions = null;
 
         public class InitializationOptions
         {
-            public bool overrideNLogFileConfiguration = true;
-            public List<NLog.Targets.Target> targets;
+            /// <summary>List of additional NLog targets.</summary>
+            public List<NLog.Targets.Target> Targets { get; set; }
 
-            public InitializationOptions OverrideNLogFileConfiguration (bool Override)
+            /// <summary>If the local log file should be disabled.</summary>
+            public bool? DisableLogFile { get; set; }
+
+            /// <summary>Maximum number of archieve log files. Defaults to 4 Mb.</summary>
+            public int MaxLogFileSize { get; set; }
+
+            /// <summary>Maximum number of archieve log files. Minimum of 1. Defaults to 10.</summary>
+            public int MaxArchiveLogFiles { get; set; }
+
+            /// <summary>List of Log targets that should be disabled.</summary>
+            public IList<string> DisableLogTargets { get; set; }
+
+            /// <summary>List of target to be enabled. This option takes precedence over DisableLogTargets and DisableLogFile.</summary>
+            public IList<string> EnableLogTargets { get; set; }
+
+            /// <summary>
+            /// Constructor.
+            /// </summary>
+            public InitializationOptions ()
             {
-                overrideNLogFileConfiguration = Override;
-                return this;
+                DisableLogFile = false;
+                MaxArchiveLogFiles = 10;
+                MaxLogFileSize = 4 * 1024 * 1024;
             }
 
-            public InitializationOptions AddNLogTarget (params NLog.Targets.Target[] Targets)
+            /// <summary>
+            /// Constructor.
+            /// </summary>
+            /// <param name="targets">Additional Nlog targets.</param>
+            public InitializationOptions (params NLog.Targets.Target[] targets) : this ()
             {
-                if (Targets != null)
+                AddNLogTarget (targets);                
+            }
+            
+            /// <summary>
+            /// Adds additional NLog targets.
+            /// </summary>
+            public InitializationOptions AddNLogTarget (params NLog.Targets.Target[] targets)
+            {
+                if (targets != null)
                 {
-                    if (targets == null)
-                        targets = new List<NLog.Targets.Target> ();
-                    targets.AddRange (Targets);
+                    if (Targets == null)
+                        Targets = new List<NLog.Targets.Target> ();
+                    Targets.AddRange (targets);
                 }
                 return this;
             }
+
+            /// <summary>
+            /// Clones this instance.
+            /// </summary>
+            public InitializationOptions Clone ()
+            {
+                return new InitializationOptions
+                {
+                    Targets = this.Targets,
+                    DisableLogFile = this.DisableLogFile,
+                    MaxArchiveLogFiles = this.MaxArchiveLogFiles,
+                    MaxLogFileSize = this.MaxLogFileSize,
+                    DisableLogTargets = this.DisableLogTargets,
+                    EnableLogTargets = this.EnableLogTargets
+                };
+            }
         }
 
+        /// <summary>
+        /// Parses command line and app.config arguments and initilialize log.
+        /// </summary>
+        /// <param name="args">Program arguments</param>
+        /// <param name="thrownOnError">The thrown exception on internal initialization error.</param>
+        /// <param name="options">The additional options.</param>
+        /// <returns>Parsed arguments</returns>
         public static FlexibleOptions Initialize (string[] args, bool thrownOnError, InitializationOptions options = null)
         {
             InitOptions = options;
+            // run default program initialization
             DefaultProgramInitialization ();
 
-
+            // parse command line arguments
             ProgramOptions = CheckCommandLineParams (args, thrownOnError);
 
+            // check for help command
             if (ProgramOptions.Get<bool> ("help", false) || ProgramOptions.Get<bool> ("h", false))
             {
                 show_help ("");
@@ -131,17 +188,24 @@ namespace $rootnamespace$.SimpleHelpers
         private static Logger GetLogger ()
         {
             if (_logFileName == null)
-                InitializeLog (null, null, InitOptions);
+                InitializeLog (null, null, InitOptions, ProgramOptions);
             return LogManager.GetCurrentClassLogger ();
         }
+        
+        /// <summary>
+        /// Initializes log with initialization options.
+        /// </summary>
+        /// <param name="options">The options.</param>
+        internal static void InitializeLog (InitializationOptions options)
+        {
+            InitializeLog (null, null, options, ProgramOptions);
+        }
+
         /// <summary>
         /// Log initialization.
         /// </summary>
-        internal static void InitializeLog (string logFileName = null, string logLevel = null, InitializationOptions options = null)
+        internal static void InitializeLog (string logFileName = null, string logLevel = null, InitializationOptions initOptions = null, FlexibleOptions appOptions = null)
         {
-            if (options != null && !options.overrideNLogFileConfiguration && LogManager.Configuration == null)
-                return;
-
             // default parameters initialization from config file
             if (String.IsNullOrEmpty (logFileName))
                 logFileName = _logFileName ?? System.Configuration.ConfigurationManager.AppSettings["logFilename"];
@@ -163,11 +227,52 @@ namespace $rootnamespace$.SimpleHelpers
             _logFileName = logFileName;
             _logLevel = currentLogLevel.ToString ();
 
+            // check initialization options
+            var localOptions = initOptions != null ? initOptions.Clone () : new InitializationOptions ();
+            // adjust options based on arguments
+            if (appOptions != null)
+            {
+                if (!localOptions.DisableLogFile.HasValue && appOptions.HasOption ("DisableLogFile"))
+                    localOptions.DisableLogFile = appOptions.Get ("DisableLogFile", false);
+                if (localOptions.EnableLogTargets == null && !String.IsNullOrEmpty (appOptions.Get ("EnableLogTargets")))
+                    localOptions.EnableLogTargets = appOptions.GetAsList ("EnableLogTargets").Where (i => !String.IsNullOrWhiteSpace (i)).Select (i => i.Trim ()).ToArray ();
+                if (localOptions.DisableLogTargets == null && !String.IsNullOrEmpty (appOptions.Get ("DisableLogTargets")))
+                    localOptions.DisableLogTargets = appOptions.GetAsList ("DisableLogTargets").Where (i => !String.IsNullOrWhiteSpace (i)).Select (i => i.Trim ()).ToArray ();
+            }
+
+            // prepare list of enabled targets
+            HashSet<string> enabledTargets;
+            // if enabled log targets was provided, use it!
+            if (localOptions.EnableLogTargets != null && localOptions.EnableLogTargets.Count > 0)
+            {
+                enabledTargets = new HashSet<string> (localOptions.EnableLogTargets, StringComparer.OrdinalIgnoreCase);
+            }
+            // else we remove disabled target...
+            else
+            {
+                enabledTargets = new HashSet<string> (StringComparer.OrdinalIgnoreCase) { "console", "file" };
+                // set enabled targets
+                if (localOptions.Targets != null)
+                {
+                    foreach (var i in localOptions.Targets)
+                    {
+                        foreach (var n in GetNLogTargetName (i))
+                            enabledTargets.Add (n);
+                    }
+                }
+                // remove disabled targets
+                if (localOptions.DisableLogTargets != null)
+                    foreach (var i in localOptions.DisableLogTargets)
+                        enabledTargets.Remove (i);
+                if (localOptions.DisableLogFile ?? false)
+                    enabledTargets.Remove ("file");                
+            }
+
             // prepare log configuration
             var config = new NLog.Config.LoggingConfiguration ();
 
             // console output
-            if (!Console.IsOutputRedirected)
+            if (!Console.IsOutputRedirected && enabledTargets.Contains ("console"))
             {
                 var consoleTarget = new NLog.Targets.ColoredConsoleTarget ();
                 consoleTarget.Layout = "${longdate}\t${callsite}\t${level}\t${message}\t${onexception: \\:[Exception] ${exception:format=tostring}}";
@@ -179,42 +284,60 @@ namespace $rootnamespace$.SimpleHelpers
             }
 
             // file output
-            var fileTarget = new NLog.Targets.FileTarget ();
-            fileTarget.FileName = logFileName;
-            fileTarget.Layout = "${longdate}\t${callsite}\t${level}\t\"${message}${onexception: \t [Exception] ${exception:format=tostring}}\"";
-            fileTarget.ConcurrentWrites = true;
-			fileTarget.ConcurrentWriteAttemptDelay = 10;
-            fileTarget.ConcurrentWriteAttempts = 8;
-            fileTarget.AutoFlush = true;
-            fileTarget.KeepFileOpen = true;
-            fileTarget.DeleteOldFileOnStartup = false;
-            fileTarget.ArchiveAboveSize = 5 * 1024 * 1024;  // 5 Mb
-            fileTarget.MaxArchiveFiles = 10;
-            fileTarget.ArchiveNumbering = NLog.Targets.ArchiveNumberingMode.DateAndSequence;
-            fileTarget.ArchiveDateFormat = "yyyyMMdd";
-            fileTarget.ArchiveFileName = System.IO.Path.ChangeExtension (logFileName, ".{#}" + System.IO.Path.GetExtension (logFileName));
+            if (enabledTargets.Contains ("file"))
+            {
+                var fileTarget = new NLog.Targets.FileTarget ();
+                fileTarget.FileName = logFileName;
+                fileTarget.Layout = "${longdate}\t${callsite}\t${level}\t\"${message}${onexception: \t [Exception] ${exception:format=tostring}}\"";
+                fileTarget.ConcurrentWrites = true;
+                fileTarget.ConcurrentWriteAttemptDelay = 10;
+                fileTarget.ConcurrentWriteAttempts = 8;
+                fileTarget.AutoFlush = true;
+                fileTarget.KeepFileOpen = true;
+                fileTarget.DeleteOldFileOnStartup = false;
+                fileTarget.ArchiveAboveSize = (localOptions.MaxLogFileSize > 0) ? localOptions.MaxLogFileSize : 4 * 1024 * 1024;  // 4 Mb
+                fileTarget.MaxArchiveFiles = (localOptions.MaxArchiveLogFiles > 0) ? localOptions.MaxArchiveLogFiles : 10;
+                fileTarget.ArchiveNumbering = NLog.Targets.ArchiveNumberingMode.DateAndSequence;
+                fileTarget.ArchiveDateFormat = "yyyyMMdd";
+                fileTarget.ArchiveFileName = System.IO.Path.ChangeExtension (logFileName, ".{#}" + System.IO.Path.GetExtension (logFileName));
 
-            // set file output to be async (commented out since doesn't work on mono)
-            // var wrapper = new NLog.Targets.Wrappers.AsyncTargetWrapper (fileTarget);
+                // set file output to be async (commented out since doesn't work well on mono)
+                // var wrapper = new NLog.Targets.Wrappers.AsyncTargetWrapper (fileTarget);
 
-            config.AddTarget ("file", fileTarget);
+                config.AddTarget ("file", fileTarget);
 
-            // configure log from configuration file
-            var rule2 = new NLog.Config.LoggingRule ("*", currentLogLevel, fileTarget);
-            config.LoggingRules.Add (rule2);
+                // configure log from configuration file
+                var rule2 = new NLog.Config.LoggingRule ("*", currentLogLevel, fileTarget);
+                config.LoggingRules.Add (rule2);
+            }
 
             // External Log Target
-            if (options != null && options.targets != null)
+            if (localOptions.Targets != null)
             {
-                foreach (var t in options.targets)
+                foreach (var t in localOptions.Targets)
                 {
-                    config.AddTarget (t);
-                    config.LoggingRules.Add (new NLog.Config.LoggingRule ("*", currentLogLevel, t));
+                    if (GetNLogTargetName (t).Any (i => enabledTargets.Contains (i)))
+                    {
+                        config.AddTarget (t);
+                        config.LoggingRules.Add (new NLog.Config.LoggingRule ("*", currentLogLevel, t));
+                    }
                 }
             }
 
             // set configuration options
             LogManager.Configuration = config;
+        }
+
+        private static IEnumerable<string> GetNLogTargetName (NLog.Targets.Target target)
+        {
+            if (!String.IsNullOrEmpty (target.Name))
+                yield return (target.Name);
+            var name = target.GetType ().Name.Split ('.').Last ();
+            if (target.Name != name)
+                yield return name;
+            name = name.Replace ("Target", "");
+            if (target.Name != name)
+                yield return name;
         }
 
         /// <summary>
@@ -223,14 +346,14 @@ namespace $rootnamespace$.SimpleHelpers
         /// <param name="exitCode">The exit code.</param>
         public static void CloseApplication (int exitCode, bool exitApplication)
         {
-            System.Threading.Thread.Sleep (0);
             // log error code and close log
             if (exitCode == 0)
                 GetLogger ().Debug ("ExitCode " + exitCode.ToString ());
             else
                 GetLogger ().Error ("ExitCode " + exitCode.ToString ());
+            // flush log and wait some milliseconds before proceeding...
             LogManager.Flush ();
-            System.Threading.Thread.Sleep (0);
+            System.Threading.Thread.Sleep (100);
 			// force garbage collector run
             // usefull for clearing COM interfaces or any other similar resource
             GC.Collect ();
@@ -302,7 +425,7 @@ namespace $rootnamespace$.SimpleHelpers
             {
                 // initialize log before dealing with exceptions
                 if (mergedOptions != null)
-                    InitializeLog (mergedOptions.Get ("logFilename"), mergedOptions.Get ("logLevel", "Info"), InitOptions);
+                    InitializeLog (mergedOptions.Get ("logFilename"), mergedOptions.Get ("logLevel", "Info"), InitOptions, mergedOptions);
                 if (thrownOnError)
                     throw;
                 GetLogger ().Error (ex);
@@ -310,12 +433,12 @@ namespace $rootnamespace$.SimpleHelpers
 
             // merge options with the following priority:
             // 1. console arguments
-            // 2. web configuration file
+            // 2. external file with json configuration object (local or web)
             // 3. local configuration file (app.config or web.config)
             mergedOptions = FlexibleOptions.Merge (mergedOptions, externalLoadedOptions, argsOptions);
 
             // reinitialize log options if different from local configuration file
-            InitializeLog (mergedOptions.Get ("logFilename"), mergedOptions.Get ("logLevel", "Info"), InitOptions);
+            InitializeLog (mergedOptions.Get ("logFilename"), mergedOptions.Get ("logLevel", "Info"), InitOptions, mergedOptions);
 
             // return final merged options
             ProgramOptions = mergedOptions;
@@ -376,20 +499,32 @@ namespace $rootnamespace$.SimpleHelpers
 
         private static FlexibleOptions LoadWebConfigurationFile (string filePath, bool thrownOnError)
         {
-            using (WebClient client = new WebClient ())
+            // try to download configuration, retry in case of network failure
+            for (var i = 0; i < 3; i++)
             {
                 try
                 {
-                    return parseFile (client.DownloadString (filePath));
+                    using (WebClient client = new WebClient ())
+                    {
+                        return parseFile (client.DownloadString (filePath));
+                    }
                 }
                 catch (Exception ex)
                 {
-                    if (thrownOnError)
-                        throw;
-                    GetLogger ().Error (ex);
-                    return new FlexibleOptions ();
+                    if (i >= 2)
+                    {
+                        if (thrownOnError)
+                            throw;
+                        GetLogger ().Error (ex);
+                    }
+                    else
+                    {
+                        Task.Delay (150).Wait ();
+                    }
                 }
             }
+            
+            return new FlexibleOptions ();
         }
 
         private static FlexibleOptions LoadFileSystemConfigurationFile (string filePath, bool thrownOnError)

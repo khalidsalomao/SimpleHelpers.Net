@@ -6,14 +6,17 @@ Application description
 
 The application parameters can set in 3 ways:
 
-1. app.config
-2. command line arguments
-3. a file with json format parameters (local or web)
+1. command line arguments
+2. external file with json configuration object (local or web)
+3. local configuration file (app.config or web.config)
 
+
+If there is conflicting arguments, the priority for conflict resolutions is:
 
 **Priority:** *command line arguments* **>** *external file* **>** *app.config*
 
-### app.config
+
+### app.config or web.config
 Just set the desired parameters in the `<appSettings>` area.
 
 Example
@@ -32,7 +35,7 @@ Each parameter can overwrite the default value or the value in the app.config by
 Example
 
 ```
-  $rootnamespace$.exe --logLevel="Info" --logFilename="log.txt"
+  CacheExporter.exe --logLevel="Info" --logFilename="log.txt"
 ```
 
 **Note:** The help can also be summoned by passing the argument `--help`
@@ -60,7 +63,7 @@ External file format
 Example
 
 ```
-  $rootnamespace$.exe --config="Info" --logFilename="log.txt"
+  CacheExporter.exe --config="http://my.application.com/my_custom_config_file.json" --logFilename="log.txt"
 ```
 
 **Note:** The help can also be summoned by passing the argument `--help`
@@ -87,6 +90,7 @@ Default value: `Info`
 * Warn
 * Error
 * Fatal
+* Off
 
 
 ### config
