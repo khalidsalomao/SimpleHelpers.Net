@@ -609,7 +609,7 @@ namespace SimpleHelpers.SQLite
         }
 
         /// <summary>
-        /// Removes all items that meets the search parameters.
+        /// Removes all items that meets the search parameters.<para/>
         /// Uses a LIKE sql query to locate items.
         /// </summary>
         /// <param name="key">The key.</param>
