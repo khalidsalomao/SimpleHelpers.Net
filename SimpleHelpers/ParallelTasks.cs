@@ -43,7 +43,7 @@ namespace SimpleHelpers
     /// </summary>
     public sealed class ParallelTasks<T> : IDisposable
     {
-        private List<Thread> m_threads;
+        private List<Task> m_threads;
         private BlockingCollection<T> m_tasks;
         private int _maxNumberOfThreads = 0;
         private Action<T> _action;
@@ -54,9 +54,10 @@ namespace SimpleHelpers
         /// <param name="items">The items.</param>
         /// <param name="numberOfThreads">The number of threads.</param>
         /// <param name="action">The action.</param>
+        /// <remarks>The internal queue has a default bounded capacity of twice the number of threads.</remarks>
         public static void Process (IEnumerable<T> items, int numberOfThreads, Action<T> action)
         {
-            Process (items, numberOfThreads, 0, 0, action);
+            Process (items, numberOfThreads, numberOfThreads, 0, action);
         }
 
         /// <summary>
@@ -66,6 +67,7 @@ namespace SimpleHelpers
         /// <param name="initialNumberOfThreads">The initial number of threads.</param>
         /// <param name="maxNumberOfThreads">The max number of threads.</param>
         /// <param name="action">The action.</param>
+        /// <remarks>The internal queue has a default bounded capacity of twice the number of threads.</remarks>
         public static void Process (IEnumerable<T> items, int initialNumberOfThreads, int maxNumberOfThreads, Action<T> action)
         {
             Process (items, initialNumberOfThreads, maxNumberOfThreads, 0, action);
@@ -89,6 +91,7 @@ namespace SimpleHelpers
             {
                 foreach (var i in items)
                     mgr.AddTask (i);
+                mgr.CloseAndWait ();
             }
         }
 
@@ -97,13 +100,11 @@ namespace SimpleHelpers
         /// </summary>
         /// <param name="numberOfThreads">The number of threads.</param>
         /// <param name="action">The action.</param>
+        /// <remarks>The internal queue has a default bounded capacity of twice the number of threads.</remarks>
         public ParallelTasks (int numberOfThreads, Action<T> action)
         {
-            if (numberOfThreads < 1)
-                throw new ArgumentOutOfRangeException ("concurrencyLevel");
-
             // create task queue
-            Initialize (numberOfThreads, numberOfThreads * 2, action);
+            Initialize (numberOfThreads, 0, action);
         }
 
         /// <summary>
@@ -112,15 +113,15 @@ namespace SimpleHelpers
         /// <param name="initialNumberOfThreads">The initial number of threads.</param>
         /// <param name="maxNumberOfThreads">The max number of threads.</param>
         /// <param name="action">The action.</param>
+        /// <remarks>The internal queue has a default bounded capacity of twice the number of threads.</remarks>
         public ParallelTasks (int initialNumberOfThreads, int maxNumberOfThreads, Action<T> action)
         {
-            if (initialNumberOfThreads < 1)
-                throw new ArgumentOutOfRangeException ("concurrencyLevel");
-            if (maxNumberOfThreads > initialNumberOfThreads)
+            if (maxNumberOfThreads < initialNumberOfThreads)
+                throw new ArgumentOutOfRangeException ("maxNumberOfThreads");
                 _maxNumberOfThreads = maxNumberOfThreads;
 
             // create task queue
-            Initialize (initialNumberOfThreads, initialNumberOfThreads * 2, action);
+            Initialize (initialNumberOfThreads, 0, action);
         }
 
         /// <summary>
@@ -136,10 +137,9 @@ namespace SimpleHelpers
         /// <param name="action">The action.</param>
         public ParallelTasks (int initialNumberOfThreads, int maxNumberOfThreads, int queueBoundedCapacity, Action<T> action)
         {
-            if (initialNumberOfThreads < 1)
-                throw new ArgumentOutOfRangeException ("concurrencyLevel");
-            if (maxNumberOfThreads > initialNumberOfThreads)
-                _maxNumberOfThreads = maxNumberOfThreads;
+            if (maxNumberOfThreads < initialNumberOfThreads)
+                throw new ArgumentOutOfRangeException ("maxNumberOfThreads");
+			_maxNumberOfThreads = maxNumberOfThreads;
 
             // create task queue
             Initialize (initialNumberOfThreads, queueBoundedCapacity, action);
@@ -147,14 +147,26 @@ namespace SimpleHelpers
  
         private void Initialize (int numberOfThreads, int queueBoundedCapacity, Action<T> action)
         {
+            // sanity check            
+            if (numberOfThreads < 0)
+                throw new ArgumentOutOfRangeException ("Number of threads cannot negative.", "numberOfThreads");
+            if (action == null)
+                throw new ArgumentNullException ("action");
+
+            // adjust blocking collection capacity
             if (queueBoundedCapacity == 0)
-                queueBoundedCapacity = numberOfThreads * 2;
+                queueBoundedCapacity = (_maxNumberOfThreads * 2) + 1;
+            if (queueBoundedCapacity == 1)
+                queueBoundedCapacity++;
+
+            // register action
             _action = action;
+			
             // create task queue
             m_tasks = (queueBoundedCapacity > 0) ? new BlockingCollection<T> (queueBoundedCapacity) : new BlockingCollection<T>();
 
             // create all threads
-            m_threads = new List<Thread> (numberOfThreads);
+            m_threads = new List<Task> (numberOfThreads);
             CreateThreads (numberOfThreads, action);
         }
  
@@ -162,19 +174,16 @@ namespace SimpleHelpers
         {
             for (var i = 0; i < numberOfThreads; i++)
             {
-                var thread = new Thread (() =>
+                Task thread = Task.Run (() =>
                 {
                     foreach (var t in m_tasks.GetConsumingEnumerable ())
                     {
                         action (t);
                     }
                 });
-                thread.IsBackground = true;
+
                 lock (m_threads) 
                     m_threads.Add (thread);
-
-                // start all threads
-                thread.Start ();
             }
         }
 
@@ -191,9 +200,17 @@ namespace SimpleHelpers
         /// <exception cref="InvalidOperationException">If this instance is Disposed, any subsequent call may raise this exception.</exception>
         public void AddTask (T task)
         {
+            // check if we have room for threads
+            if (m_threads.Count < _maxNumberOfThreads)
+            {
+                // if there is no thread, we must start one rigth now
+                if (m_threads.Count == 0)
+                    CreateThreads (1, _action);
+                // signal for thread creation
+                StartMaintenance ();
+            }
+            // finally add the task
             m_tasks.Add (task);
-            if (_maxNumberOfThreads > 0 && m_threads.Count < _maxNumberOfThreads && m_tasks.Count > 1)
-                CreateThreads (1, _action);
         }
 
         /// <summary>
@@ -232,17 +249,52 @@ namespace SimpleHelpers
         /// <summary>
         /// Closes this instance by waiting all threads to complete processing all waiting items.
         /// </summary>
-        private void Close ()
+        public void CloseAndWait ()
+        {
+            Close (true);
+        }
+
+        /// <summary>
+        /// Closes the specified wait for work to finish.
+        /// </summary>
+        /// <param name="waitForWorkToFinish">The wait for work to finish.</param>
+        public void Close (bool waitForWorkToFinish)
         {
             if (m_tasks != null)
             {
-                m_tasks.CompleteAdding ();
 
-                foreach (var thread in m_threads)
-                    thread.Join ();
+                // stop internal timer
+                StopMaintenance ();
+
+                // signal that there is no more items
+                m_tasks.CompleteAdding ();                
+
+                // flush queue if waitForWorkToFinish is false
+                if (!waitForWorkToFinish)
+                    Clear ();
+
+                // run internal execute, to ensure we have running threads
+                // here we have to wait for the thread creation queue to flush
+                while (!TryProcessThreadCreationQueue ())
+                    Thread.Sleep (0);
+
+                // wait for work completion
+                Thread.Sleep (0);
+                if (waitForWorkToFinish)
+                {
+                    foreach (var thread in m_threads)
+                        thread.Wait ();
+                }
+                else
+                {
+                    foreach (var thread in m_threads)
+                        thread.Wait (0);
+                }
                 
+                // clean up
                 m_tasks.Dispose ();
                 m_tasks = null;
+                m_threads.Clear ();
                 m_threads = null;
             }
         }
@@ -252,14 +304,89 @@ namespace SimpleHelpers
         /// </summary>
         public void Dispose ()
         {
-            Close ();
+            Close (true);
             // no need to call dispose again by GC
             GC.SuppressFinalize (this);
         }
 
         ~ParallelTasks ()
         {
-            Close ();
+            Close (false);
         }
+
+        #region *   Async Thread/Workers Creation  *
+
+        private System.Threading.Timer m_maintenanceTask = null;
+        private readonly object m_lock = new object ();
+        private int m_executing = 0;
+        private int m_idleCounter = 0;
+
+        private void StartMaintenance ()
+        {
+            if (m_maintenanceTask == null)
+            {
+                lock (m_lock)
+                {
+                    if (m_maintenanceTask == null)
+                    {
+                        m_maintenanceTask = new System.Threading.Timer (ThreadCreationQueueEventHandler, null, 0, 100);
+                    }
+                }
+            }
+        }
+
+        private void StopMaintenance ()
+        {
+            lock (m_lock)
+            {
+                if (m_maintenanceTask != null)
+                    m_maintenanceTask.Dispose ();
+                m_maintenanceTask = null;
+            }
+        }
+
+        private void ThreadCreationQueueEventHandler (object state)
+        {
+            TryProcessThreadCreationQueue ();
+        }
+
+        private bool TryProcessThreadCreationQueue ()
+        {
+            // check if a step is already executing
+            if (System.Threading.Interlocked.CompareExchange (ref m_executing, 1, 0) != 0)
+                return false;
+            // try to fire OnExpiration event
+            try
+            {
+                // stop timed task we have a full thread pool
+                if (m_threads.Count >= _maxNumberOfThreads)
+                {
+                    StopMaintenance ();
+                }
+                else if (m_tasks.Count == 0)
+                {
+                    // after 3 tries with empty queue, stop timer
+                    if (m_idleCounter++ > 2)
+                        StopMaintenance ();
+                }
+                else
+                {                    
+                    // create threads while there is tasks to be processed
+                    do
+                        CreateThreads (1, _action);
+                    while (m_threads.Count < _maxNumberOfThreads && m_tasks.Count > 0);
+                    // clear idle queue marker
+                    m_idleCounter = 0;
+                }   
+            }
+            finally
+            {
+                // release lock
+                System.Threading.Interlocked.Exchange (ref m_executing, 0);
+            }           
+            return true;
+        }
+
+        #endregion
     }
 }
