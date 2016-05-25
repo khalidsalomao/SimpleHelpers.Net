@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="no-js ie6"><![endif]-->
+<!--[if IE 7 ]><html class="no-js ie7"><![endif]-->
+<!--[if IE 8 ]><html class="no-js ie8"><![endif]-->
+<!--[if IE 9 ]><html class="no-js ie9"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    
+      
+        <title>ObjectPool - SimpleHelpers.Net</title>
+      
+      
+      
+        <link rel="canonical" href="http://khalidsalomao.github.io/SimpleHelpers.Net/docs/objectpool/">
+      
+      
+        <meta name="author" content="Khalid Salomão">
+      
+    
+    <meta property="og:url" content="http://khalidsalomao.github.io/SimpleHelpers.Net/docs/objectpool/">
+    <meta property="og:title" content="SimpleHelpers.Net">
+    <meta property="og:image" content="http://khalidsalomao.github.io/SimpleHelpers.Net/docs/objectpool//../../">
+    <meta name="apple-mobile-web-app-title" content="SimpleHelpers.Net">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    
+    <link rel="shortcut icon" type="image/x-icon" href="../../None">
+    <link rel="icon" type="image/x-icon" href="../../None">
+    <style>
+      @font-face {
+      	font-family: 'Icon';
+      	src: url('../../assets/fonts/icon.eot?52m981');
+      	src: url('../../assets/fonts/icon.eot?#iefix52m981')
+               format('embedded-opentype'),
+      		   url('../../assets/fonts/icon.woff?52m981')
+               format('woff'),
+      		   url('../../assets/fonts/icon.ttf?52m981')
+               format('truetype'),
+      		   url('../../assets/fonts/icon.svg?52m981#icon')
+               format('svg');
+      	font-weight: normal;
+      	font-style: normal;
+      }
+    </style>
+    <link rel="stylesheet" href="../../assets/stylesheets/application-0dac3e5884.css">
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/palettes-05ab2406df.css">
+    
+    
+      
+      
+      
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open Sans:400,700|Roboto+Mono">
+      <style>
+        body, input {
+          font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+        }
+        pre, code {
+          font-family: 'Roboto Mono', 'Courier New', 'Courier', monospace;
+        }
+      </style>
+    
+    
+    <script src="../../assets/javascripts/modernizr-4ab42b99fd.js"></script>
+    
+  </head>
+  
+  
+  
+  <body class="palette-primary-blue-grey palette-accent-cyan">
+    
+      
+      
+    
+    <div class="backdrop">
+      <div class="backdrop-paper"></div>
+    </div>
+    <input class="toggle" type="checkbox" id="toggle-drawer">
+    <input class="toggle" type="checkbox" id="toggle-search">
+    <label class="toggle-button overlay" for="toggle-drawer"></label>
+    <header class="header">
+      <nav aria-label="Header">
+  <div class="bar default">
+    <div class="button button-menu" role="button" aria-label="Menu">
+      <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+    </div>
+    <div class="stretch">
+      <div class="title">
+        
+          <span class="path">
+            
+          </span>
+        
+        ObjectPool
+      </div>
+    </div>
+    
+    
+      
+      <div class="button button-github" role="button" aria-label="GitHub">
+        <a href="https://github.com/khalidsalomao" title="@khalidsalomao on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+      </div>
+    
+    <div class="button button-search" role="button" aria-label="Search">
+      <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+    </div>
+  </div>
+  <div class="bar search">
+    <div class="button button-close" role="button" aria-label="Close">
+      <label class="toggle-button icon icon-back" for="toggle-search"></label>
+    </div>
+    <div class="stretch">
+      <div class="field">
+        <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+      </div>
+    </div>
+    <div class="button button-reset" role="button" aria-label="Search">
+      <button class="toggle-button icon icon-close" id="reset-search"></button>
+    </div>
+  </div>
+</nav>
+    </header>
+    <main class="main">
+      
+      <div class="drawer">
+        <nav aria-label="Navigation">
+  
+  <a href="https://github.com/khalidsalomao/SimpleHelpers.Net" class="project">
+    <div class="banner">
+      
+      <div class="name">
+        <strong>
+          SimpleHelpers.Net
+          <span class="version">
+            
+          </span>
+        </strong>
+        
+          <br>
+          khalidsalomao/SimpleHelpers.Net
+        
+      </div>
+    </div>
+  </a>
+  <div class="scrollable">
+    <div class="wrapper">
+      
+        <ul class="repo">
+          <li class="repo-download">
+            
+            <a href="https://github.com/khalidsalomao/SimpleHelpers.Net/archive/master.zip" target="_blank" title="Download" data-action="download">
+              <i class="icon icon-download"></i> Download
+            </a>
+          </li>
+          <li class="repo-stars">
+            <a href="https://github.com/khalidsalomao/SimpleHelpers.Net/stargazers" target="_blank" title="Stargazers" data-action="star">
+              <i class="icon icon-star"></i> Stars
+              <span class="count">&ndash;</span>
+            </a>
+          </li>
+        </ul>
+        <hr>
+      
+      <div class="toc">
+        <ul>
+          
+            
+  <li>
+    <a class="" title="SimpleHelpers.Net" href="../..">
+      SimpleHelpers.Net
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="" title="MemoryCache" href="../memorycache/">
+      MemoryCache
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="" title="FileEncoding" href="../fileencoding/">
+      FileEncoding
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="" title="NamedLock" href="../namedlock/">
+      NamedLock
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="" title="SQLiteStorage" href="../sqlitestorage/">
+      SQLiteStorage
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="" title="TimedQueue" href="../timedqueue/">
+      TimedQueue
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="current" title="ObjectPool" href="./">
+      ObjectPool
+    </a>
+    
+      
+        
+      
+      
+        <ul>
+          
+            <li class="anchor">
+              <a title="Features" href="#features">
+                Features
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Installation" href="#installation">
+                Installation
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Examples" href="#examples">
+                Examples
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Project Information" href="#project-information">
+                Project Information
+              </a>
+            </li>
+          
+        </ul>
+      
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="" title="ConfigManager" href="../configmanager/">
+      ConfigManager
+    </a>
+    
+  </li>
+
+          
+        </ul>
+        
+          <hr>
+          <span class="section">The author</span>
+          <ul>
+            
+            
+              
+              <li>
+                <a href="https://github.com/khalidsalomao" target="_blank" title="@khalidsalomao on GitHub">
+                  @khalidsalomao on GitHub
+                </a>
+              </li>
+            
+          </ul>
+        
+      </div>
+    </div>
+  </div>
+</nav>
+      </div>
+      <article class="article">
+        <div class="wrapper">
+          
+          <h1 id="simplehelpersobjectpool"><a name="user-content-simplehelpersobjectpool" href="#simplehelpersobjectpool" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>SimpleHelpers.ObjectPool<a class="headerlink" href="#simplehelpersobjectpool" title="Permanent link">#</a></h1>
+<p><a href="https://www.nuget.org/packages/SimpleHelpers.ObjectPool/"><img alt="NuGet" src="https://img.shields.io/nuget/v/SimpleHelpers.ObjectPool.svg?maxAge=1200&amp;style=flat-square" /></a>
+<a href="https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/LICENSE.txt"><img alt="GitHub license" src="https://img.shields.io/badge/license-MIT-brightgreen.svg?maxAge=3600&amp;style=flat-square" /></a></p>
+<p>A fast lightweight object pool for fast and simple object reuse.</p>
+<p>Simple to use, fast, lightweight and thread-safe object pool for objects that are expensive to create or could efficiently be reused.</p>
+<p>Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.</p>
+<h2 id="features"><a name="user-content-features" href="#features" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Features<a class="headerlink" href="#features" title="Permanent link">#</a></h2>
+<ul>
+<li>Simple to use</li>
+<li>Fast</li>
+<li>Lightweight</li>
+<li>Thread-safe</li>
+</ul>
+<h2 id="installation"><a name="user-content-installation" href="#installation" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Installation<a class="headerlink" href="#installation" title="Permanent link">#</a></h2>
+<h3 id="nuget-package-details"><a name="user-content-nuget-package-details" href="#nuget-package-details" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>NuGet Package Details<a class="headerlink" href="#nuget-package-details" title="Permanent link">#</a></h3>
+<p>You can install using NuGet, see <a href="https://www.nuget.org/packages/SimpleHelpers.ObjectPool/">SimpleHelpers.ObjectPool at NuGet.org</a></p>
+<div class="code"><pre><span></span><span class="n">PM</span><span class="p">&gt;</span> <span class="n">Install-Package</span> <span class="n">SimpleHelpers</span><span class="p">.</span><span class="n">ObjectPool</span>
+</pre></div>
+
+
+<p>The nuget package contains <strong>C# source code</strong>.</p>
+<p>The source code will be installed in your project with the following file system structure:</p>
+<div class="code"><pre><span></span>|-- &lt;project root&gt;
+    |-- SimpleHelpers
+        |-- ObjectPool.cs
+</pre></div>
+
+
+<h3 id="download"><a name="user-content-download" href="#download" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Download<a class="headerlink" href="#download" title="Permanent link">#</a></h3>
+<p>If you prefer, you can also download the source code: <a href="https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/ObjectPool.cs">ObjectPool.cs</a></p>
+<h2 id="examples"><a name="user-content-examples" href="#examples" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Examples<a class="headerlink" href="#examples" title="Permanent link">#</a></h2>
+<div class="code"><pre><span></span><span class="c1">// Get or create a new random generator</span>
+<span class="n">Random</span> <span class="n">rnd</span> <span class="p">=</span> <span class="n">ObjectPool</span><span class="p">&lt;</span><span class="n">Random</span><span class="p">&gt;.</span><span class="n">Get</span> <span class="p">(</span><span class="n">CreateRandomGenerator</span><span class="p">);</span>
+<span class="c1">// start generating random numbers</span>
+<span class="k">try</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+
+    <span class="kt">var</span> <span class="n">num</span> <span class="p">=</span> <span class="n">rnd</span><span class="p">.</span><span class="n">Next</span> <span class="p">(</span><span class="n">max</span><span class="p">);</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+<span class="k">finally</span>
+<span class="p">{</span>
+    <span class="c1">// Release the random generator by putting it back in the object pool</span>
+    <span class="n">ObjectPool</span><span class="p">&lt;</span><span class="n">Random</span><span class="p">&gt;.</span><span class="n">Put</span> <span class="p">(</span><span class="n">rnd</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// our factory</span>
+<span class="k">private</span> <span class="k">static</span> <span class="n">Random</span> <span class="nf">CreateRandomGenerator</span> <span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">Random</span> <span class="p">((</span><span class="kt">int</span><span class="p">)</span><span class="n">DateTime</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">.</span><span class="n">Ticks</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="project-information"><a name="user-content-project-information" href="#project-information" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Project Information<a class="headerlink" href="#project-information" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="../../#contribute">Contribute</a></li>
+<li><a href="../../#support">Support</a></li>
+<li><a href="../../#license">License</a></li>
+</ul>
+          <aside class="copyright" role="note">
+            
+              Copyright (c) 2016 Khalid Salomão &ndash;
+            
+            Documentation built with
+            <a href="http://www.mkdocs.org" target="_blank">MkDocs</a>
+            using the
+            <a href="http://squidfunk.github.io/mkdocs-material/" target="_blank">
+              Material
+            </a>
+            theme.
+          </aside>
+          
+            <footer class="footer">
+              
+  <nav class="pagination" aria-label="Footer">
+    <div class="previous">
+      
+        <a href="../timedqueue/" title="TimedQueue">
+          <span class="direction">
+            Previous
+          </span>
+          <div class="page">
+            <div class="button button-previous" role="button" aria-label="Previous">
+              <i class="icon icon-back"></i>
+            </div>
+            <div class="stretch">
+              <div class="title">
+                TimedQueue
+              </div>
+            </div>
+          </div>
+        </a>
+      
+    </div>
+    <div class="next">
+      
+        <a href="../configmanager/" title="ConfigManager">
+          <span class="direction">
+            Next
+          </span>
+          <div class="page">
+            <div class="stretch">
+              <div class="title">
+                ConfigManager
+              </div>
+            </div>
+            <div class="button button-next" role="button" aria-label="Next">
+              <i class="icon icon-forward"></i>
+            </div>
+          </div>
+        </a>
+      
+    </div>
+  </nav>
+
+            </footer>
+          
+        </div>
+      </article>
+      <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+          <div class="wrapper">
+            <div class="meta"></div>
+            <div class="list"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      var base_url = '../..';
+      var repo_id  = 'khalidsalomao/SimpleHelpers.Net';
+    </script>
+    <script src="../../assets/javascripts/application-997097ee0c.js"></script>
+    
+    
+  </body>
+</html>

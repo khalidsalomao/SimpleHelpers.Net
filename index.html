@@ -1,337 +1,457 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="no-js ie6"><![endif]-->
+<!--[if IE 7 ]><html class="no-js ie7"><![endif]-->
+<!--[if IE 8 ]><html class="no-js ie8"><![endif]-->
+<!--[if IE 9 ]><html class="no-js ie9"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js"> <!--<![endif]-->
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Simplehelpers.net by khalidsalomao</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    
+      
+        <title>SimpleHelpers.Net - Micro-libraries for .Net that are safe and simple to use</title>
+      
+      
+        <meta name="description" content="Micro-libraries for .Net that are safe and simple to use">
+      
+      
+        <link rel="canonical" href="http://khalidsalomao.github.io/SimpleHelpers.Net/">
+      
+      
+        <meta name="author" content="Khalid Salomão">
+      
+    
+    <meta property="og:url" content="http://khalidsalomao.github.io/SimpleHelpers.Net/">
+    <meta property="og:title" content="SimpleHelpers.Net">
+    <meta property="og:image" content="http://khalidsalomao.github.io/SimpleHelpers.Net//./">
+    <meta name="apple-mobile-web-app-title" content="SimpleHelpers.Net">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    
+    <link rel="shortcut icon" type="image/x-icon" href="./None">
+    <link rel="icon" type="image/x-icon" href="./None">
+    <style>
+      @font-face {
+      	font-family: 'Icon';
+      	src: url('./assets/fonts/icon.eot?52m981');
+      	src: url('./assets/fonts/icon.eot?#iefix52m981')
+               format('embedded-opentype'),
+      		   url('./assets/fonts/icon.woff?52m981')
+               format('woff'),
+      		   url('./assets/fonts/icon.ttf?52m981')
+               format('truetype'),
+      		   url('./assets/fonts/icon.svg?52m981#icon')
+               format('svg');
+      	font-weight: normal;
+      	font-style: normal;
+      }
+    </style>
+    <link rel="stylesheet" href="./assets/stylesheets/application-0dac3e5884.css">
+    
+      <link rel="stylesheet" href="./assets/stylesheets/palettes-05ab2406df.css">
+    
+    
+      
+      
+      
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open Sans:400,700|Roboto+Mono">
+      <style>
+        body, input {
+          font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+        }
+        pre, code {
+          font-family: 'Roboto Mono', 'Courier New', 'Courier', monospace;
+        }
+      </style>
+    
+    
+    <script src="./assets/javascripts/modernizr-4ab42b99fd.js"></script>
+    
   </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1>Simplehelpers.net</h1>
-        <p>Collection of simple pieces of utility code</p>
-
-        <p class="view"><a href="https://github.com/khalidsalomao/SimpleHelpers.Net">View the Project on GitHub <small>khalidsalomao/SimpleHelpers.Net</small></a></p>
-
-
-        <ul>
-          <li><a href="https://github.com/khalidsalomao/SimpleHelpers.Net/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/khalidsalomao/SimpleHelpers.Net/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/khalidsalomao/SimpleHelpers.Net">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h1>
-<a name="simplehelpersnet" class="anchor" href="#simplehelpersnet"><span class="octicon octicon-link"></span></a>SimpleHelpers.Net</h1>
-
-<p>Collection of simple pieces of utility code</p>
-
-<h2>
-<a name="description-and-examples" class="anchor" href="#description-and-examples"><span class="octicon octicon-link"></span></a>Description and Examples</h2>
-
-<h3>
-<a name="memorycache" class="anchor" href="#memorycache"><span class="octicon octicon-link"></span></a>MemoryCache</h3>
-
-<p>Simple lightweight object in-memory cache, with a background timer to remove expired objects.</p>
-
-<p>Fast in-memory cache for data that are expensive to create and can be used in a thread-safe manner.</p>
-
-<p>All stored items are kept in concurrent data structures (ConcurrentDictionary) to allow multi-thread usage of the MemoryCache static methods. Note that the stored objects must be <strong>thread-safe</strong>, since the same instance of an object can and will be returned by multiple calls of <em>Get</em> methods. If you wish to use non-thread safe object instances you must use the <em>Remove</em> method to atomically (safelly) get and remove the object instance from the cache.</p>
-
-<p>Note: this nuget package contains csharp source code and depends on System.Collections.Concurrent introduced in .Net 4.0.</p>
-
-<p><strong>Configuration</strong></p>
-
-<p>Simple configuration of the MemoryCache settings. 
-It should be done for each type, since since the JIT compiler will generate different code at run time, MemoryCache is considered a different class, for example, from MemoryCache or MemoryCache.</p>
-
-<div class="highlight"><pre>
-<span class="c1">// setup (called once in application initialization)</span>
-
-<span class="c1">// set a duration of an item in the cache to 1 second</span>
-<span class="n">MemoryCache</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;.</span><span class="n">Expiration</span> <span class="p">=</span> <span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span> <span class="p">(</span><span class="m">1</span><span class="p">);</span>
-<span class="c1">// set the internal maintenance timed task to run each 500 ms removing expired items</span>
-<span class="n">MemoryCache</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;.</span><span class="n">MaintenanceStep</span> <span class="p">=</span> <span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMilliseconds</span> <span class="p">(</span><span class="m">500</span><span class="p">);</span>
-<span class="c1">// Our event, if we want to treat the removed expired items</span>
-<span class="n">MemoryCache</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;.</span><span class="n">OnExpiration</span> <span class="p">+=</span> <span class="p">(</span><span class="kt">string</span> <span class="n">key</span><span class="p">,</span> <span class="kt">string</span> <span class="n">item</span><span class="p">)</span> <span class="p">=&gt;</span> 
-<span class="p">{</span> 
-    <span class="c1">// do something</span>
-<span class="p">};</span>
-
-</pre></div>
-
-<p><strong>Example</strong></p>
-
-<div class="highlight"><pre>
-<span class="c1">// store an item</span>
-<span class="n">MemoryCache</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;.</span><span class="n">Set</span> <span class="p">(</span><span class="s">"k1"</span><span class="p">,</span> <span class="s">"test"</span><span class="p">);</span>
-
-<span class="c1">// get it</span>
-<span class="kt">string</span> <span class="k">value</span> <span class="p">=</span> <span class="n">MemoryCache</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;.</span><span class="n">Get</span> <span class="p">(</span><span class="s">"k1"</span><span class="p">);</span>
-<span class="c1">// check if we got it</span>
-<span class="k">if</span> <span class="p">(</span><span class="k">value</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="c1">// ok we got it!</span>
-<span class="p">}</span>
-
-</pre></div>
-
-<p>Using a factory to create a new item if the in memory cache does not have it.</p>
-
-<div class="highlight"><pre>
-<span class="c1">// prepare our factory</span>
-<span class="kt">var</span> <span class="n">factory</span> <span class="p">=</span> <span class="p">(</span><span class="kt">string</span> <span class="n">key</span><span class="p">)</span> <span class="p">=&gt;</span>
-<span class="p">{</span>
-    <span class="k">return</span> <span class="n">key</span> <span class="p">+</span> <span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span><span class="p">.</span><span class="n">ToString</span> <span class="p">();</span>
-<span class="p">};</span>
-
-<span class="c1">// try to get the associated value if the cache does not have it</span>
-<span class="c1">// then use the factory to create a new one, store and return it.</span>
-<span class="kt">string</span> <span class="k">value</span> <span class="p">=</span> <span class="n">MemoryCache</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;.</span><span class="n">GetOrAdd</span> <span class="p">(</span><span class="s">"key2"</span><span class="p">,</span> <span class="n">factory</span><span class="p">);</span>
-
-</pre></div>
-
-<p>Using a more complex concurrent scenario where, if the item is not found, we only want to call the factory only once.
-So all concurrent calls will wait until factory (that is guaranteed to be called only once) has created and stored the new item, and will return it.</p>
-
-<div class="highlight"><pre>
-<span class="c1">// prepare our factory</span>
-<span class="kt">var</span> <span class="n">factory</span> <span class="p">=</span> <span class="p">(</span><span class="kt">string</span> <span class="n">key</span><span class="p">)</span> <span class="p">=&gt;</span>
-<span class="p">{</span>
-    <span class="k">return</span> <span class="n">key</span> <span class="p">+</span> <span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span><span class="p">.</span><span class="n">ToString</span> <span class="p">();</span>
-<span class="p">};</span>
-
-<span class="c1">// try to get the associated value if the cache does not have it</span>
-<span class="c1">// then use the factory to create a new one, store and return it.</span>
-<span class="c1">// It the factory takes more than 250 milliseconds to create then new instance,</span>
-<span class="c1">// it will exit returning the default value for the class</span>
-<span class="kt">string</span> <span class="k">value</span> <span class="p">=</span> <span class="n">MemoryCache</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;.</span><span class="n">GetOrSyncAdd</span> <span class="p">(</span><span class="s">"key2"</span><span class="p">,</span> <span class="n">factory</span><span class="p">,</span> <span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMilliseconds</span> <span class="p">(</span><span class="m">250</span><span class="p">));</span>
-
-<span class="c1">// check if we got it</span>
-<span class="k">if</span> <span class="p">(</span><span class="k">value</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="c1">// ok we got it!</span>
-<span class="p">}</span>
-
-</pre></div>
-
-<h3>
-<a name="namedlock" class="anchor" href="#namedlock"><span class="octicon octicon-link"></span></a>NamedLock</h3>
-
-<p>Synchronization helper: a static lock collection associated with a key.</p>
-
-<p>NamedLock manages the lifetime of critical sections that can be accessed by a key (name) throughout the application. It also have some helper methods to allow a maximum wait time (timeout) to acquire the lock and safely release it.</p>
-
-<p>Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.</p>
-
-<p><strong>Example</strong></p>
-
-<p>Simple usage where we try to acquire the lock for 100 ms. 
-So if somewhere else in our application this same lock was already acquired, we will wait until we acquire the lock or 100 ms has passed.</p>
-
-<div class="highlight"><pre>
-<span class="kt">string</span> <span class="n">key</span> <span class="p">=</span> <span class="s">"our lock name"</span><span class="p">;</span>
-
-<span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">padlock</span> <span class="p">=</span> <span class="k">new</span> <span class="n">NamedLock</span> <span class="p">(</span><span class="n">key</span><span class="p">))</span>
-<span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">padlock</span><span class="p">.</span><span class="n">Enter</span> <span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMilliseconds</span> <span class="p">(</span><span class="m">100</span><span class="p">)))</span>
-    <span class="p">{</span>
-        <span class="c1">// do something as we now own the lock</span>
-    <span class="p">}</span>
-    <span class="k">else</span>
-    <span class="p">{</span>
-        <span class="c1">// do some other thing since we could not aquire the lock</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-</pre></div>
-
-<p>Another usage example with a static helper method.</p>
-
-<div class="highlight"><pre>
-<span class="kt">string</span> <span class="n">key</span> <span class="p">=</span> <span class="s">"our lock name"</span><span class="p">;</span>
-
-<span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">padlock</span> <span class="p">=</span> <span class="n">NamedLock</span><span class="p">.</span><span class="n">CreateAndEnter</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMilliseconds</span> <span class="p">(</span><span class="m">100</span><span class="p">)))</span>
-<span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">padlock</span><span class="p">.</span><span class="n">IsLocked</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="c1">// do something                    </span>
-    <span class="p">}</span>                
-<span class="p">}</span>
-
-</pre></div>
-
-<h3>
-<a name="objectpool" class="anchor" href="#objectpool"><span class="octicon octicon-link"></span></a>ObjectPool</h3>
-
-<p>A simple lightweight object pool for fast and simple object reuse.</p>
-
-<p>Fast lightweight thread-safe object pool for objects that are expensive to create or could efficiently be reused.</p>
-
-<p>Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.</p>
-
-<p><strong>Example</strong></p>
-
-<div class="highlight"><pre>
-<span class="c1">// Get or create a new random generator</span>
-<span class="n">Random</span> <span class="n">rnd</span> <span class="p">=</span> <span class="n">ObjectPool</span><span class="p">&lt;</span><span class="n">Random</span><span class="p">&gt;.</span><span class="n">Get</span> <span class="p">(</span><span class="n">CreateRandomGenerator</span><span class="p">);</span>
-<span class="c1">// start generating random numbers</span>
-<span class="k">try</span>
-<span class="p">{</span>   
-    <span class="c1">// ...</span>
-
-    <span class="kt">var</span> <span class="n">num</span> <span class="p">=</span> <span class="n">rnd</span><span class="p">.</span><span class="n">Next</span> <span class="p">(</span><span class="n">max</span><span class="p">);</span>
-
-    <span class="c1">// ...</span>
-<span class="p">}</span>
-<span class="k">finally</span>
-<span class="p">{</span>
-    <span class="c1">// Release the random generator by putting it back in the object pool</span>
-    <span class="n">ObjectPool</span><span class="p">&lt;</span><span class="n">Random</span><span class="p">&gt;.</span><span class="n">Put</span> <span class="p">(</span><span class="n">rnd</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="c1">// our factory</span>
-<span class="k">private</span> <span class="k">static</span> <span class="n">Random</span> <span class="nf">CreateRandomGenerator</span> <span class="p">()</span>
-<span class="p">{</span>
-    <span class="k">return</span> <span class="k">new</span> <span class="nf">Random</span> <span class="p">((</span><span class="kt">int</span><span class="p">)</span><span class="n">DateTime</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">.</span><span class="n">Ticks</span><span class="p">);</span>
-<span class="p">}</span>
-
-</pre></div>
-
-<h3>
-<a name="timedqueue" class="anchor" href="#timedqueue"><span class="octicon octicon-link"></span></a>TimedQueue</h3>
-
-<p>Simple lightweight queue that stores data in a concurrent queue and periodically process the queued items.</p>
-
-<p>Useful for:</p>
-
-<ul>
-<li>processing items in batches;</li>
-<li>grouping data for later processing;</li>
-<li>async processing (consumer/producer);</li>
-<li>etc.</li>
-</ul><p>Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.</p>
-
-<p><strong>Configuration</strong></p>
-
-<p>Simple configuration of the TimedQueue settings. 
-It should be done for each type, since since the JIT compiler will generate differente code at run time, TimedQueue is considered a diferent class, for example, from TimedQueue or TimedQueue.</p>
-
-<div class="highlight"><pre>
-<span class="c1">// setup (called once in application initialization)</span>
-
-<span class="c1">// set the queue timed task to run each 500 ms executing the registered action</span>
-<span class="n">SimpleHelpers</span><span class="p">.</span><span class="n">TimedQueue</span><span class="p">&lt;</span><span class="n">Our_Object</span><span class="p">&gt;.</span><span class="n">TimerStep</span> <span class="p">=</span> <span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMilliseconds</span> <span class="p">(</span><span class="m">500</span><span class="p">);</span>
-<span class="c1">// Our event, if we want to treat the removed expired items</span>
-<span class="n">MemoryCache</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;.</span><span class="n">OnExecution</span> <span class="p">+=</span> <span class="p">(</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">Our_Object</span><span class="p">&gt;</span> <span class="n">items</span><span class="p">)</span> <span class="p">=&gt;</span> 
-<span class="p">{</span> 
-    <span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">evt</span> <span class="k">in</span> <span class="n">items</span><span class="p">)</span>
-        <span class="c1">// do something</span>
-<span class="p">};</span>
-
-</pre></div>
-
-<p><strong>Example</strong></p>
-
-<div class="highlight"><pre>
-<span class="c1">// our method that does an network call to store out object </span>
-<span class="c1">// and keeps retrying in case of failure</span>
-<span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">SaveEvent</span> <span class="p">(</span><span class="n">Our_Object</span> <span class="n">evt</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="c1">// try to save</span>
-    <span class="k">try</span>
-    <span class="p">{</span>
-        <span class="n">SaveOverTheInternet</span> <span class="p">(</span><span class="n">evt</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">catch</span> <span class="p">(</span><span class="n">System</span><span class="p">.</span><span class="n">IO</span><span class="p">.</span><span class="n">IOException</span> <span class="n">ex</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="c1">// log.Error (ex);</span>
-        <span class="n">SimpleHelpers</span><span class="p">.</span><span class="n">TimedQueue</span><span class="p">&lt;</span><span class="n">Our_Object</span><span class="p">&gt;.</span><span class="n">Put</span> <span class="p">(</span><span class="n">evt</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-</pre></div>
-
-<h3>
-<a name="configmanager" class="anchor" href="#configmanager"><span class="octicon octicon-link"></span></a>ConfigManager</h3>
-
-<p>Simple configuration manager to get and set the values in the AppSettings section of the default configuration file.</p>
-
-<p>Note: this nuget package contains csharp source code and depends on Generics introduced in .Net 2.0.</p>
-
-<p><strong>Configuration</strong></p>
-
-<div class="highlight"><pre>
-<span class="c1">// setup (called once in application initialization)</span>
-
-<span class="c1">// set to add any new keys added during the application execution</span>
-<span class="n">ConfigManager</span><span class="p">.</span><span class="n">AddNonExistingKeys</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
-
-</pre></div>
-
-<p>** Example **</p>
-
-<div class="highlight"><pre>
-<span class="kt">string</span> <span class="n">address</span> <span class="p">=</span> <span class="n">ConfigManager</span><span class="p">.</span><span class="n">Get</span> <span class="p">(</span><span class="s">"MongoDBaddress"</span><span class="p">,</span> <span class="s">"localhost"</span><span class="p">);</span>
-<span class="kt">int</span> <span class="n">port</span> <span class="p">=</span> <span class="n">ConfigManager</span><span class="p">.</span><span class="n">Get</span> <span class="p">(</span><span class="s">"MongoDBport"</span><span class="p">,</span> <span class="m">21766</span><span class="p">);</span>
-
-</pre></div>
-
-<h3>
-<a name="sqlitestorage" class="anchor" href="#sqlitestorage"><span class="octicon octicon-link"></span></a>SQLiteStorage</h3>
-
-<p>Simple key value storage using sqlite.</p>
-
-<p>All member methods are thread-safe, so a instance can be safely be accessed by multiple threads.</p>
-
-<p>All stored items are serialized to json by json.net.</p>
-
-<p>Note: this nuget package contains csharp source code and depends on .Net 4.0.</p>
-
-<p><strong>Configuration</strong></p>
-
-<div class="highlight"><pre>
-<span class="c1">// setup:</span>
-<span class="n">SQLiteStorage</span><span class="p">&lt;</span><span class="n">My_Class</span><span class="p">&gt;</span> <span class="n">db</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SQLiteStorage</span><span class="p">&lt;</span><span class="n">My_Class</span><span class="p">&gt;</span> <span class="p">(</span><span class="s">"path_to_my_file.sqlite"</span><span class="p">,</span> 
-                              <span class="n">SQLiteStorageOptions</span><span class="p">.</span><span class="n">UniqueKeys</span> <span class="p">());</span>
-
-</pre></div>
-
-<p>** Example **</p>
-
-<div class="highlight"><pre>
-<span class="c1">// create a new instance</span>
-<span class="n">SQLiteStorage</span><span class="p">&lt;</span><span class="n">My_Class</span><span class="p">&gt;</span> <span class="n">db</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SQLiteStorage</span><span class="p">&lt;</span><span class="n">My_Class</span><span class="p">&gt;</span> <span class="p">(</span><span class="s">"path_to_my_file.sqlite"</span><span class="p">,</span> 
-                              <span class="n">SQLiteStorageOptions</span><span class="p">.</span><span class="n">UniqueKeys</span> <span class="p">());</span>
-
-<span class="c1">// save an item with a key associated</span>
-<span class="n">db</span><span class="p">.</span><span class="n">Set</span> <span class="p">(</span><span class="s">"my_key_for_this_item"</span><span class="p">,</span> <span class="k">new</span> <span class="n">My_Class</span> <span class="p">());</span>
-<span class="c1">// get it back</span>
-<span class="n">My_Class</span> <span class="n">my_obj</span> <span class="p">=</span> <span class="n">db</span><span class="p">.</span><span class="n">Get</span> <span class="p">(</span><span class="s">"my_key_for_this_item"</span><span class="p">).</span><span class="n">FirstOrDefault</span> <span class="p">();</span>
-
-<span class="c1">// to save any changes, just call set again</span>
-<span class="n">db</span><span class="p">.</span><span class="n">Set</span> <span class="p">(</span><span class="s">"my_key_for_this_item"</span><span class="p">,</span> <span class="n">my_obj</span><span class="p">);</span>
-
-<span class="c1">// get all stored items</span>
-<span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">item</span> <span class="k">in</span> <span class="n">db</span><span class="p">.</span><span class="n">Get</span> <span class="p">())</span>
-<span class="p">{</span>
-    <span class="c1">// ...</span>
-<span class="p">}</span>
-</pre></div>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/khalidsalomao">khalidsalomao</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
+  
+  
+  
+  <body class="palette-primary-blue-grey palette-accent-cyan">
+    
+      
+      
+    
+    <div class="backdrop">
+      <div class="backdrop-paper"></div>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
+    <input class="toggle" type="checkbox" id="toggle-drawer">
+    <input class="toggle" type="checkbox" id="toggle-search">
+    <label class="toggle-button overlay" for="toggle-drawer"></label>
+    <header class="header">
+      <nav aria-label="Header">
+  <div class="bar default">
+    <div class="button button-menu" role="button" aria-label="Menu">
+      <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+    </div>
+    <div class="stretch">
+      <div class="title">
+        
+          <span class="path">
+            
+          </span>
+        
+        SimpleHelpers.Net
+      </div>
+    </div>
+    
+    
+      
+      <div class="button button-github" role="button" aria-label="GitHub">
+        <a href="https://github.com/khalidsalomao" title="@khalidsalomao on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+      </div>
+    
+    <div class="button button-search" role="button" aria-label="Search">
+      <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+    </div>
+  </div>
+  <div class="bar search">
+    <div class="button button-close" role="button" aria-label="Close">
+      <label class="toggle-button icon icon-back" for="toggle-search"></label>
+    </div>
+    <div class="stretch">
+      <div class="field">
+        <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+      </div>
+    </div>
+    <div class="button button-reset" role="button" aria-label="Search">
+      <button class="toggle-button icon icon-close" id="reset-search"></button>
+    </div>
+  </div>
+</nav>
+    </header>
+    <main class="main">
+      
+      <div class="drawer">
+        <nav aria-label="Navigation">
+  
+  <a href="https://github.com/khalidsalomao/SimpleHelpers.Net" class="project">
+    <div class="banner">
+      
+      <div class="name">
+        <strong>
+          SimpleHelpers.Net
+          <span class="version">
+            
+          </span>
+        </strong>
+        
+          <br>
+          khalidsalomao/SimpleHelpers.Net
+        
+      </div>
+    </div>
+  </a>
+  <div class="scrollable">
+    <div class="wrapper">
+      
+        <ul class="repo">
+          <li class="repo-download">
+            
+            <a href="https://github.com/khalidsalomao/SimpleHelpers.Net/archive/master.zip" target="_blank" title="Download" data-action="download">
+              <i class="icon icon-download"></i> Download
+            </a>
+          </li>
+          <li class="repo-stars">
+            <a href="https://github.com/khalidsalomao/SimpleHelpers.Net/stargazers" target="_blank" title="Stargazers" data-action="star">
+              <i class="icon icon-star"></i> Stars
+              <span class="count">&ndash;</span>
+            </a>
+          </li>
+        </ul>
+        <hr>
+      
+      <div class="toc">
+        <ul>
+          
+            
+  <li>
+    <a class="current" title="SimpleHelpers.Net" href=".">
+      SimpleHelpers.Net
+    </a>
+    
+      
+        
+      
+      
+        <ul>
+          
+            <li class="anchor">
+              <a title="Micro-libraries" href="#micro-libraries">
+                Micro-libraries
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="How to build docs site" href="#how-to-build-docs-site">
+                How to build docs site
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Contribute" href="#contribute">
+                Contribute
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Support" href="#support">
+                Support
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="License" href="#license">
+                License
+              </a>
+            </li>
+          
+        </ul>
+      
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="" title="MemoryCache" href="docs/memorycache/">
+      MemoryCache
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="" title="FileEncoding" href="docs/fileencoding/">
+      FileEncoding
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="" title="NamedLock" href="docs/namedlock/">
+      NamedLock
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="" title="SQLiteStorage" href="docs/sqlitestorage/">
+      SQLiteStorage
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="" title="TimedQueue" href="docs/timedqueue/">
+      TimedQueue
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="" title="ObjectPool" href="docs/objectpool/">
+      ObjectPool
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="" title="ConfigManager" href="docs/configmanager/">
+      ConfigManager
+    </a>
+    
+  </li>
+
+          
+        </ul>
+        
+          <hr>
+          <span class="section">The author</span>
+          <ul>
+            
+            
+              
+              <li>
+                <a href="https://github.com/khalidsalomao" target="_blank" title="@khalidsalomao on GitHub">
+                  @khalidsalomao on GitHub
+                </a>
+              </li>
+            
+          </ul>
+        
+      </div>
+    </div>
+  </div>
+</nav>
+      </div>
+      <article class="article">
+        <div class="wrapper">
+          
+          <h1 id="simplehelpersnet"><a name="user-content-simplehelpersnet" href="#simplehelpersnet" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>SimpleHelpers.Net<a class="headerlink" href="#simplehelpersnet" title="Permanent link">#</a></h1>
+<p><a href="https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/LICENSE.txt"><img alt="GitHub license" src="https://img.shields.io/badge/license-MIT-brightgreen.svg?maxAge=3600&amp;style=flat-square" /></a></p>
+<p><em>Micro-libraries</em> (pieces of utility code) for .Net that are safe and simple to use.</p>
+<p>In every project there are lot&rsquo;s of reusable patterns that we find our selves rewriting or just doing some copy &amp; paste, and thus the idea behind SimpleHelpers micro-libraries is to create a small collection of such code but keeping it reliable and easy to use.</p>
+<p>Most of SimpleHelpers.Net libraries are distributed by Nuget.org as source code files (c#), since this enable us to use these utility code as micro-libraries without creating and having to deploy a huge number of assemblies (dlls). The idea is to keep things simple!</p>
+<p>Distributing source code also make things easier in case of doubt or curiosity. You can just take a look into the full source code!</p>
+<p>All micro-libraries are well-tested for both performance and reliability. So feel free to use them!</p>
+<h2 id="micro-libraries"><a name="user-content-micro-libraries" href="#micro-libraries" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Micro-libraries<a class="headerlink" href="#micro-libraries" title="Permanent link">#</a></h2>
+<h3 id="fileencoding"><a name="user-content-fileencoding" href="#fileencoding" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>FileEncoding<a class="headerlink" href="#fileencoding" title="Permanent link">#</a></h3>
+<ul>
+<li>Detect any text file charset encoding using Mozilla Charset Detector.</li>
+<li><a href="docs/fileencoding/">See documentation</a></li>
+</ul>
+<h3 id="memorycache"><a name="user-content-memorycache" href="#memorycache" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>MemoryCache<a class="headerlink" href="#memorycache" title="Permanent link">#</a></h3>
+<ul>
+<li>Simple, lightweight and fast in-memory caching.</li>
+<li><a href="docs/memorycache/">See documentation</a></li>
+</ul>
+<h3 id="namedlock"><a name="user-content-namedlock" href="#namedlock" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>NamedLock<a class="headerlink" href="#namedlock" title="Permanent link">#</a></h3>
+<ul>
+<li>Synchronization helper: a lock associated with a key and with timeout.</li>
+<li><a href="docs/namedlock/">See documentation</a></li>
+</ul>
+<h3 id="sqlitestorage"><a name="user-content-sqlitestorage" href="#sqlitestorage" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>SQLiteStorage<a class="headerlink" href="#sqlitestorage" title="Permanent link">#</a></h3>
+<ul>
+<li>Simple key &amp; value storage using sqlite with json serialization.</li>
+<li><a href="docs/sqlitestorage/">See documentation</a></li>
+</ul>
+<h3 id="objectdiffpatch"><a name="user-content-objectdiffpatch" href="#objectdiffpatch" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>ObjectDiffPatch<a class="headerlink" href="#objectdiffpatch" title="Permanent link">#</a></h3>
+<h3 id="consoleutils"><a name="user-content-consoleutils" href="#consoleutils" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>ConsoleUtils<a class="headerlink" href="#consoleutils" title="Permanent link">#</a></h3>
+<h3 id="configmanager"><a name="user-content-configmanager" href="#configmanager" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>ConfigManager<a class="headerlink" href="#configmanager" title="Permanent link">#</a></h3>
+<ul>
+<li>Simple configuration manager to get and set the values in the AppSettings section of the default configuration file.</li>
+<li><a href="docs/configmanager/">See documentation</a></li>
+</ul>
+<h3 id="objectpool"><a name="user-content-objectpool" href="#objectpool" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>ObjectPool<a class="headerlink" href="#objectpool" title="Permanent link">#</a></h3>
+<ul>
+<li>A fast lightweight object pool for fast and simple object reuse.</li>
+<li><a href="docs/objectpool/">See documentation</a></li>
+</ul>
+<h3 id="timedqueue"><a name="user-content-timedqueue" href="#timedqueue" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>TimedQueue<a class="headerlink" href="#timedqueue" title="Permanent link">#</a></h3>
+<ul>
+<li>Fast lightweight in-memory queue that stores data in a concurrent queue and periodically process the queued items.</li>
+<li><a href="docs/timedqueue/">See documentation</a></li>
+</ul>
+<h3 id="paralleltasks"><a name="user-content-paralleltasks" href="#paralleltasks" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>ParallelTasks<a class="headerlink" href="#paralleltasks" title="Permanent link">#</a></h3>
+<h3 id="flexibleobject"><a name="user-content-flexibleobject" href="#flexibleobject" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>FlexibleObject<a class="headerlink" href="#flexibleobject" title="Permanent link">#</a></h3>
+<h3 id="scriptevaluator"><a name="user-content-scriptevaluator" href="#scriptevaluator" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>ScriptEvaluator<a class="headerlink" href="#scriptevaluator" title="Permanent link">#</a></h3>
+<h3 id="modulecontainer"><a name="user-content-modulecontainer" href="#modulecontainer" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>ModuleContainer<a class="headerlink" href="#modulecontainer" title="Permanent link">#</a></h3>
+<h3 id="rabbitworkqueue"><a name="user-content-rabbitworkqueue" href="#rabbitworkqueue" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>RabbitWorkQueue<a class="headerlink" href="#rabbitworkqueue" title="Permanent link">#</a></h3>
+<ul>
+<li>Use RabbitMQ as a distributed work queue!</li>
+<li><a href="https://github.com/khalidsalomao/SimpleHelpers.Net.RabbitMQ">See documentation</a></li>
+</ul>
+<h2 id="how-to-build-docs-site"><a name="user-content-how-to-build-docs-site" href="#how-to-build-docs-site" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>How to build docs site<a class="headerlink" href="#how-to-build-docs-site" title="Permanent link">#</a></h2>
+<ul>
+<li>Built with <a href="http://www.mkdocs.org/">MkDocs</a>.</li>
+<li>Theme: <a href="http://squidfunk.github.io/mkdocs-material/getting-started/">Material</a></li>
+</ul>
+<p><strong>Build steps</strong></p>
+<ol>
+<li>
+<p>Make sure MkDocs is installed, using python package manager - pip:</p>
+<div class="code"><pre><span></span>python --version
+pip install mkdocs pymdown-extensions pygments mkdocs-material --upgrade
+</pre></div>
+
+
+</li>
+<li>
+<p>Test the docs site:
+    <a href="./build_docs.test.bat">build_docs.test.bat</a></p>
+</li>
+<li>
+<p>Build and deploy on gh-pages:
+    <a href="./build_docs.deploy.bat">build_docs.deploy.bat</a></p>
+</li>
+</ol>
+<h2 id="contribute"><a name="user-content-contribute" href="#contribute" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Contribute<a class="headerlink" href="#contribute" title="Permanent link">#</a></h2>
+<ul>
+<li>Issue Tracker: <a href="https://github.com/khalidsalomao/SimpleHelpers.Net/issues">https://github.com/khalidsalomao/SimpleHelpers.Net/issues</a></li>
+<li>Source Code: <a href="https://github.com/khalidsalomao/SimpleHelpers.Net">https://github.com/khalidsalomao/SimpleHelpers.Net</a></li>
+</ul>
+<h2 id="support"><a name="user-content-support" href="#support" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Support<a class="headerlink" href="#support" title="Permanent link">#</a></h2>
+<p>If you are having issues, please let us know <a href="https://github.com/khalidsalomao/SimpleHelpers.Net/issues">here</a>.</p>
+<h2 id="license"><a name="user-content-license" href="#license" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>License<a class="headerlink" href="#license" title="Permanent link">#</a></h2>
+<p>The project is licensed under the MIT license.</p>
+          <aside class="copyright" role="note">
+            
+              Copyright (c) 2016 Khalid Salomão &ndash;
+            
+            Documentation built with
+            <a href="http://www.mkdocs.org" target="_blank">MkDocs</a>
+            using the
+            <a href="http://squidfunk.github.io/mkdocs-material/" target="_blank">
+              Material
+            </a>
+            theme.
+          </aside>
+          
+            <footer class="footer">
+              
+  <nav class="pagination" aria-label="Footer">
+    <div class="previous">
+      
+    </div>
+    <div class="next">
+      
+        <a href="docs/memorycache/" title="MemoryCache">
+          <span class="direction">
+            Next
+          </span>
+          <div class="page">
+            <div class="stretch">
+              <div class="title">
+                MemoryCache
+              </div>
+            </div>
+            <div class="button button-next" role="button" aria-label="Next">
+              <i class="icon icon-forward"></i>
+            </div>
+          </div>
+        </a>
+      
+    </div>
+  </nav>
+
+            </footer>
+          
+        </div>
+      </article>
+      <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+          <div class="wrapper">
+            <div class="meta"></div>
+            <div class="list"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      var base_url = '.';
+      var repo_id  = 'khalidsalomao/SimpleHelpers.Net';
+    </script>
+    <script src="./assets/javascripts/application-997097ee0c.js"></script>
+    
     
   </body>
 </html>

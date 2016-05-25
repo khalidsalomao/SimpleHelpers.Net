@@ -1,0 +1,464 @@
+{
+    "docs": [
+        {
+            "location": "/",
+            "text": "SimpleHelpers.Net\n#\n\n\n\n\nMicro-libraries\n (pieces of utility code) for .Net that are safe and simple to use.\n\n\nIn every project there are lot\ns of reusable patterns that we find our selves rewriting or just doing some copy \n paste, and thus the idea behind SimpleHelpers micro-libraries is to create a small collection of such code but keeping it reliable and easy to use.\n\n\nMost of SimpleHelpers.Net libraries are distributed by Nuget.org as source code files (c#), since this enable us to use these utility code as micro-libraries without creating and having to deploy a huge number of assemblies (dlls). The idea is to keep things simple!\n\n\nDistributing source code also make things easier in case of doubt or curiosity. You can just take a look into the full source code!\n\n\nAll micro-libraries are well-tested for both performance and reliability. So feel free to use them!\n\n\nMicro-libraries\n#\n\n\nFileEncoding\n#\n\n\n\n\nDetect any text file charset encoding using Mozilla Charset Detector.\n\n\nSee documentation\n\n\n\n\nMemoryCache\n#\n\n\n\n\nSimple, lightweight and fast in-memory caching.\n\n\nSee documentation\n\n\n\n\nNamedLock\n#\n\n\n\n\nSynchronization helper: a lock associated with a key and with timeout.\n\n\nSee documentation\n\n\n\n\nSQLiteStorage\n#\n\n\n\n\nSimple key \n value storage using sqlite with json serialization.\n\n\nSee documentation\n\n\n\n\nObjectDiffPatch\n#\n\n\nConsoleUtils\n#\n\n\nConfigManager\n#\n\n\n\n\nSimple configuration manager to get and set the values in the AppSettings section of the default configuration file.\n\n\nSee documentation\n\n\n\n\nObjectPool\n#\n\n\n\n\nA fast lightweight object pool for fast and simple object reuse.\n\n\nSee documentation\n\n\n\n\nTimedQueue\n#\n\n\n\n\nFast lightweight in-memory queue that stores data in a concurrent queue and periodically process the queued items.\n\n\nSee documentation\n\n\n\n\nParallelTasks\n#\n\n\nFlexibleObject\n#\n\n\nScriptEvaluator\n#\n\n\nModuleContainer\n#\n\n\nRabbitWorkQueue\n#\n\n\n\n\nUse RabbitMQ as a distributed work queue!\n\n\nSee documentation\n\n\n\n\nHow to build docs site\n#\n\n\n\n\nBuilt with \nMkDocs\n.\n\n\nTheme: \nMaterial\n\n\n\n\nBuild steps\n\n\n\n\n\n\nMake sure MkDocs is installed, using python package manager - pip:\n\n\npython --version\npip install mkdocs pymdown-extensions pygments mkdocs-material --upgrade\n\n\n\n\n\n\n\n\n\nTest the docs site:\n    \nbuild_docs.test.bat\n\n\n\n\n\n\nBuild and deploy on gh-pages:\n    \nbuild_docs.deploy.bat\n\n\n\n\n\n\nContribute\n#\n\n\n\n\nIssue Tracker: \nhttps://github.com/khalidsalomao/SimpleHelpers.Net/issues\n\n\nSource Code: \nhttps://github.com/khalidsalomao/SimpleHelpers.Net\n\n\n\n\nSupport\n#\n\n\nIf you are having issues, please let us know \nhere\n.\n\n\nLicense\n#\n\n\nThe project is licensed under the MIT license.",
+            "title": "SimpleHelpers.Net"
+        },
+        {
+            "location": "/#simplehelpersnet",
+            "text": "Micro-libraries  (pieces of utility code) for .Net that are safe and simple to use.  In every project there are lot s of reusable patterns that we find our selves rewriting or just doing some copy   paste, and thus the idea behind SimpleHelpers micro-libraries is to create a small collection of such code but keeping it reliable and easy to use.  Most of SimpleHelpers.Net libraries are distributed by Nuget.org as source code files (c#), since this enable us to use these utility code as micro-libraries without creating and having to deploy a huge number of assemblies (dlls). The idea is to keep things simple!  Distributing source code also make things easier in case of doubt or curiosity. You can just take a look into the full source code!  All micro-libraries are well-tested for both performance and reliability. So feel free to use them!",
+            "title": "SimpleHelpers.Net"
+        },
+        {
+            "location": "/#micro-libraries",
+            "text": "",
+            "title": "Micro-libraries"
+        },
+        {
+            "location": "/#fileencoding",
+            "text": "Detect any text file charset encoding using Mozilla Charset Detector.  See documentation",
+            "title": "FileEncoding"
+        },
+        {
+            "location": "/#memorycache",
+            "text": "Simple, lightweight and fast in-memory caching.  See documentation",
+            "title": "MemoryCache"
+        },
+        {
+            "location": "/#namedlock",
+            "text": "Synchronization helper: a lock associated with a key and with timeout.  See documentation",
+            "title": "NamedLock"
+        },
+        {
+            "location": "/#sqlitestorage",
+            "text": "Simple key   value storage using sqlite with json serialization.  See documentation",
+            "title": "SQLiteStorage"
+        },
+        {
+            "location": "/#objectdiffpatch",
+            "text": "",
+            "title": "ObjectDiffPatch"
+        },
+        {
+            "location": "/#consoleutils",
+            "text": "",
+            "title": "ConsoleUtils"
+        },
+        {
+            "location": "/#configmanager",
+            "text": "Simple configuration manager to get and set the values in the AppSettings section of the default configuration file.  See documentation",
+            "title": "ConfigManager"
+        },
+        {
+            "location": "/#objectpool",
+            "text": "A fast lightweight object pool for fast and simple object reuse.  See documentation",
+            "title": "ObjectPool"
+        },
+        {
+            "location": "/#timedqueue",
+            "text": "Fast lightweight in-memory queue that stores data in a concurrent queue and periodically process the queued items.  See documentation",
+            "title": "TimedQueue"
+        },
+        {
+            "location": "/#paralleltasks",
+            "text": "",
+            "title": "ParallelTasks"
+        },
+        {
+            "location": "/#flexibleobject",
+            "text": "",
+            "title": "FlexibleObject"
+        },
+        {
+            "location": "/#scriptevaluator",
+            "text": "",
+            "title": "ScriptEvaluator"
+        },
+        {
+            "location": "/#modulecontainer",
+            "text": "",
+            "title": "ModuleContainer"
+        },
+        {
+            "location": "/#rabbitworkqueue",
+            "text": "Use RabbitMQ as a distributed work queue!  See documentation",
+            "title": "RabbitWorkQueue"
+        },
+        {
+            "location": "/#how-to-build-docs-site",
+            "text": "Built with  MkDocs .  Theme:  Material   Build steps    Make sure MkDocs is installed, using python package manager - pip:  python --version\npip install mkdocs pymdown-extensions pygments mkdocs-material --upgrade    Test the docs site:\n     build_docs.test.bat    Build and deploy on gh-pages:\n     build_docs.deploy.bat",
+            "title": "How to build docs site"
+        },
+        {
+            "location": "/#contribute",
+            "text": "Issue Tracker:  https://github.com/khalidsalomao/SimpleHelpers.Net/issues  Source Code:  https://github.com/khalidsalomao/SimpleHelpers.Net",
+            "title": "Contribute"
+        },
+        {
+            "location": "/#support",
+            "text": "If you are having issues, please let us know  here .",
+            "title": "Support"
+        },
+        {
+            "location": "/#license",
+            "text": "The project is licensed under the MIT license.",
+            "title": "License"
+        },
+        {
+            "location": "/docs/memorycache/",
+            "text": "SimpleHelpers.MemoryCache\n#\n\n\n\n\n\n\nSimple, lightweight and fast in-memory caching.\n\n\nMemoryCache implements a fast in-memory, e.g. in-process, caching for data that are expensive to create and are thread-safe.  manner.\n\n\nAll items are stored in a concurrent data structure (\nSystem.Collections.Concurrent.ConcurrentDictionary\n) to allow fast and safe multi-threaded usage through the MemoryCache static methods, with a lightweight background timer (\nSystem.Threading.Timer\n) to remove expired items.\n\n\nFeatures\n#\n\n\n\n\nSimple to use\n\n\nFast\n\n\nLightweight\n\n\nFlexible\n\n\n\n\nInstallation\n#\n\n\nNuGet Package Details\n#\n\n\nYou can install using NuGet, see \nSimpleHelpers.MemoryCache at NuGet.org\n\n\nPM\n \nInstall-Package\n \nSimpleHelpers\n.\nMemoryCache\n\n\n\n\n\n\nThe nuget package contains \nC# source code\n and depends on \nSystem.Collections.Concurrent\n introduced in .Net 4.0.\n\n\nThe source code will be installed in your project with the following file system structure:\n\n\n|-- \nproject root\n\n    |-- SimpleHelpers\n        |-- MemoryCache.cs\n\n\n\n\n\nDownload\n#\n\n\nIf you prefer, you can also download the source code: \nMemoryCache.cs\n\n\nImplementation\n#\n\n\nMemoryCache is designed as a static class, so all everything you need is either static properties or methods.\n\n\nGeneric Class\n#\n\n\nMemoryCache is a generic class and so two different types cannot access each other cache.\nSince the JIT compiler will generate different code at run time, for example \nMemoryCache\nstring\n is a different class from \nMemoryCache\nStringBuilder\n or \nMemoryCache\nbyte[]\n.\nThis is important to remember whenever working with inheritance, since inherited types won\nt be able to see its parent MemoryCache.\n\n\n    \nMemoryCache\nparent\n \n!=\n \nMemoryCache\nchild\n\n\n\n\n\n\nThread-safe\n#\n\n\nMemoryCache uses \nSystem.Collections.Concurrent.ConcurrentDictionary\n and every property and method are thread-safe.\n\n\n\n\nNote\n\n\nSince we are dealing with \ncaching\n, it is recommended that stored objects be thread-safe, since the same instance of an object can and will be returned by multiple calls of \nGet\n methods.\n\n\nYou still can use non-thread-safe objects, see \nRemove Example\n or \nFAQ\n.\n\n\n\n\nLightweight\n#\n\n\nMemoryCache uses a \nSystem.Threading.Timer\n to periodically check for expired items and remove them.\nThe timer step can be configured, see \nConfiguration\n.\n\n\nThe timer has a lazy start. Only after the first \nSet\n call to store an item, the timer will start.\nIf the cache internal dictionary is empty for a while - after 3 runs - the timer is released and only to start again on next \nSet\n call.\n\n\nConfiguration\n#\n\n\nSimple configuration of the MemoryCache settings.\n\n\nIt should be done for each type, as explained in \nImplentation\n.\n\n\n// setup (called once in application initialization)\n\n\n\n// set a duration of an item in the cache to 1 second\n\n\nMemoryCache\nstring\n.\nExpiration\n \n=\n \nTimeSpan\n.\nFromSeconds\n \n(\n1\n);\n\n\n// set the internal maintenance timed task to run each 500 ms removing expired items\n\n\nMemoryCache\nstring\n.\nMaintenanceStep\n \n=\n \nTimeSpan\n.\nFromMilliseconds\n \n(\n500\n);\n\n\n// Our event, if we want to treat the removed expired items\n\n\nMemoryCache\nstring\n.\nOnExpiration\n \n+=\n \n(\nstring\n \nkey\n,\n \nstring\n \nitem\n)\n \n=\n\n\n{\n\n    \n// do something\n\n\n};\n\n\n\n\n\n\nAPI\n#\n\n\nSet\n#\n\n\nUse \nSet\n method to store data with a key.\n\n\n// store an item\n\n\nMemoryCache\nstring\n.\nSet\n \n(\nk1\n,\n \ntest\n);\n\n\n\n\n\n\nGet\n#\n\n\nUse \nGet\n method to retrieve data associated with a key.\n\n\n// try to get from cache\n\n\nstring\n \nvalue\n \n=\n \nMemoryCache\nstring\n.\nGet\n \n(\nk1\n);\n\n\n// check if we got it\n\n\nif\n \n(\nvalue\n \n!=\n \nnull\n)\n\n\n{\n\n    \n// ok we got it!\n\n\n}\n\n\n\n\n\n\nRemove\n#\n\n\nUse \nRemove\n method to atomically remove and return the value associated with the specified key.\n\n\n// try to get from cache\n\n\nstring\n \nvalue\n \n=\n \nMemoryCache\nstring\n.\nRemove\n \n(\nk1\n);\n\n\n// check if we got it\n\n\nif\n \n(\nvalue\n \n!=\n \nnull\n)\n\n\n{\n\n    \n// ok we got it!\n\n\n}\n\n\n\n\n\n\nGetOrAdd\n#\n\n\nUse \nGetOrAdd\n to try to retrieve data from cache and if the data is not present in cache use a factory method to create the new item.\n\n\n// prepare our factory\n\n\nvar\n \nfactory\n \n=\n \n(\nstring\n \nkey\n)\n \n=\n\n\n{\n\n    \nreturn\n \nkey\n \n+\n \nDateTime\n.\nNow\n.\nToString\n \n();\n\n\n};\n\n\n\n// try to get the associated value if the cache does not have it\n\n\n// then use the factory to create a new one, store and return it.\n\n\nstring\n \nvalue\n \n=\n \nMemoryCache\nstring\n.\nGetOrAdd\n \n(\nkey2\n,\n \nfactory\n);\n\n\n\n\n\n\nGetOrSyncAdd\n#\n\n\nUsing a more complex concurrent scenario where, if the item is not found, we want to call the factory \nonly once\n.\n\nGetOrSyncAdd\n guarantees that the factory method will be called only once in case of concurrent invocations.\nSo all concurrent calls will wait until factory has created and stored the new item, and will return it.\n\n\n// prepare our factory\n\n\nvar\n \nfactory\n \n=\n \n(\nstring\n \nkey\n)\n \n=\n\n\n{\n\n    \nreturn\n \nkey\n \n+\n \nDateTime\n.\nNow\n.\nToString\n \n();\n\n\n};\n\n\n\n// try to get the associated value if the cache does not have it\n\n\n// then use the factory to create a new one, store and return it.\n\n\n// It the factory takes more than 250 milliseconds to create then new instance,\n\n\n// it will exit returning the default value for the class\n\n\nstring\n \nvalue\n \n=\n \nMemoryCache\nstring\n.\nGetOrSyncAdd\n \n(\nkey2\n,\n \nfactory\n,\n \nTimeSpan\n.\nFromMilliseconds\n \n(\n250\n));\n\n\n\n// check if we got it\n\n\nif\n \n(\nvalue\n \n!=\n \nnull\n)\n\n\n{\n\n    \n// ok we got it!\n\n\n}\n\n\n\n\n\n\nFAQ\n#\n\n\nHow to deal with \nnon-thread-safe\n objects\n#\n\n\nIf you wish to use non-thread safe object instances, you can! Instead of using the \nGet\n methods, you \nmust\n use the \nRemove\n method to atomically (safelly) get and remove the object instance from the cache.\n\n\nProject Information\n#\n\n\n\n\nContribute\n\n\nSupport\n\n\nLicense",
+            "title": "MemoryCache"
+        },
+        {
+            "location": "/docs/memorycache/#simplehelpersmemorycache",
+            "text": "Simple, lightweight and fast in-memory caching.  MemoryCache implements a fast in-memory, e.g. in-process, caching for data that are expensive to create and are thread-safe.  manner.  All items are stored in a concurrent data structure ( System.Collections.Concurrent.ConcurrentDictionary ) to allow fast and safe multi-threaded usage through the MemoryCache static methods, with a lightweight background timer ( System.Threading.Timer ) to remove expired items.",
+            "title": "SimpleHelpers.MemoryCache"
+        },
+        {
+            "location": "/docs/memorycache/#features",
+            "text": "Simple to use  Fast  Lightweight  Flexible",
+            "title": "Features"
+        },
+        {
+            "location": "/docs/memorycache/#installation",
+            "text": "",
+            "title": "Installation"
+        },
+        {
+            "location": "/docs/memorycache/#nuget-package-details",
+            "text": "You can install using NuGet, see  SimpleHelpers.MemoryCache at NuGet.org  PM   Install-Package   SimpleHelpers . MemoryCache   The nuget package contains  C# source code  and depends on  System.Collections.Concurrent  introduced in .Net 4.0.  The source code will be installed in your project with the following file system structure:  |--  project root \n    |-- SimpleHelpers\n        |-- MemoryCache.cs",
+            "title": "NuGet Package Details"
+        },
+        {
+            "location": "/docs/memorycache/#download",
+            "text": "If you prefer, you can also download the source code:  MemoryCache.cs",
+            "title": "Download"
+        },
+        {
+            "location": "/docs/memorycache/#implementation",
+            "text": "MemoryCache is designed as a static class, so all everything you need is either static properties or methods.",
+            "title": "Implementation"
+        },
+        {
+            "location": "/docs/memorycache/#generic-class",
+            "text": "MemoryCache is a generic class and so two different types cannot access each other cache.\nSince the JIT compiler will generate different code at run time, for example  MemoryCache string  is a different class from  MemoryCache StringBuilder  or  MemoryCache byte[] .\nThis is important to remember whenever working with inheritance, since inherited types won t be able to see its parent MemoryCache.       MemoryCache parent   !=   MemoryCache child",
+            "title": "Generic Class"
+        },
+        {
+            "location": "/docs/memorycache/#thread-safe",
+            "text": "MemoryCache uses  System.Collections.Concurrent.ConcurrentDictionary  and every property and method are thread-safe.   Note  Since we are dealing with  caching , it is recommended that stored objects be thread-safe, since the same instance of an object can and will be returned by multiple calls of  Get  methods.  You still can use non-thread-safe objects, see  Remove Example  or  FAQ .",
+            "title": "Thread-safe"
+        },
+        {
+            "location": "/docs/memorycache/#lightweight",
+            "text": "MemoryCache uses a  System.Threading.Timer  to periodically check for expired items and remove them.\nThe timer step can be configured, see  Configuration .  The timer has a lazy start. Only after the first  Set  call to store an item, the timer will start.\nIf the cache internal dictionary is empty for a while - after 3 runs - the timer is released and only to start again on next  Set  call.",
+            "title": "Lightweight"
+        },
+        {
+            "location": "/docs/memorycache/#configuration",
+            "text": "Simple configuration of the MemoryCache settings.  It should be done for each type, as explained in  Implentation .  // setup (called once in application initialization)  // set a duration of an item in the cache to 1 second  MemoryCache string . Expiration   =   TimeSpan . FromSeconds   ( 1 );  // set the internal maintenance timed task to run each 500 ms removing expired items  MemoryCache string . MaintenanceStep   =   TimeSpan . FromMilliseconds   ( 500 );  // Our event, if we want to treat the removed expired items  MemoryCache string . OnExpiration   +=   ( string   key ,   string   item )   =  { \n     // do something  };",
+            "title": "Configuration"
+        },
+        {
+            "location": "/docs/memorycache/#api",
+            "text": "",
+            "title": "API"
+        },
+        {
+            "location": "/docs/memorycache/#set",
+            "text": "Use  Set  method to store data with a key.  // store an item  MemoryCache string . Set   ( k1 ,   test );",
+            "title": "Set"
+        },
+        {
+            "location": "/docs/memorycache/#get",
+            "text": "Use  Get  method to retrieve data associated with a key.  // try to get from cache  string   value   =   MemoryCache string . Get   ( k1 );  // check if we got it  if   ( value   !=   null )  { \n     // ok we got it!  }",
+            "title": "Get"
+        },
+        {
+            "location": "/docs/memorycache/#remove",
+            "text": "Use  Remove  method to atomically remove and return the value associated with the specified key.  // try to get from cache  string   value   =   MemoryCache string . Remove   ( k1 );  // check if we got it  if   ( value   !=   null )  { \n     // ok we got it!  }",
+            "title": "Remove"
+        },
+        {
+            "location": "/docs/memorycache/#getoradd",
+            "text": "Use  GetOrAdd  to try to retrieve data from cache and if the data is not present in cache use a factory method to create the new item.  // prepare our factory  var   factory   =   ( string   key )   =  { \n     return   key   +   DateTime . Now . ToString   ();  };  // try to get the associated value if the cache does not have it  // then use the factory to create a new one, store and return it.  string   value   =   MemoryCache string . GetOrAdd   ( key2 ,   factory );",
+            "title": "GetOrAdd"
+        },
+        {
+            "location": "/docs/memorycache/#getorsyncadd",
+            "text": "Using a more complex concurrent scenario where, if the item is not found, we want to call the factory  only once . GetOrSyncAdd  guarantees that the factory method will be called only once in case of concurrent invocations.\nSo all concurrent calls will wait until factory has created and stored the new item, and will return it.  // prepare our factory  var   factory   =   ( string   key )   =  { \n     return   key   +   DateTime . Now . ToString   ();  };  // try to get the associated value if the cache does not have it  // then use the factory to create a new one, store and return it.  // It the factory takes more than 250 milliseconds to create then new instance,  // it will exit returning the default value for the class  string   value   =   MemoryCache string . GetOrSyncAdd   ( key2 ,   factory ,   TimeSpan . FromMilliseconds   ( 250 ));  // check if we got it  if   ( value   !=   null )  { \n     // ok we got it!  }",
+            "title": "GetOrSyncAdd"
+        },
+        {
+            "location": "/docs/memorycache/#faq",
+            "text": "",
+            "title": "FAQ"
+        },
+        {
+            "location": "/docs/memorycache/#how-to-deal-with-non-thread-safe-objects",
+            "text": "If you wish to use non-thread safe object instances, you can! Instead of using the  Get  methods, you  must  use the  Remove  method to atomically (safelly) get and remove the object instance from the cache.",
+            "title": "How to deal with non-thread-safe objects"
+        },
+        {
+            "location": "/docs/memorycache/#project-information",
+            "text": "Contribute  Support  License",
+            "title": "Project Information"
+        },
+        {
+            "location": "/docs/fileencoding/",
+            "text": "SimpleHelpers.FileEncoding\n#\n\n\n\n\n\n\nDetect any text file charset encoding using Mozilla Charset Detector (UDE.CSharp).\n\n\nFileEncoding support almost all charset encodings (utf-8, utf-7, utf-32, ISO-8859-1, \n). It checks if the file has a \nBOM header\n, and if not FileEncoding will load and analize the file bytes and try to decide its charset encoding.\n\n\nFeatures\n#\n\n\n\n\nByte order mark (BOM) detection\n\n\nAnalyse file content\n\n\nAlmost all charset encodings\n\n\nLarge files support\n\n\n\n\nInstallation\n#\n\n\nNuGet Package Details\n#\n\n\nYou can install using NuGet, see \nSimpleHelpers.FileEncoding at NuGet.org\n\n\nPM\n \nInstall-Package\n \nSimpleHelpers\n.\nFileEncoding\n\n\n\n\n\n\nThe nuget package contains \nC# source code\n.\n\n\nThe source code will be installed in your project with the following file system structure:\n\n\n|-- \nproject root\n\n    |-- SimpleHelpers\n        |-- FileEncoding.cs\n\n\n\n\n\nDownload\n#\n\n\nIf you prefer, you can also download the source code: \nFileEncoding.cs\n\n\nDependencies\n#\n\n\n\n\nUDE.CSharp\n\n\n\n\n\n\nCompiled version of \nC# port of Mozilla Universal Charset Detector\n\n\n\n\nThis userful library can detect the charset encoding by analysing a byte array.\n\n\nExample\n#\n\n\nDetectFileEncoding\n#\n\n\n    \nvar\n \nencoding\n \n=\n \nFileEncoding\n.\nDetectFileEncoding\n \n(\n./my_text_file.txt\n);\n\n\n\n\n\n\nTryLoadFile\n#\n\n\n    \nvar\n \ncontent\n \n=\n \nFileEncoding\n.\nTryLoadFile\n \n(\n./my_text_file.txt\n);\n\n\n\n\n\n\nProject Information\n#\n\n\n\n\nContribute\n\n\nSupport\n\n\nLicense",
+            "title": "FileEncoding"
+        },
+        {
+            "location": "/docs/fileencoding/#simplehelpersfileencoding",
+            "text": "Detect any text file charset encoding using Mozilla Charset Detector (UDE.CSharp).  FileEncoding support almost all charset encodings (utf-8, utf-7, utf-32, ISO-8859-1,  ). It checks if the file has a  BOM header , and if not FileEncoding will load and analize the file bytes and try to decide its charset encoding.",
+            "title": "SimpleHelpers.FileEncoding"
+        },
+        {
+            "location": "/docs/fileencoding/#features",
+            "text": "Byte order mark (BOM) detection  Analyse file content  Almost all charset encodings  Large files support",
+            "title": "Features"
+        },
+        {
+            "location": "/docs/fileencoding/#installation",
+            "text": "",
+            "title": "Installation"
+        },
+        {
+            "location": "/docs/fileencoding/#nuget-package-details",
+            "text": "You can install using NuGet, see  SimpleHelpers.FileEncoding at NuGet.org  PM   Install-Package   SimpleHelpers . FileEncoding   The nuget package contains  C# source code .  The source code will be installed in your project with the following file system structure:  |--  project root \n    |-- SimpleHelpers\n        |-- FileEncoding.cs",
+            "title": "NuGet Package Details"
+        },
+        {
+            "location": "/docs/fileencoding/#download",
+            "text": "If you prefer, you can also download the source code:  FileEncoding.cs",
+            "title": "Download"
+        },
+        {
+            "location": "/docs/fileencoding/#dependencies",
+            "text": "UDE.CSharp    Compiled version of  C# port of Mozilla Universal Charset Detector   This userful library can detect the charset encoding by analysing a byte array.",
+            "title": "Dependencies"
+        },
+        {
+            "location": "/docs/fileencoding/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/docs/fileencoding/#detectfileencoding",
+            "text": "var   encoding   =   FileEncoding . DetectFileEncoding   ( ./my_text_file.txt );",
+            "title": "DetectFileEncoding"
+        },
+        {
+            "location": "/docs/fileencoding/#tryloadfile",
+            "text": "var   content   =   FileEncoding . TryLoadFile   ( ./my_text_file.txt );",
+            "title": "TryLoadFile"
+        },
+        {
+            "location": "/docs/fileencoding/#project-information",
+            "text": "Contribute  Support  License",
+            "title": "Project Information"
+        },
+        {
+            "location": "/docs/namedlock/",
+            "text": "SimpleHelpers.NamedLock\n#\n\n\n\n\n\n\nSynchronization helper: a static lock collection associated with a key.\n\n\nNamedLock manages the lifetime of critical sections that can be accessed by a key (name) throughout the application. It also have some helper methods to allow a maximum wait time (timeout) to acquire the lock and safely release it.\n\n\nInstallation\n#\n\n\nNuGet Package Details\n#\n\n\nYou can install using NuGet, see \nSimpleHelpers.NamedLock at NuGet.org\n\n\nPM\n \nInstall-Package\n \nSimpleHelpers\n.\nNamedLock\n\n\n\n\n\n\nThe nuget package contains \nC# source code\n.\n\n\nThe source code will be installed in your project with the following file system structure:\n\n\n|-- \nproject root\n\n    |-- SimpleHelpers\n        |-- NamedLock.cs\n\n\n\n\n\nDownload\n#\n\n\nIf you prefer, you can also download the source code: \nNamedLock.cs\n\n\nExamples\n#\n\n\nSimple usage where we try to acquire the lock for 100 ms.\nSo if somewhere else in our application this same lock was already acquired, we will wait until we acquire the lock or 100 ms has passed.\n\n\nstring\n \nkey\n \n=\n \nour lock name\n;\n\n\n\nusing\n \n(\nvar\n \npadlock\n \n=\n \nnew\n \nNamedLock\n \n(\nkey\n))\n\n\n{\n\n    \nif\n \n(\npadlock\n.\nEnter\n \n(\nTimeSpan\n.\nFromMilliseconds\n \n(\n100\n)))\n\n    \n{\n\n        \n// do something as we now own the lock\n\n    \n}\n\n    \nelse\n\n    \n{\n\n        \n// do some other thing since we could not aquire the lock\n\n    \n}\n\n\n}\n\n\n\n\n\n\nAnother usage example with a static helper method.\n\n\nstring\n \nkey\n \n=\n \nour lock name\n;\n\n\n\nusing\n \n(\nvar\n \npadlock\n \n=\n \nNamedLock\n.\nCreateAndEnter\n \n(\nkey\n,\n \nTimeSpan\n.\nFromMilliseconds\n \n(\n100\n)))\n\n\n{\n\n    \nif\n \n(\npadlock\n.\nIsLocked\n)\n\n    \n{\n\n        \n// do something\n\n    \n}\n\n\n}\n\n\n\n\n\n\nProject Information\n#\n\n\n\n\nContribute\n\n\nSupport\n\n\nLicense",
+            "title": "NamedLock"
+        },
+        {
+            "location": "/docs/namedlock/#simplehelpersnamedlock",
+            "text": "Synchronization helper: a static lock collection associated with a key.  NamedLock manages the lifetime of critical sections that can be accessed by a key (name) throughout the application. It also have some helper methods to allow a maximum wait time (timeout) to acquire the lock and safely release it.",
+            "title": "SimpleHelpers.NamedLock"
+        },
+        {
+            "location": "/docs/namedlock/#installation",
+            "text": "",
+            "title": "Installation"
+        },
+        {
+            "location": "/docs/namedlock/#nuget-package-details",
+            "text": "You can install using NuGet, see  SimpleHelpers.NamedLock at NuGet.org  PM   Install-Package   SimpleHelpers . NamedLock   The nuget package contains  C# source code .  The source code will be installed in your project with the following file system structure:  |--  project root \n    |-- SimpleHelpers\n        |-- NamedLock.cs",
+            "title": "NuGet Package Details"
+        },
+        {
+            "location": "/docs/namedlock/#download",
+            "text": "If you prefer, you can also download the source code:  NamedLock.cs",
+            "title": "Download"
+        },
+        {
+            "location": "/docs/namedlock/#examples",
+            "text": "Simple usage where we try to acquire the lock for 100 ms.\nSo if somewhere else in our application this same lock was already acquired, we will wait until we acquire the lock or 100 ms has passed.  string   key   =   our lock name ;  using   ( var   padlock   =   new   NamedLock   ( key ))  { \n     if   ( padlock . Enter   ( TimeSpan . FromMilliseconds   ( 100 ))) \n     { \n         // do something as we now own the lock \n     } \n     else \n     { \n         // do some other thing since we could not aquire the lock \n     }  }   Another usage example with a static helper method.  string   key   =   our lock name ;  using   ( var   padlock   =   NamedLock . CreateAndEnter   ( key ,   TimeSpan . FromMilliseconds   ( 100 )))  { \n     if   ( padlock . IsLocked ) \n     { \n         // do something \n     }  }",
+            "title": "Examples"
+        },
+        {
+            "location": "/docs/namedlock/#project-information",
+            "text": "Contribute  Support  License",
+            "title": "Project Information"
+        },
+        {
+            "location": "/docs/sqlitestorage/",
+            "text": "SimpleHelpers.SQLiteStorage\n#\n\n\n\n\n\n\nSimple key value storage using sqlite.\n\n\nAll member methods are thread-safe, so a instance can be safely be accessed by multiple threads.\n\n\nAll stored items are serialized to json by json.net.\n\n\nNote: this nuget package contains csharp source code and depends on .Net 4.0.\n\n\nInstallation\n#\n\n\nNuGet Package Details\n#\n\n\nYou can install using NuGet, see \nSimpleHelpers.SQLiteStorage at NuGet.org\n\n\nPM\n \nInstall-Package\n \nSimpleHelpers\n.\nSQLiteStorage\n\n\n\n\n\n\nThe nuget package contains \nC# source code\n.\n\n\nThe source code will be installed in your project with the following file system structure:\n\n\n|-- \nproject root\n\n    |-- SimpleHelpers\n        |-- SQLiteStorage.cs\n\n\n\n\n\nDownload\n#\n\n\nIf you prefer, you can also download the source code: \nSQLiteStorage.cs\n\n\nConfiguration\n#\n\n\n// setup:\n\n\nSQLiteStorage\nMy_Class\n \ndb\n \n=\n \nnew\n \nSQLiteStorage\nMy_Class\n \n(\npath_to_my_file.sqlite\n,\n\n                              \nSQLiteStorageOptions\n.\nUniqueKeys\n \n());\n\n\n\n\n\n\nExample\n#\n\n\n// create a new instance\n\n\nSQLiteStorage\nMy_Class\n \ndb\n \n=\n \nnew\n \nSQLiteStorage\nMy_Class\n \n(\npath_to_my_file.sqlite\n,\n\n                              \nSQLiteStorageOptions\n.\nUniqueKeys\n \n());\n\n\n\n// save an item with a key associated\n\n\ndb\n.\nSet\n \n(\nmy_key_for_this_item\n,\n \nnew\n \nMy_Class\n \n());\n\n\n\n// get it back\n\n\nvar\n \nmy_obj\n \n=\n \ndb\n.\nGet\n \n(\nmy_key_for_this_item\n).\nFirstOrDefault\n \n();\n\n\n\n// to save any changes, just call set again\n\n\ndb\n.\nSet\n \n(\nmy_key_for_this_item\n,\n \nmy_obj\n);\n\n\n\n// get all stored items\n\n\nforeach\n \n(\nvar\n \nitem\n \nin\n \ndb\n.\nGet\n \n())\n\n\n{\n\n    \n// ...\n\n\n}\n\n\n\n\n\n\nProject Information\n#\n\n\n\n\nContribute\n\n\nSupport\n\n\nLicense",
+            "title": "SQLiteStorage"
+        },
+        {
+            "location": "/docs/sqlitestorage/#simplehelperssqlitestorage",
+            "text": "Simple key value storage using sqlite.  All member methods are thread-safe, so a instance can be safely be accessed by multiple threads.  All stored items are serialized to json by json.net.  Note: this nuget package contains csharp source code and depends on .Net 4.0.",
+            "title": "SimpleHelpers.SQLiteStorage"
+        },
+        {
+            "location": "/docs/sqlitestorage/#installation",
+            "text": "",
+            "title": "Installation"
+        },
+        {
+            "location": "/docs/sqlitestorage/#nuget-package-details",
+            "text": "You can install using NuGet, see  SimpleHelpers.SQLiteStorage at NuGet.org  PM   Install-Package   SimpleHelpers . SQLiteStorage   The nuget package contains  C# source code .  The source code will be installed in your project with the following file system structure:  |--  project root \n    |-- SimpleHelpers\n        |-- SQLiteStorage.cs",
+            "title": "NuGet Package Details"
+        },
+        {
+            "location": "/docs/sqlitestorage/#download",
+            "text": "If you prefer, you can also download the source code:  SQLiteStorage.cs",
+            "title": "Download"
+        },
+        {
+            "location": "/docs/sqlitestorage/#configuration",
+            "text": "// setup:  SQLiteStorage My_Class   db   =   new   SQLiteStorage My_Class   ( path_to_my_file.sqlite , \n                               SQLiteStorageOptions . UniqueKeys   ());",
+            "title": "Configuration"
+        },
+        {
+            "location": "/docs/sqlitestorage/#example",
+            "text": "// create a new instance  SQLiteStorage My_Class   db   =   new   SQLiteStorage My_Class   ( path_to_my_file.sqlite , \n                               SQLiteStorageOptions . UniqueKeys   ());  // save an item with a key associated  db . Set   ( my_key_for_this_item ,   new   My_Class   ());  // get it back  var   my_obj   =   db . Get   ( my_key_for_this_item ). FirstOrDefault   ();  // to save any changes, just call set again  db . Set   ( my_key_for_this_item ,   my_obj );  // get all stored items  foreach   ( var   item   in   db . Get   ())  { \n     // ...  }",
+            "title": "Example"
+        },
+        {
+            "location": "/docs/sqlitestorage/#project-information",
+            "text": "Contribute  Support  License",
+            "title": "Project Information"
+        },
+        {
+            "location": "/docs/timedqueue/",
+            "text": "SimpleHelpers.TimedQueue\n#\n\n\n\n\n\n\nFast lightweight in-memory queue that stores data in a concurrent queue and periodically process the queued items.\n\n\nUseful for:\n\n\n\n\nprocessing items in batches;\n\n\ngrouping data for later processing;\n\n\nasync processing (consumer/producer);\n\n\netc.\n\n\n\n\nNote: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.\n\n\nInstallation\n#\n\n\nNuGet Package Details\n#\n\n\nYou can install using NuGet, see \nSimpleHelpers.TimedQueue at NuGet.org\n\n\nPM\n \nInstall-Package\n \nSimpleHelpers\n.\nTimedQueue\n\n\n\n\n\n\nThe nuget package contains \nC# source code\n.\n\n\nThe source code will be installed in your project with the following file system structure:\n\n\n|-- \nproject root\n\n    |-- SimpleHelpers\n        |-- TimedQueue.cs\n\n\n\n\n\nDownload\n#\n\n\nIf you prefer, you can also download the source code: \nTimedQueue.cs\n\n\nConfiguration\n#\n\n\nSimple configuration of the TimedQueue settings.\n\n\n// create our timedQueue instance\n\n\nSimpleHelpers\n.\nTimedQueue\nLogEvent\n \nmy_queue\n \n=\n \nnew\n \nSimpleHelpers\n.\nTimedQueue\nLogEvent\n \n();\n\n\n\n// set the queue timed task to run each 500 ms executing the registered action\n\n\nmy_queue\n.\nTimerStep\n \n=\n \nTimeSpan\n.\nFromMilliseconds\n \n(\n500\n);\n\n\n\n// Our event, if we want to treat the removed expired items\n\n\nmy_queue\n.\nOnExecution\n \n=\n \n(\nIEnumerable\nOur_Object\n \nitems\n)\n \n=\n\n\n{\n\n    \n// the items IEnumerable must be consumed to clear the queued items!\n\n    \nforeach\n \n(\nvar\n \nevt\n \nin\n \nitems\n)\n\n        \n// do something\n\n\n};\n\n\n\n\n\n\nAnother example passing the parameters to the constructor.\n\n\n// create our timedQueue instance\n\n\nSimpleHelpers\n.\nTimedQueue\nOur_Object\n \nmy_queue\n \n=\n \nnew\n \nSimpleHelpers\n.\nTimedQueue\nOur_Object\n \n(\nTimeSpan\n.\nFromMilliseconds\n \n(\n2500\n),\n \nConsumerMethod\n);\n\n\n\n\n\n\n\n\nNote\n\n\nRemember that since TimedQueue is executed asynchronously - in a timer thread - you should hold the reference to TimedQueue instance to avoid the instance destruction before the \nOnExecution\n method is invoked. The .Net garbage collector will collect all instances without that it thinks are not being used, and that may includes local method variables that are optimized by the compiler depending on how you coded it\n\n\n\n\nExamples\n#\n\n\nPut\n#\n\n\nEnqueue items to be processed by the \nOnExecution\n action.\n\n\n    \nmy_queue\n.\nPut\n \n(\nevt\n);\n\n\n\n\n\n\nMore complex example:\n\n\n// our method that does an network call to store out object\n\n\n// and keeps retrying in case of failure\n\n\npublic\n \nstatic\n \nvoid\n \nSaveEvent\n \n(\nOur_Object\n \nevt\n)\n\n\n{\n\n    \n// try to save\n\n    \ntry\n\n    \n{\n\n        \nSaveOverTheInternet\n \n(\nevt\n);\n\n    \n}\n\n    \ncatch\n \n(\nSystem\n.\nIO\n.\nIOException\n \nex\n)\n\n    \n{\n\n        \n// log.Error (ex);\n\n        \nSimpleHelpers\n.\nTimedQueue\nOur_Object\n.\nPut\n \n(\nevt\n);\n\n    \n}\n\n\n}\n\n\n\n\n\n\nProject Information\n#\n\n\n\n\nContribute\n\n\nSupport\n\n\nLicense",
+            "title": "TimedQueue"
+        },
+        {
+            "location": "/docs/timedqueue/#simplehelperstimedqueue",
+            "text": "Fast lightweight in-memory queue that stores data in a concurrent queue and periodically process the queued items.  Useful for:   processing items in batches;  grouping data for later processing;  async processing (consumer/producer);  etc.   Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.",
+            "title": "SimpleHelpers.TimedQueue"
+        },
+        {
+            "location": "/docs/timedqueue/#installation",
+            "text": "",
+            "title": "Installation"
+        },
+        {
+            "location": "/docs/timedqueue/#nuget-package-details",
+            "text": "You can install using NuGet, see  SimpleHelpers.TimedQueue at NuGet.org  PM   Install-Package   SimpleHelpers . TimedQueue   The nuget package contains  C# source code .  The source code will be installed in your project with the following file system structure:  |--  project root \n    |-- SimpleHelpers\n        |-- TimedQueue.cs",
+            "title": "NuGet Package Details"
+        },
+        {
+            "location": "/docs/timedqueue/#download",
+            "text": "If you prefer, you can also download the source code:  TimedQueue.cs",
+            "title": "Download"
+        },
+        {
+            "location": "/docs/timedqueue/#configuration",
+            "text": "Simple configuration of the TimedQueue settings.  // create our timedQueue instance  SimpleHelpers . TimedQueue LogEvent   my_queue   =   new   SimpleHelpers . TimedQueue LogEvent   ();  // set the queue timed task to run each 500 ms executing the registered action  my_queue . TimerStep   =   TimeSpan . FromMilliseconds   ( 500 );  // Our event, if we want to treat the removed expired items  my_queue . OnExecution   =   ( IEnumerable Our_Object   items )   =  { \n     // the items IEnumerable must be consumed to clear the queued items! \n     foreach   ( var   evt   in   items ) \n         // do something  };   Another example passing the parameters to the constructor.  // create our timedQueue instance  SimpleHelpers . TimedQueue Our_Object   my_queue   =   new   SimpleHelpers . TimedQueue Our_Object   ( TimeSpan . FromMilliseconds   ( 2500 ),   ConsumerMethod );    Note  Remember that since TimedQueue is executed asynchronously - in a timer thread - you should hold the reference to TimedQueue instance to avoid the instance destruction before the  OnExecution  method is invoked. The .Net garbage collector will collect all instances without that it thinks are not being used, and that may includes local method variables that are optimized by the compiler depending on how you coded it",
+            "title": "Configuration"
+        },
+        {
+            "location": "/docs/timedqueue/#examples",
+            "text": "",
+            "title": "Examples"
+        },
+        {
+            "location": "/docs/timedqueue/#put",
+            "text": "Enqueue items to be processed by the  OnExecution  action.       my_queue . Put   ( evt );   More complex example:  // our method that does an network call to store out object  // and keeps retrying in case of failure  public   static   void   SaveEvent   ( Our_Object   evt )  { \n     // try to save \n     try \n     { \n         SaveOverTheInternet   ( evt ); \n     } \n     catch   ( System . IO . IOException   ex ) \n     { \n         // log.Error (ex); \n         SimpleHelpers . TimedQueue Our_Object . Put   ( evt ); \n     }  }",
+            "title": "Put"
+        },
+        {
+            "location": "/docs/timedqueue/#project-information",
+            "text": "Contribute  Support  License",
+            "title": "Project Information"
+        },
+        {
+            "location": "/docs/objectpool/",
+            "text": "SimpleHelpers.ObjectPool\n#\n\n\n\n\n\n\nA fast lightweight object pool for fast and simple object reuse.\n\n\nSimple to use, fast, lightweight and thread-safe object pool for objects that are expensive to create or could efficiently be reused.\n\n\nNote: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.\n\n\nFeatures\n#\n\n\n\n\nSimple to use\n\n\nFast\n\n\nLightweight\n\n\nThread-safe\n\n\n\n\nInstallation\n#\n\n\nNuGet Package Details\n#\n\n\nYou can install using NuGet, see \nSimpleHelpers.ObjectPool at NuGet.org\n\n\nPM\n \nInstall-Package\n \nSimpleHelpers\n.\nObjectPool\n\n\n\n\n\n\nThe nuget package contains \nC# source code\n.\n\n\nThe source code will be installed in your project with the following file system structure:\n\n\n|-- \nproject root\n\n    |-- SimpleHelpers\n        |-- ObjectPool.cs\n\n\n\n\n\nDownload\n#\n\n\nIf you prefer, you can also download the source code: \nObjectPool.cs\n\n\nExamples\n#\n\n\n// Get or create a new random generator\n\n\nRandom\n \nrnd\n \n=\n \nObjectPool\nRandom\n.\nGet\n \n(\nCreateRandomGenerator\n);\n\n\n// start generating random numbers\n\n\ntry\n\n\n{\n\n    \n// ...\n\n\n    \nvar\n \nnum\n \n=\n \nrnd\n.\nNext\n \n(\nmax\n);\n\n\n    \n// ...\n\n\n}\n\n\nfinally\n\n\n{\n\n    \n// Release the random generator by putting it back in the object pool\n\n    \nObjectPool\nRandom\n.\nPut\n \n(\nrnd\n);\n\n\n}\n\n\n\n// our factory\n\n\nprivate\n \nstatic\n \nRandom\n \nCreateRandomGenerator\n \n()\n\n\n{\n\n    \nreturn\n \nnew\n \nRandom\n \n((\nint\n)\nDateTime\n.\nUtcNow\n.\nTicks\n);\n\n\n}\n\n\n\n\n\n\nProject Information\n#\n\n\n\n\nContribute\n\n\nSupport\n\n\nLicense",
+            "title": "ObjectPool"
+        },
+        {
+            "location": "/docs/objectpool/#simplehelpersobjectpool",
+            "text": "A fast lightweight object pool for fast and simple object reuse.  Simple to use, fast, lightweight and thread-safe object pool for objects that are expensive to create or could efficiently be reused.  Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.",
+            "title": "SimpleHelpers.ObjectPool"
+        },
+        {
+            "location": "/docs/objectpool/#features",
+            "text": "Simple to use  Fast  Lightweight  Thread-safe",
+            "title": "Features"
+        },
+        {
+            "location": "/docs/objectpool/#installation",
+            "text": "",
+            "title": "Installation"
+        },
+        {
+            "location": "/docs/objectpool/#nuget-package-details",
+            "text": "You can install using NuGet, see  SimpleHelpers.ObjectPool at NuGet.org  PM   Install-Package   SimpleHelpers . ObjectPool   The nuget package contains  C# source code .  The source code will be installed in your project with the following file system structure:  |--  project root \n    |-- SimpleHelpers\n        |-- ObjectPool.cs",
+            "title": "NuGet Package Details"
+        },
+        {
+            "location": "/docs/objectpool/#download",
+            "text": "If you prefer, you can also download the source code:  ObjectPool.cs",
+            "title": "Download"
+        },
+        {
+            "location": "/docs/objectpool/#examples",
+            "text": "// Get or create a new random generator  Random   rnd   =   ObjectPool Random . Get   ( CreateRandomGenerator );  // start generating random numbers  try  { \n     // ... \n\n     var   num   =   rnd . Next   ( max ); \n\n     // ...  }  finally  { \n     // Release the random generator by putting it back in the object pool \n     ObjectPool Random . Put   ( rnd );  }  // our factory  private   static   Random   CreateRandomGenerator   ()  { \n     return   new   Random   (( int ) DateTime . UtcNow . Ticks );  }",
+            "title": "Examples"
+        },
+        {
+            "location": "/docs/objectpool/#project-information",
+            "text": "Contribute  Support  License",
+            "title": "Project Information"
+        },
+        {
+            "location": "/docs/configmanager/",
+            "text": "SimpleHelpers.ConfigManager\n#\n\n\n\n\n\n\nSimple configuration manager to get and set the values in the AppSettings section of the default configuration file (C# - Source file).\n\n\nNote: this nuget package contains csharp source code and depends on Generics introduced in .Net 2.0.\n\n\nInstallation\n#\n\n\nNuGet Package Details\n#\n\n\nYou can install using NuGet, see \nSimpleHelpers.ConfigManager at NuGet.org\n\n\nPM\n \nInstall-Package\n \nSimpleHelpers\n.\nConfigManager\n\n\n\n\n\n\nThe nuget package contains \nC# source code\n.\n\n\nThe source code will be installed in your project with the following file system structure:\n\n\n|-- \nproject root\n\n    |-- SimpleHelpers\n        |-- ConfigManager.cs\n\n\n\n\n\nDownload\n#\n\n\nIf you prefer, you can also download the source code: \nConfigManager.cs\n\n\nConfiguration\n#\n\n\n// setup (called once in application initialization)\n\n\n\n// set to add any new keys added during the application execution\n\n\nConfigManager\n.\nAddNonExistingKeys\n \n=\n \ntrue\n;\n\n\n\n\n\n\nExample\n#\n\n\nstring\n \naddress\n \n=\n \nConfigManager\n.\nGet\n \n(\nMongoDBaddress\n,\n \nlocalhost\n);\n\n\nint\n \nport\n \n=\n \nConfigManager\n.\nGet\n \n(\nMongoDBport\n,\n \n21766\n);\n\n\n\n\n\n\nProject Information\n#\n\n\n\n\nContribute\n\n\nSupport\n\n\nLicense",
+            "title": "ConfigManager"
+        },
+        {
+            "location": "/docs/configmanager/#simplehelpersconfigmanager",
+            "text": "Simple configuration manager to get and set the values in the AppSettings section of the default configuration file (C# - Source file).  Note: this nuget package contains csharp source code and depends on Generics introduced in .Net 2.0.",
+            "title": "SimpleHelpers.ConfigManager"
+        },
+        {
+            "location": "/docs/configmanager/#installation",
+            "text": "",
+            "title": "Installation"
+        },
+        {
+            "location": "/docs/configmanager/#nuget-package-details",
+            "text": "You can install using NuGet, see  SimpleHelpers.ConfigManager at NuGet.org  PM   Install-Package   SimpleHelpers . ConfigManager   The nuget package contains  C# source code .  The source code will be installed in your project with the following file system structure:  |--  project root \n    |-- SimpleHelpers\n        |-- ConfigManager.cs",
+            "title": "NuGet Package Details"
+        },
+        {
+            "location": "/docs/configmanager/#download",
+            "text": "If you prefer, you can also download the source code:  ConfigManager.cs",
+            "title": "Download"
+        },
+        {
+            "location": "/docs/configmanager/#configuration",
+            "text": "// setup (called once in application initialization)  // set to add any new keys added during the application execution  ConfigManager . AddNonExistingKeys   =   true ;",
+            "title": "Configuration"
+        },
+        {
+            "location": "/docs/configmanager/#example",
+            "text": "string   address   =   ConfigManager . Get   ( MongoDBaddress ,   localhost );  int   port   =   ConfigManager . Get   ( MongoDBport ,   21766 );",
+            "title": "Example"
+        },
+        {
+            "location": "/docs/configmanager/#project-information",
+            "text": "Contribute  Support  License",
+            "title": "Project Information"
+        }
+    ]
+}
