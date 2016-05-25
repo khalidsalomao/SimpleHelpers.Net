@@ -1,0 +1,57 @@
+# Project information
+site_name: 'SimpleHelpers.Net'
+site_description: 'Collection of simple pieces of utility code for .Net'
+site_author: 'Khalid Salomão'
+site_url: 'http://khalidsalomao.github.io/SimpleHelpers.Net/'
+
+# Repository
+repo_name: 'GitHub'
+repo_url: 'https://github.com/khalidsalomao/SimpleHelpers.Net'
+
+# Copyright
+copyright: 'Copyright (c) 2016 Khalid Salomão'
+
+# Documentation and theme
+docs_dir: 'mkdocs_site'
+site_dir: 'mkdocs_site_deploy'
+theme: 'material'
+
+# Extensions
+markdown_extensions:
+  - toc:
+      permalink: '#'
+  - pymdownx.github:
+      no_nl2br: true
+  - smarty
+  - pymdownx.magiclink
+  - pymdownx.headeranchor
+  - pymdownx.githubemoji
+  - pymdownx.tasklist
+  - pymdownx.betterem:
+      smart_enable: 'all'
+  - codehilite:
+      guess_lang: true
+      css_class: 'code'
+  - admonition
+
+# Options
+extra:
+  palette:
+    primary: 'blue grey'
+    accent: 'cyan'
+  font:
+    text: 'Open Sans'
+    code: 'Roboto Mono'
+  author:
+    github: 'khalidsalomao'
+
+# Documentation pages
+pages:
+    - SimpleHelpers.Net: 'index.md'
+    - MemoryCache: 'docs/memorycache.md'
+    - FileEncoding: 'docs/fileencoding.md'
+    - NamedLock: 'docs/namedlock.md'
+    - SQLiteStorage: 'docs/sqlitestorage.md'
+    - TimedQueue: 'docs/timedqueue.md'
+    - ObjectPool: 'docs/objectpool.md'
+    - ConfigManager: 'docs/configmanager.md'
