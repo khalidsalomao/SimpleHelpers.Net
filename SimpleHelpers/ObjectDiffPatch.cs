@@ -48,7 +48,7 @@ namespace SimpleHelpers
         /// <typeparam name="T">The type of the T.</typeparam>
         /// <param name="original">The original.</param>
         /// <param name="updated">The updated.</param>
-        /// <returns></returns>
+        /// <returns>The result of the diff operation</returns>
         public static ObjectDiffPatchResult GenerateDiff<T> (T original, T updated) where T : class
         {
             // ensure the serializer will not ignore null values
@@ -77,7 +77,7 @@ namespace SimpleHelpers
         /// <typeparam name="T">The type of the T.</typeparam>
         /// <param name="source">The source.</param>
         /// <param name="diffJson">The diff json.</param>
-        /// <returns></returns>
+        /// <returns>A new object with applied patch</returns>
         public static T PatchObject<T> (T source, string diffJson) where T : class
         {
             var diff = Newtonsoft.Json.Linq.JObject.Parse (diffJson);
@@ -90,7 +90,7 @@ namespace SimpleHelpers
         /// <typeparam name="T">The type of the T.</typeparam>
         /// <param name="source">The source.</param>
         /// <param name="diffJson">The diff json.</param>
-        /// <returns></returns>
+        /// <returns>A new object with applied patch</returns>
         public static T PatchObject<T> (T source, JObject diffJson) where T : class
         {
             var sourceJson = source != null ? Newtonsoft.Json.Linq.JObject.FromObject (source, GetJsonSerializer ()) : null;

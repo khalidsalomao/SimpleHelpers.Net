@@ -77,7 +77,7 @@ namespace $rootnamespace$.SimpleHelpers
         /// <typeparam name="T">The type of the T.</typeparam>
         /// <param name="source">The source.</param>
         /// <param name="diffJson">The diff json.</param>
-        /// <returns></returns>
+        /// <returns>A new object with applied patch</returns>
         public static T PatchObject<T> (T source, string diffJson) where T : class
         {
             var diff = Newtonsoft.Json.Linq.JObject.Parse (diffJson);
@@ -90,7 +90,7 @@ namespace $rootnamespace$.SimpleHelpers
         /// <typeparam name="T">The type of the T.</typeparam>
         /// <param name="source">The source.</param>
         /// <param name="diffJson">The diff json.</param>
-        /// <returns></returns>
+        /// <returns>A new object with applied patch</returns>
         public static T PatchObject<T> (T source, JObject diffJson) where T : class
         {
             var sourceJson = source != null ? Newtonsoft.Json.Linq.JObject.FromObject (source, GetJsonSerializer ()) : null;
@@ -245,7 +245,7 @@ namespace $rootnamespace$.SimpleHelpers
         {
             JToken token;
             // deal with null values
-            if (sourceJson == null || diffJson == null)
+            if (sourceJson == null || diffJson == null || !sourceJson.HasValues)
             {
                 return diffJson;
             }
