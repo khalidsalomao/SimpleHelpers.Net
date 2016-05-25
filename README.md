@@ -1,301 +1,112 @@
 SimpleHelpers.Net
 =================
 
-Collection of simple pieces of utility code
+[![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg?maxAge=3600&style=flat-square)](https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/LICENSE.txt)
 
-Description and Examples
---------
-<h3>MemoryCache</h3>
 
-Simple lightweight object in-memory cache, with a background timer to remove expired objects.
+*Micro-libraries* (pieces of utility code) for .Net that are safe and simple to use.
 
-Fast in-memory cache for data that are expensive to create and can be used in a thread-safe manner.
+In every project there are lot's of reusable patterns that we find our selves rewriting or just doing some copy & paste, and thus the idea behind SimpleHelpers micro-libraries is to create a small collection of such code but keeping it reliable and easy to use.
 
-All stored items are kept in concurrent data structures (ConcurrentDictionary) to allow multi-thread usage of the MemoryCache static methods. Note that the stored objects must be **thread-safe**, since the same instance of an object can and will be returned by multiple calls of *Get* methods. If you wish to use non-thread safe object instances you must use the *Remove* method to atomically (safelly) get and remove the object instance from the cache.
 
-Note: this nuget package contains csharp source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
+Most of SimpleHelpers.Net libraries are distributed by Nuget.org as source code files (c#), since this enable us to use these utility code as micro-libraries without creating and having to deploy a huge number of assemblies (dlls). The idea is to keep things simple!
 
-**Configuration**
+Distributing source code also make things easier in case of doubt or curiosity. You can just take a look into the full source code!
 
-Simple configuration of the MemoryCache settings. 
-It should be done for each type, since since the JIT compiler will generate different code at run time, MemoryCache<string> is considered a different class, for example, from MemoryCache<StringBuilder> or MemoryCache<byte[]>.
 
-```csharp
+All micro-libraries are well-tested for both performance and reliability. So feel free to use them!
 
-// setup (called once in application initialization)
 
-// set a duration of an item in the cache to 1 second
-MemoryCache<string>.Expiration = TimeSpan.FromSeconds (1);
-// set the internal maintenance timed task to run each 500 ms removing expired items
-MemoryCache<string>.MaintenanceStep = TimeSpan.FromMilliseconds (500);
-// Our event, if we want to treat the removed expired items
-MemoryCache<string>.OnExpiration += (string key, string item) => 
-{ 
-    // do something
-};
+Micro-libraries
+---------------
 
-```
+### FileEncoding
 
-**Example**
+- Detect any text file charset encoding using Mozilla Charset Detector.
+- [See documentation](docs/fileencoding.md)
 
-```csharp
+### MemoryCache
 
-// store an item
-MemoryCache<string>.Set ("k1", "test");
+- Simple, lightweight and fast in-memory caching.
+- [See documentation](docs/memorycache.md)
 
-// get it
-string value = MemoryCache<string>.Get ("k1");
-// check if we got it
-if (value != null)
-{
-	// ok we got it!
-}
+### NamedLock
 
-```
+- Synchronization helper: a lock associated with a key and with timeout.
+- [See documentation](docs/namedlock.md)
 
-Using a factory to create a new item if the in memory cache does not have it.
+### SQLiteStorage
 
-```csharp
+- Simple key & value storage using sqlite with json serialization.
+- [See documentation](docs/sqlitestorage.md)
 
-// prepare our factory
-var factory = (string key) =>
-{
-    return key + DateTime.Now.ToString ();
-};
+### ObjectDiffPatch
 
-// try to get the associated value if the cache does not have it
-// then use the factory to create a new one, store and return it.
-string value = MemoryCache<string>.GetOrAdd ("key2", factory);
+### ConsoleUtils
 
-```
+### ConfigManager
 
-Using a more complex concurrent scenario where, if the item is not found, we only want to call the factory only once.
-So all concurrent calls will wait until factory (that is guaranteed to be called only once) has created and stored the new item, and will return it.
+- Simple configuration manager to get and set the values in the AppSettings section of the default configuration file.
+- [See documentation](docs/configmanager.md)
 
-```csharp
+### ObjectPool
 
-// prepare our factory
-var factory = (string key) =>
-{
-    return key + DateTime.Now.ToString ();
-};
+- A fast lightweight object pool for fast and simple object reuse.
+- [See documentation](docs/objectpool.md)
 
-// try to get the associated value if the cache does not have it
-// then use the factory to create a new one, store and return it.
-// It the factory takes more than 250 milliseconds to create then new instance,
-// it will exit returning the default value for the class
-string value = MemoryCache<string>.GetOrSyncAdd ("key2", factory, TimeSpan.FromMilliseconds (250));
+### TimedQueue
 
-// check if we got it
-if (value != null)
-{
-	// ok we got it!
-}
+- Fast lightweight in-memory queue that stores data in a concurrent queue and periodically process the queued items.
+- [See documentation](docs/timedqueue.md)
 
-```
+### ParallelTasks
 
-<h3>NamedLock</h3>
+### FlexibleObject
 
-Synchronization helper: a static lock collection associated with a key.
+### ScriptEvaluator
 
-NamedLock manages the lifetime of critical sections that can be accessed by a key (name) throughout the application. It also have some helper methods to allow a maximum wait time (timeout) to acquire the lock and safely release it.
-	
-Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
+### ModuleContainer
 
-**Example**
+### RabbitWorkQueue
 
-Simple usage where we try to acquire the lock for 100 ms. 
-So if somewhere else in our application this same lock was already acquired, we will wait until we acquire the lock or 100 ms has passed.
+- Use RabbitMQ as a distributed work queue!
+- [See documentation](https://github.com/khalidsalomao/SimpleHelpers.Net.RabbitMQ)
 
-```csharp
 
-string key = "our lock name";
+How to build docs site
+----------------------
 
-using (var padlock = new NamedLock (key))
-{
-    if (padlock.Enter (TimeSpan.FromMilliseconds (100)))
-    {
-        // do something as we now own the lock
-    }
-    else
-    {
-        // do some other thing since we could not aquire the lock
-    }
-}
+- Built with [MkDocs](http://www.mkdocs.org/).
+- Theme: [Material](http://squidfunk.github.io/mkdocs-material/getting-started/)
 
-```
+**Build steps**
 
-Another usage example with a static helper method.
+1. Make sure MkDocs is installed, using python package manager - pip:
 
-```csharp
+    ```
+    python --version
+    pip install mkdocs pymdown-extensions pygments mkdocs-material --upgrade
+    ```
 
-string key = "our lock name";
+2. Test the docs site:
+    [build_docs.test.bat](build_docs.test.bat)
 
-using (var padlock = NamedLock.CreateAndEnter (key, TimeSpan.FromMilliseconds (100)))
-{
-    if (padlock.IsLocked)
-    {
-        // do something                    
-    }                
-}
+3. Build and deploy on gh-pages:
+    [build_docs.deploy.bat](build_docs.deploy.bat)
 
-```
 
-<h3>ObjectPool</h3>
+Contribute
+----------
 
-A simple lightweight object pool for fast and simple object reuse.
+- Issue Tracker: https://github.com/khalidsalomao/SimpleHelpers.Net/issues
+- Source Code: https://github.com/khalidsalomao/SimpleHelpers.Net
 
-Fast lightweight thread-safe object pool for objects that are expensive to create or could efficiently be reused.
+Support
+-------
 
-Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
+If you are having issues, please let us know [here](https://github.com/khalidsalomao/SimpleHelpers.Net/issues).
 
-**Example**
+License
+-------
 
-```csharp
-
-// Get or create a new random generator
-Random rnd = ObjectPool<Random>.Get (CreateRandomGenerator);
-// start generating random numbers
-try
-{	
-	// ...
-	
-	var num = rnd.Next (max);
-	
-	// ...
-}
-finally
-{
-	// Release the random generator by putting it back in the object pool
-	ObjectPool<Random>.Put (rnd);
-}
-
-// our factory
-private static Random CreateRandomGenerator ()
-{
-	return new Random ((int)DateTime.UtcNow.Ticks);
-}
-
-```
-
-<h3>TimedQueue</h3>
-Simple lightweight queue that stores data in a concurrent queue and periodically process the queued items.
-
-Useful for:
-* processing items in batches;
-* grouping data for later processing;
-* async processing (consumer/producer);
-* etc.
-
-Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
-
-**Configuration**
-
-Simple configuration of the TimedQueue settings. 
-It should be done for each type, since the JIT compiler will generate differente code at run time, TimedQueue&lt;string&gt; is considered a different class, for example, from TimedQueue&lt;StringBuilder&gt; or TimedQueue&lt;byte[]&gt;.
-
-```csharp
-
-// setup (called once in application initialization)
-
-// set the queue timed task to run each 500 ms executing the registered action
-SimpleHelpers.TimedQueue<Our_Object>.TimerStep = TimeSpan.FromMilliseconds (500);
-// Our event, if we want to treat the removed expired items
-SimpleHelpers.TimedQueue<Our_Object>.OnExecution += (IEnumerable<Our_Object> items) => 
-{ 
-	foreach (var evt in items)
-		// do something
-};
-
-```
-
-**Example**
-
-```csharp
-
-// our method that does an network call to store out object 
-// and keeps retrying in case of failure
-public static void SaveEvent (Our_Object evt)
-{
-	// try to save
-	try
-	{
-		SaveOverTheInternet (evt);
-	}
-	catch (System.IO.IOException ex)
-	{
-		// log.Error (ex);
-		SimpleHelpers.TimedQueue<Our_Object>.Put (evt);
-	}
-}
-
-```
-
-<h3>ConfigManager</h3>
-
-Simple configuration manager to get and set the values in the AppSettings section of the default configuration file.
-
-Note: this nuget package contains csharp source code and depends on Generics introduced in .Net 2.0.
-
-**Configuration**
-
-```csharp
-
-// setup (called once in application initialization)
-
-// set to add any new keys added during the application execution
-ConfigManager.AddNonExistingKeys = true;
-
-```
-
-** Example **
-
-```csharp
-
-string address = ConfigManager.Get ("MongoDBaddress", "localhost");
-int port = ConfigManager.Get ("MongoDBport", 21766);
-
-```
-
-<h3>SQLiteStorage</h3>
-
-Simple key value storage using sqlite.
-
-All member methods are thread-safe, so a instance can be safely be accessed by multiple threads.
-
-All stored items are serialized to json by json.net.
-
-Note: this nuget package contains csharp source code and depends on .Net 4.0.
-
-**Configuration**
-
-```csharp
-
-// setup:
-SQLiteStorage<My_Class> db = new SQLiteStorage<My_Class> ("path_to_my_file.sqlite", 
-							  SQLiteStorageOptions.UniqueKeys ());
-
-```
-
-** Example **
-
-```csharp
-
-// create a new instance
-SQLiteStorage<My_Class> db = new SQLiteStorage<My_Class> ("path_to_my_file.sqlite", 
-							  SQLiteStorageOptions.UniqueKeys ());
-
-// save an item with a key associated
-db.Set ("my_key_for_this_item", new My_Class ());
-// get it back
-My_Class my_obj = db.Get ("my_key_for_this_item").FirstOrDefault ();
-
-// to save any changes, just call set again
-db.Set ("my_key_for_this_item", my_obj);
-
-// get all stored items
-foreach (var item in db.Get ())
-{
-	// ...
-}
-```
+The project is licensed under the MIT license.
