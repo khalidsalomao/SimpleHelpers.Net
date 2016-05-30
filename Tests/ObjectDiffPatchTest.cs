@@ -53,7 +53,7 @@ namespace Tests
 		}
 
 		[TestMethod]
-		public void AbleToDiffAndPatchSimpleObject()
+        public void ObjectDiffPatch_AbleToDiffAndPatchSimpleObject ()
 		{
 			var testObj = GetSimpleTestObject();
 
@@ -74,7 +74,7 @@ namespace Tests
 		}
 
 		[TestMethod]
-		public void AbleToDeleteStringListItemThenRevertViaPatch()
+        public void ObjectDiffPatch_AbleToDeleteStringListItemThenRevertViaPatch ()
 		{
 			var testObj = GetSimpleTestObject();
 			PopulateStringListOnTestClass(testObj);
@@ -97,7 +97,7 @@ namespace Tests
 		}
 
 		[TestMethod]
-		public void AbleToDeleteObjectListItemThenRevertViaPatch()
+        public void ObjectDiffPatch_AbleToDeleteObjectListItemThenRevertViaPatch ()
 		{
 			var testObj = GetSimpleTestObject();
 			PopulateObjectListOnTestClass(testObj);
@@ -119,7 +119,7 @@ namespace Tests
 		}
 
 		[TestMethod]
-		public void AbleToEditObjectInListThenRevertViaPatch()
+        public void ObjectDiffPatch_AbleToEditObjectInListThenRevertViaPatch ()
 		{
 			var testObj = GetSimpleTestObject();
 			PopulateObjectListOnTestClass(testObj);
@@ -143,7 +143,7 @@ namespace Tests
 		}
 
         [TestMethod]
-        public void AbleToAddObjectListItemThenApplyViaPatch()
+        public void ObjectDiffPatch_AbleToAddObjectListItemThenApplyViaPatch ()
         {
             var testObj = GetSimpleTestObject();
             PopulateObjectListOnTestClass(testObj);
@@ -168,6 +168,38 @@ namespace Tests
 
             Assert.IsNotNull(addedListItem);
 
+        }
+
+        [TestMethod]
+        public void ObjectDiffPatch_AbleToSnapshotSimpleObject ()
+        {
+            var testObj = GetSimpleTestObject ();
+            var snapshot = ObjectDiffPatch.Snapshot (testObj);
+
+            // update the original instance
+            testObj.StringProperty = "this is an updated string";
+
+            var diff = ObjectDiffPatch.GenerateDiff (snapshot, testObj);            
+            Assert.AreEqual (diff.NewValues.Value<string> ("StringProperty"), testObj.StringProperty);
+            Assert.AreEqual (diff.OldValues.Value<string> ("StringProperty"), snapshot.Value<string> ("StringProperty"));
+
+            diff = ObjectDiffPatch.GenerateDiff (snapshot, ObjectDiffPatch.Snapshot (testObj));
+            Assert.AreEqual (diff.NewValues.Value<string> ("StringProperty"), testObj.StringProperty);
+            Assert.AreEqual (diff.OldValues.Value<string> ("StringProperty"), snapshot.Value<string> ("StringProperty"));
+        }
+
+        [TestMethod]
+        public void ObjectDiffPatch_AbleToCompareWithNull ()
+        {
+            var testObj = GetSimpleTestObject ();
+            
+            var diff = ObjectDiffPatch.GenerateDiff (testObj, null);
+            Assert.AreEqual (diff.OldValues.Value<string> ("StringProperty"), testObj.StringProperty);
+            Assert.IsNull (diff.NewValues);
+
+            diff = ObjectDiffPatch.GenerateDiff (null, testObj);
+            Assert.AreEqual (diff.NewValues.Value<string> ("StringProperty"), testObj.StringProperty);
+            Assert.IsNull (diff.OldValues);
         }
     }
 

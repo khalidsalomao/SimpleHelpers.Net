@@ -174,7 +174,7 @@ namespace SimpleHelpers
         {
             for (var i = 0; i < numberOfThreads; i++)
             {
-                Task thread = Task.Run (() =>
+                Task thread = Task.Factory.StartNew (() =>
                 {
                     foreach (var t in m_tasks.GetConsumingEnumerable ())
                     {

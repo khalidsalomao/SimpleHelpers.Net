@@ -47,11 +47,14 @@ extra:
 
 # Documentation pages
 pages:
-    - SimpleHelpers.Net: 'index.md'
-    - MemoryCache: 'docs/memorycache.md'
-    - FileEncoding: 'docs/fileencoding.md'
-    - NamedLock: 'docs/namedlock.md'
-    - SQLiteStorage: 'docs/sqlitestorage.md'
-    - TimedQueue: 'docs/timedqueue.md'
-    - ObjectPool: 'docs/objectpool.md'
-    - ConfigManager: 'docs/configmanager.md'
+    - 'SimpleHelpers.Net': 'index.md'
+    - 'Micro-libraries':
+        - MemoryCache: 'docs/memorycache.md'
+        - FileEncoding: 'docs/fileencoding.md'
+        - NamedLock: 'docs/namedlock.md'
+        - SQLiteStorage: 'docs/sqlitestorage.md'
+        - TimedQueue: 'docs/timedqueue.md'
+        - ObjectPool: 'docs/objectpool.md'
+        - ConfigManager: 'docs/configmanager.md'
+    - 'Extra':
+        - 'gh-pages build': 'docs/builddocssite.md'

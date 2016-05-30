@@ -1,0 +1,28 @@
+{
+  "name": "simplehelpers.net",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Micro-libraries for .Net that are safe and simple to use.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/khalidsalomao/SimpleHelpers.Net.git"
+  },
+  "author": "Khalid Salomão (https://github.com/khalidsalomao)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/khalidsalomao/SimpleHelpers.Net/issues"
+  },
+  "homepage": "https://github.com/khalidsalomao/SimpleHelpers.Net#readme",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:docs": "start mkdocs serve & watch -p \"{*,docs/**/*}.md\" -c \"npm run build:docs\"",
+    "pretest:docs": "npm run build:docs",
+    "build:docs": "rd mkdocs_site\\ /s /q & md mkdocs_site & COPY README.md mkdocs_site\\index.md /y & XCOPY docs\\* mkdocs_site\\docs\\ /y /i",
+    "deploy:docs": "mkdocs gh-deploy --clean",
+    "predeploy:docs": "npm run build:docs"
+  },
+  "devDependencies": {
+    "watch-cli": "*"
+  }
+}

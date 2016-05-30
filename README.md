@@ -42,7 +42,12 @@ Micro-libraries
 
 ### ObjectDiffPatch
 
+- Simple Object Comparer that generates a Diff between objects and is able to Patch one object to transforms into the other.
+- [See documentation](docs/objectdiffpatch.md)
+
 ### ConsoleUtils
+
+-
 
 ### ConfigManager
 
@@ -73,27 +78,7 @@ Micro-libraries
 - [See documentation](https://github.com/khalidsalomao/SimpleHelpers.Net.RabbitMQ)
 
 
-How to build docs site
-----------------------
-
-- Built with [MkDocs](http://www.mkdocs.org/).
-- Theme: [Material](http://squidfunk.github.io/mkdocs-material/getting-started/)
-
-**Build steps**
-
-1. Make sure MkDocs is installed, using python package manager - pip:
-
-    ```
-    python --version
-    pip install mkdocs pymdown-extensions pygments mkdocs-material --upgrade
-    ```
-
-2. Test the docs site:
-    [build_docs.test.bat](build_docs.test.bat)
-
-3. Build and deploy on gh-pages:
-    [build_docs.deploy.bat](build_docs.deploy.bat)
-
+-----
 
 Contribute
 ----------
@@ -101,10 +86,14 @@ Contribute
 - Issue Tracker: https://github.com/khalidsalomao/SimpleHelpers.Net/issues
 - Source Code: https://github.com/khalidsalomao/SimpleHelpers.Net
 
+-----
+
 Support
 -------
 
 If you are having issues, please let us know [here](https://github.com/khalidsalomao/SimpleHelpers.Net/issues).
+
+-----
 
 License
 -------
