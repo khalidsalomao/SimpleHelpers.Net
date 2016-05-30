@@ -9,19 +9,19 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     
       
-        <title>ObjectPool - SimpleHelpers.Net</title>
+        <title>gh-pages build - SimpleHelpers.Net</title>
       
       
       
-        <link rel="canonical" href="http://khalidsalomao.github.io/SimpleHelpers.Net/docs/objectpool/">
+        <link rel="canonical" href="http://khalidsalomao.github.io/SimpleHelpers.Net/docs/builddocssite/">
       
       
         <meta name="author" content="Khalid Salomão">
       
     
-    <meta property="og:url" content="http://khalidsalomao.github.io/SimpleHelpers.Net/docs/objectpool/">
+    <meta property="og:url" content="http://khalidsalomao.github.io/SimpleHelpers.Net/docs/builddocssite/">
     <meta property="og:title" content="SimpleHelpers.Net">
-    <meta property="og:image" content="http://khalidsalomao.github.io/SimpleHelpers.Net/docs/objectpool//../../">
+    <meta property="og:image" content="http://khalidsalomao.github.io/SimpleHelpers.Net/docs/builddocssite//../../">
     <meta name="apple-mobile-web-app-title" content="SimpleHelpers.Net">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -95,12 +95,12 @@
           <span class="path">
             
               
-                Micro-libraries <i class="icon icon-link"></i>
+                Extra <i class="icon icon-link"></i>
               
             
           </span>
         
-        ObjectPool
+        gh-pages build
       </div>
     </div>
     
@@ -234,42 +234,9 @@
       
         
   <li>
-    <a class="current" title="ObjectPool" href="./">
+    <a class="" title="ObjectPool" href="../objectpool/">
       ObjectPool
     </a>
-    
-      
-        
-      
-      
-        <ul>
-          
-            <li class="anchor">
-              <a title="Features" href="#features">
-                Features
-              </a>
-            </li>
-          
-            <li class="anchor">
-              <a title="Installation" href="#installation">
-                Installation
-              </a>
-            </li>
-          
-            <li class="anchor">
-              <a title="Examples" href="#examples">
-                Examples
-              </a>
-            </li>
-          
-            <li class="anchor">
-              <a title="Project Information" href="#project-information">
-                Project Information
-              </a>
-            </li>
-          
-        </ul>
-      
     
   </li>
 
@@ -294,9 +261,24 @@
       
         
   <li>
-    <a class="" title="gh-pages build" href="../builddocssite/">
+    <a class="current" title="gh-pages build" href="./">
       gh-pages build
     </a>
+    
+      
+        
+      
+      
+        <ul>
+          
+            <li class="anchor">
+              <a title="Build steps" href="#build-steps">
+                Build steps
+              </a>
+            </li>
+          
+        </ul>
+      
     
   </li>
 
@@ -329,68 +311,35 @@
       <article class="article">
         <div class="wrapper">
           
-          <h1 id="simplehelpersobjectpool"><a name="user-content-simplehelpersobjectpool" href="#simplehelpersobjectpool" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>SimpleHelpers.ObjectPool<a class="headerlink" href="#simplehelpersobjectpool" title="Permanent link">#</a></h1>
-<p><a href="https://www.nuget.org/packages/SimpleHelpers.ObjectPool/"><img alt="NuGet" src="https://img.shields.io/nuget/v/SimpleHelpers.ObjectPool.svg?maxAge=1200&amp;style=flat-square" /></a>
-<a href="https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/LICENSE.txt"><img alt="GitHub license" src="https://img.shields.io/badge/license-MIT-brightgreen.svg?maxAge=3600&amp;style=flat-square" /></a></p>
-<p>A fast lightweight object pool for fast and simple object reuse.</p>
-<p>Simple to use, fast, lightweight and thread-safe object pool for objects that are expensive to create or could efficiently be reused.</p>
-<p>Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.</p>
-<h2 id="features"><a name="user-content-features" href="#features" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Features<a class="headerlink" href="#features" title="Permanent link">#</a></h2>
+          <h1 id="how-to-build-docs-site"><a name="user-content-how-to-build-docs-site" href="#how-to-build-docs-site" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>How to build docs site<a class="headerlink" href="#how-to-build-docs-site" title="Permanent link">#</a></h1>
 <ul>
-<li>Simple to use</li>
-<li>Fast</li>
-<li>Lightweight</li>
-<li>Thread-safe</li>
+<li>Built with <a href="http://www.mkdocs.org/">MkDocs</a>.</li>
+<li>Theme: <a href="http://squidfunk.github.io/mkdocs-material/getting-started/">Material</a></li>
 </ul>
-<h2 id="installation"><a name="user-content-installation" href="#installation" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Installation<a class="headerlink" href="#installation" title="Permanent link">#</a></h2>
-<h3 id="nuget-package-details"><a name="user-content-nuget-package-details" href="#nuget-package-details" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>NuGet Package Details<a class="headerlink" href="#nuget-package-details" title="Permanent link">#</a></h3>
-<p>You can install using NuGet, see <a href="https://www.nuget.org/packages/SimpleHelpers.ObjectPool/">SimpleHelpers.ObjectPool at NuGet.org</a></p>
-<div class="code"><pre><span></span><span class="n">PM</span><span class="p">&gt;</span> <span class="n">Install-Package</span> <span class="n">SimpleHelpers</span><span class="p">.</span><span class="n">ObjectPool</span>
+<h2 id="build-steps"><a name="user-content-build-steps" href="#build-steps" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Build steps<a class="headerlink" href="#build-steps" title="Permanent link">#</a></h2>
+<ol>
+<li>
+<p>Make sure MkDocs is installed, using python package manager - pip:</p>
+<div class="code"><pre><span></span>python --version
+pip install mkdocs pymdown-extensions pygments mkdocs-material --upgrade
+npm install
 </pre></div>
 
 
-<p>The nuget package contains <strong>C# source code</strong>.</p>
-<p>The source code will be installed in your project with the following file system structure:</p>
-<div class="code"><pre><span></span>|-- &lt;project root&gt;
-    |-- SimpleHelpers
-        |-- ObjectPool.cs
-</pre></div>
-
-
-<h3 id="download"><a name="user-content-download" href="#download" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Download<a class="headerlink" href="#download" title="Permanent link">#</a></h3>
-<p>If you prefer, you can also download the source code: <a href="https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/ObjectPool.cs">ObjectPool.cs</a></p>
-<h2 id="examples"><a name="user-content-examples" href="#examples" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Examples<a class="headerlink" href="#examples" title="Permanent link">#</a></h2>
-<div class="code"><pre><span></span><span class="c1">// Get or create a new random generator</span>
-<span class="n">Random</span> <span class="n">rnd</span> <span class="p">=</span> <span class="n">ObjectPool</span><span class="p">&lt;</span><span class="n">Random</span><span class="p">&gt;.</span><span class="n">Get</span> <span class="p">(</span><span class="n">CreateRandomGenerator</span><span class="p">);</span>
-<span class="c1">// start generating random numbers</span>
-<span class="k">try</span>
-<span class="p">{</span>
-    <span class="c1">// ...</span>
-
-    <span class="kt">var</span> <span class="n">num</span> <span class="p">=</span> <span class="n">rnd</span><span class="p">.</span><span class="n">Next</span> <span class="p">(</span><span class="n">max</span><span class="p">);</span>
-
-    <span class="c1">// ...</span>
-<span class="p">}</span>
-<span class="k">finally</span>
-<span class="p">{</span>
-    <span class="c1">// Release the random generator by putting it back in the object pool</span>
-    <span class="n">ObjectPool</span><span class="p">&lt;</span><span class="n">Random</span><span class="p">&gt;.</span><span class="n">Put</span> <span class="p">(</span><span class="n">rnd</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="c1">// our factory</span>
-<span class="k">private</span> <span class="k">static</span> <span class="n">Random</span> <span class="nf">CreateRandomGenerator</span> <span class="p">()</span>
-<span class="p">{</span>
-    <span class="k">return</span> <span class="k">new</span> <span class="nf">Random</span> <span class="p">((</span><span class="kt">int</span><span class="p">)</span><span class="n">DateTime</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">.</span><span class="n">Ticks</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<h2 id="project-information"><a name="user-content-project-information" href="#project-information" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Project Information<a class="headerlink" href="#project-information" title="Permanent link">#</a></h2>
-<ul>
-<li><a href="../../#contribute">Contribute</a></li>
-<li><a href="../../#support">Support</a></li>
-<li><a href="../../#license">License</a></li>
-</ul>
+</li>
+<li>
+<p>Test the docs site:
+    &lsquo;&rsquo;&lsquo;
+    npm run test:docs
+    &lsquo;&rsquo;&lsquo;</p>
+</li>
+<li>
+<p>Build and deploy on gh-pages:
+    &lsquo;&rsquo;&lsquo;
+    npm run deploy:docs
+    &lsquo;&rsquo;&lsquo;</p>
+</li>
+</ol>
           <aside class="copyright" role="note">
             
               Copyright (c) 2016 Khalid Salomão &ndash;
@@ -409,7 +358,7 @@
   <nav class="pagination" aria-label="Footer">
     <div class="previous">
       
-        <a href="../timedqueue/" title="TimedQueue">
+        <a href="../configmanager/" title="ConfigManager">
           <span class="direction">
             Previous
           </span>
@@ -419,7 +368,7 @@
             </div>
             <div class="stretch">
               <div class="title">
-                TimedQueue
+                ConfigManager
               </div>
             </div>
           </div>
@@ -427,22 +376,6 @@
       
     </div>
     <div class="next">
-      
-        <a href="../configmanager/" title="ConfigManager">
-          <span class="direction">
-            Next
-          </span>
-          <div class="page">
-            <div class="stretch">
-              <div class="title">
-                ConfigManager
-              </div>
-            </div>
-            <div class="button button-next" role="button" aria-label="Next">
-              <i class="icon icon-forward"></i>
-            </div>
-          </div>
-        </a>
       
     </div>
   </nav>

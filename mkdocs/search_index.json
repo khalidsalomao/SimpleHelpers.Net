@@ -2,7 +2,7 @@
     "docs": [
         {
             "location": "/",
-            "text": "SimpleHelpers.Net\n#\n\n\n\n\nMicro-libraries\n (pieces of utility code) for .Net that are safe and simple to use.\n\n\nIn every project there are lot\ns of reusable patterns that we find our selves rewriting or just doing some copy \n paste, and thus the idea behind SimpleHelpers micro-libraries is to create a small collection of such code but keeping it reliable and easy to use.\n\n\nMost of SimpleHelpers.Net libraries are distributed by Nuget.org as source code files (c#), since this enable us to use these utility code as micro-libraries without creating and having to deploy a huge number of assemblies (dlls). The idea is to keep things simple!\n\n\nDistributing source code also make things easier in case of doubt or curiosity. You can just take a look into the full source code!\n\n\nAll micro-libraries are well-tested for both performance and reliability. So feel free to use them!\n\n\nMicro-libraries\n#\n\n\nFileEncoding\n#\n\n\n\n\nDetect any text file charset encoding using Mozilla Charset Detector.\n\n\nSee documentation\n\n\n\n\nMemoryCache\n#\n\n\n\n\nSimple, lightweight and fast in-memory caching.\n\n\nSee documentation\n\n\n\n\nNamedLock\n#\n\n\n\n\nSynchronization helper: a lock associated with a key and with timeout.\n\n\nSee documentation\n\n\n\n\nSQLiteStorage\n#\n\n\n\n\nSimple key \n value storage using sqlite with json serialization.\n\n\nSee documentation\n\n\n\n\nObjectDiffPatch\n#\n\n\nConsoleUtils\n#\n\n\nConfigManager\n#\n\n\n\n\nSimple configuration manager to get and set the values in the AppSettings section of the default configuration file.\n\n\nSee documentation\n\n\n\n\nObjectPool\n#\n\n\n\n\nA fast lightweight object pool for fast and simple object reuse.\n\n\nSee documentation\n\n\n\n\nTimedQueue\n#\n\n\n\n\nFast lightweight in-memory queue that stores data in a concurrent queue and periodically process the queued items.\n\n\nSee documentation\n\n\n\n\nParallelTasks\n#\n\n\nFlexibleObject\n#\n\n\nScriptEvaluator\n#\n\n\nModuleContainer\n#\n\n\nRabbitWorkQueue\n#\n\n\n\n\nUse RabbitMQ as a distributed work queue!\n\n\nSee documentation\n\n\n\n\nHow to build docs site\n#\n\n\n\n\nBuilt with \nMkDocs\n.\n\n\nTheme: \nMaterial\n\n\n\n\nBuild steps\n\n\n\n\n\n\nMake sure MkDocs is installed, using python package manager - pip:\n\n\npython --version\npip install mkdocs pymdown-extensions pygments mkdocs-material --upgrade\n\n\n\n\n\n\n\n\n\nTest the docs site:\n    \nbuild_docs.test.bat\n\n\n\n\n\n\nBuild and deploy on gh-pages:\n    \nbuild_docs.deploy.bat\n\n\n\n\n\n\nContribute\n#\n\n\n\n\nIssue Tracker: \nhttps://github.com/khalidsalomao/SimpleHelpers.Net/issues\n\n\nSource Code: \nhttps://github.com/khalidsalomao/SimpleHelpers.Net\n\n\n\n\nSupport\n#\n\n\nIf you are having issues, please let us know \nhere\n.\n\n\nLicense\n#\n\n\nThe project is licensed under the MIT license.",
+            "text": "SimpleHelpers.Net\n#\n\n\n\n\nMicro-libraries\n (pieces of utility code) for .Net that are safe and simple to use.\n\n\nIn every project there are lot\ns of reusable patterns that we find our selves rewriting or just doing some copy \n paste, and thus the idea behind SimpleHelpers micro-libraries is to create a small collection of such code but keeping it reliable and easy to use.\n\n\nMost of SimpleHelpers.Net libraries are distributed by Nuget.org as source code files (c#), since this enable us to use these utility code as micro-libraries without creating and having to deploy a huge number of assemblies (dlls). The idea is to keep things simple!\n\n\nDistributing source code also make things easier in case of doubt or curiosity. You can just take a look into the full source code!\n\n\nAll micro-libraries are well-tested for both performance and reliability. So feel free to use them!\n\n\nMicro-libraries\n#\n\n\nFileEncoding\n#\n\n\n\n\nDetect any text file charset encoding using Mozilla Charset Detector.\n\n\nSee documentation\n\n\n\n\nMemoryCache\n#\n\n\n\n\nSimple, lightweight and fast in-memory caching.\n\n\nSee documentation\n\n\n\n\nNamedLock\n#\n\n\n\n\nSynchronization helper: a lock associated with a key and with timeout.\n\n\nSee documentation\n\n\n\n\nSQLiteStorage\n#\n\n\n\n\nSimple key \n value storage using sqlite with json serialization.\n\n\nSee documentation\n\n\n\n\nObjectDiffPatch\n#\n\n\n\n\nSimple Object Comparer that generates a Diff between objects and is able to Patch one object to transforms into the other.\n\n\nSee documentation\n\n\n\n\nConsoleUtils\n#\n\n\n-\n\n\nConfigManager\n#\n\n\n\n\nSimple configuration manager to get and set the values in the AppSettings section of the default configuration file.\n\n\nSee documentation\n\n\n\n\nObjectPool\n#\n\n\n\n\nA fast lightweight object pool for fast and simple object reuse.\n\n\nSee documentation\n\n\n\n\nTimedQueue\n#\n\n\n\n\nFast lightweight in-memory queue that stores data in a concurrent queue and periodically process the queued items.\n\n\nSee documentation\n\n\n\n\nParallelTasks\n#\n\n\nFlexibleObject\n#\n\n\nScriptEvaluator\n#\n\n\nModuleContainer\n#\n\n\nRabbitWorkQueue\n#\n\n\n\n\nUse RabbitMQ as a distributed work queue!\n\n\nSee documentation\n\n\n\n\n\n\nContribute\n#\n\n\n\n\nIssue Tracker: \nhttps://github.com/khalidsalomao/SimpleHelpers.Net/issues\n\n\nSource Code: \nhttps://github.com/khalidsalomao/SimpleHelpers.Net\n\n\n\n\n\n\nSupport\n#\n\n\nIf you are having issues, please let us know \nhere\n.\n\n\n\n\nLicense\n#\n\n\nThe project is licensed under the MIT license.",
             "title": "SimpleHelpers.Net"
         },
         {
@@ -37,12 +37,12 @@
         },
         {
             "location": "/#objectdiffpatch",
-            "text": "",
+            "text": "Simple Object Comparer that generates a Diff between objects and is able to Patch one object to transforms into the other.  See documentation",
             "title": "ObjectDiffPatch"
         },
         {
             "location": "/#consoleutils",
-            "text": "",
+            "text": "-",
             "title": "ConsoleUtils"
         },
         {
@@ -84,11 +84,6 @@
             "location": "/#rabbitworkqueue",
             "text": "Use RabbitMQ as a distributed work queue!  See documentation",
             "title": "RabbitWorkQueue"
-        },
-        {
-            "location": "/#how-to-build-docs-site",
-            "text": "Built with  MkDocs .  Theme:  Material   Build steps    Make sure MkDocs is installed, using python package manager - pip:  python --version\npip install mkdocs pymdown-extensions pygments mkdocs-material --upgrade    Test the docs site:\n     build_docs.test.bat    Build and deploy on gh-pages:\n     build_docs.deploy.bat",
-            "title": "How to build docs site"
         },
         {
             "location": "/#contribute",
@@ -459,6 +454,21 @@
             "location": "/docs/configmanager/#project-information",
             "text": "Contribute  Support  License",
             "title": "Project Information"
+        },
+        {
+            "location": "/docs/builddocssite/",
+            "text": "How to build docs site\n#\n\n\n\n\nBuilt with \nMkDocs\n.\n\n\nTheme: \nMaterial\n\n\n\n\nBuild steps\n#\n\n\n\n\n\n\nMake sure MkDocs is installed, using python package manager - pip:\n\n\npython --version\npip install mkdocs pymdown-extensions pygments mkdocs-material --upgrade\nnpm install\n\n\n\n\n\n\n\n\n\nTest the docs site:\n    \n\n    npm run test:docs\n    \n\n\n\n\n\n\nBuild and deploy on gh-pages:\n    \n\n    npm run deploy:docs",
+            "title": "gh-pages build"
+        },
+        {
+            "location": "/docs/builddocssite/#how-to-build-docs-site",
+            "text": "Built with  MkDocs .  Theme:  Material",
+            "title": "How to build docs site"
+        },
+        {
+            "location": "/docs/builddocssite/#build-steps",
+            "text": "Make sure MkDocs is installed, using python package manager - pip:  python --version\npip install mkdocs pymdown-extensions pygments mkdocs-material --upgrade\nnpm install    Test the docs site:\n     \n    npm run test:docs\n        Build and deploy on gh-pages:\n     \n    npm run deploy:docs",
+            "title": "Build steps"
         }
     ]
 }
