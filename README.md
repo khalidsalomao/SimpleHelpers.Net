@@ -47,7 +47,10 @@ Micro-libraries
 
 ### ConsoleUtils
 
--
+- Application initialization helper:
+    1. merge application settings, command line arguments & external options
+    2. configure nlog
+    3. ...
 
 ### ConfigManager
 
@@ -66,11 +69,17 @@ Micro-libraries
 
 ### ParallelTasks
 
+- Similar to `Parallel.For` but more flexible and with bounded task queue.
+
 ### FlexibleObject
 
 ### ScriptEvaluator
 
+- Load C# source code.
+
 ### ModuleContainer
+
+- Easy, fast and non-invasive dependency injection and plugin system.
 
 ### RabbitWorkQueue
 
