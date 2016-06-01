@@ -49,25 +49,74 @@ namespace SimpleHelpers
         /// <param name="original">The original.</param>
         /// <param name="updated">The updated.</param>
         /// <returns>The result of the diff operation</returns>
-        public static ObjectDiffPatchResult GenerateDiff<T> (T original, T updated) where T : class
+        public static ObjectDiffPatchResult GenerateDiff<T1, T2> (T1 original, T2 updated) where T1 : class
         {
             // ensure the serializer will not ignore null values
             var writer = GetJsonSerializer ();
             // parse our objects
-            JObject originalJson, updatedJson;
-            if (typeof (JObject).IsAssignableFrom (typeof (T)))
-            {
-                originalJson = original as JObject;
-                updatedJson = updated as JObject;                
-            }
-            else
-            {
-                originalJson = original != null ? Newtonsoft.Json.Linq.JObject.FromObject (original, writer) : null;
-                updatedJson = updated != null ? Newtonsoft.Json.Linq.JObject.FromObject (updated, writer) : null;
-            }
+            JObject originalJson = original != null ? Newtonsoft.Json.Linq.JObject.FromObject (original, writer) : null;
+            JObject updatedJson = updated != null ? Newtonsoft.Json.Linq.JObject.FromObject (updated, writer) : null;
+
             // analyse their differences!
-            var result =  Diff (originalJson, updatedJson);
-            result.Type = typeof (T);
+            return GenerateDiff (originalJson, updatedJson, typeof (T1));
+        }
+
+        /// <summary>
+        /// Compares two objects and generates the differences between them.
+        /// </summary>
+        /// <typeparam name="T">The type of the T.</typeparam>
+        /// <param name="original">The original.</param>
+        /// <param name="updated">The updated.</param>
+        /// <returns>The result of the diff operation</returns>
+        public static ObjectDiffPatchResult GenerateDiff<T> (T original, JObject updated) where T : class
+        {
+            // parse our objects
+            JObject parsed = original != null ? Newtonsoft.Json.Linq.JObject.FromObject (original, GetJsonSerializer ()) : null;
+
+            // analyse their differences!
+            return GenerateDiff (parsed, updated, typeof (T));
+        }
+
+        /// <summary>
+        /// Compares two objects and generates the differences between them.
+        /// </summary>
+        /// <typeparam name="T">The type of the T.</typeparam>
+        /// <param name="original">The original.</param>
+        /// <param name="updated">The updated.</param>
+        /// <returns>The result of the diff operation</returns>
+        public static ObjectDiffPatchResult GenerateDiff<T> (JObject original, T updated) where T : class
+        {
+            // parse our objects
+            JObject parsed = updated != null ? Newtonsoft.Json.Linq.JObject.FromObject (updated, GetJsonSerializer ()) : null;
+
+            // analyse their differences!
+            return GenerateDiff (original, parsed, typeof(T));
+        }
+
+        /// <summary>
+        /// Compares two objects and generates the differences between them.
+        /// </summary>
+        /// <param name="original">The original.</param>
+        /// <param name="updated">The updated.</param>
+        /// <returns>The result of the diff operation</returns>
+        public static ObjectDiffPatchResult GenerateDiff (JObject original, JObject updated)
+        {
+            // analyse their differences!
+            return GenerateDiff (original, updated, typeof (JObject));
+        }
+
+        /// <summary>
+        /// Compares two objects and generates the differences between them.
+        /// </summary>
+        /// <param name="original">The original.</param>
+        /// <param name="updated">The updated.</param>
+        /// <param name="comparedType">Type of the compared.</param>
+        /// <returns>The result of the diff operation</returns>
+        public static ObjectDiffPatchResult GenerateDiff (JObject original, JObject updated, Type comparedType = null)
+        {
+            // analyse their differences!
+            var result = Diff (original, updated);
+            result.Type = comparedType ?? typeof (JObject);
             return result;
         }
 
@@ -97,6 +146,21 @@ namespace SimpleHelpers
             var resultJson = Patch (sourceJson, diffJson);
 
             return resultJson != null ? resultJson.ToObject<T> () : null;
+        }
+
+        /// <summary>
+        /// Create an object snapshots as a Newtonsoft.Json.Linq.JObject.
+        /// </summary>
+        /// <typeparam name="T">The type of the T.</typeparam>
+        /// <param name="source">The source object.</param>
+        /// <returns>Newtonsoft.Json.Linq.JObject</returns>
+        public static JObject Snapshot<T> (T source) where T : class
+        {
+            if (source == null)
+                return null;
+            if (typeof (JObject).IsAssignableFrom (typeof (T)))
+                return (JObject)(source as JObject).DeepClone ();
+            return Newtonsoft.Json.Linq.JObject.FromObject (source, GetJsonSerializer ());
         }
 
         private static ObjectDiffPatchResult Diff (JObject source, JObject target)
