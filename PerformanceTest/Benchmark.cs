@@ -1,45 +1,51 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
+using PerformanceTest.Logging;
 
 namespace PerformanceTest
 {
     public class Benchmark: IDisposable
     {
-        string m_name;
-        Stopwatch stopwatch;
+        static ILog logger = LogProvider.For<Benchmark> ();
+
+        Stopwatch _stopwatch;
+
+        public string Name { get; set; }
+
+        public TimeSpan Elapsed 
+        { 
+            get { return _stopwatch.Elapsed; }
+        }
 
         public Benchmark (string opName)
         {
-            m_name = opName;
-            stopwatch = new Stopwatch ();            
+            Name = opName;
+            _stopwatch = new Stopwatch ();            
         }
 
         public void Dispose ()
         {
-            stopwatch.Stop ();
-            Common.Logging.LogManager.GetCurrentClassLogger ().Info (ToString ());
+            _stopwatch.Stop ();
+            logger.Info (ToString ());
         }
 
         public override string ToString ()
         {
-            return string.Format (String.Format ("Timing for {0}:\t {1}", m_name, stopwatch.Elapsed));
+            return String.Format (String.Format ("Timing for {0}:\t {1}", Name, _stopwatch.Elapsed));
         }
 
-        public Benchmark Start (bool runGCbeforeStart = false)
+        public Benchmark Start (bool skipWarmupGC = false)
         {
-            if (runGCbeforeStart)
+            if (!skipWarmupGC)
                 PrepareSystemForBenchmark ();
-            stopwatch.Start ();
+            _stopwatch.Start ();
             return this;
         }
 
         public TimeSpan Stop()
         {
-            stopwatch.Stop ();
-            return stopwatch.Elapsed;
+            _stopwatch.Stop ();
+            return _stopwatch.Elapsed;
         }
 
         /// <summary>
@@ -50,36 +56,39 @@ namespace PerformanceTest
         {
             GC.Collect (GC.MaxGeneration, GCCollectionMode.Forced);
             GC.WaitForPendingFinalizers ();
+            GC.Collect ();
             System.Threading.Thread.Sleep (0);
         }
 
-        public static Benchmark Start (string name)
+        public static Benchmark Start (string opName)
         {
-            return new Benchmark (name).Start();
+            return new Benchmark (opName).Start();
         }
 
-        public static Benchmark Start (string name, params object[] arguments)
+        public static Benchmark Start (string opName, params object[] arguments)
         {
-            return new Benchmark (String.Format (name, arguments)).Start ();
+            return new Benchmark (String.Format (opName, arguments)).Start ();
         }
 
         public static TimeSpan Time (string opName, Action action)
         {
-            Stopwatch stopwatch = Stopwatch.StartNew ();
+            var mark = new Benchmark (opName).Start ();
             action ();
-            stopwatch.Stop ();
-            Common.Logging.LogManager.GetCurrentClassLogger ().Info (String.Format ("Timing for {0}:\t {1}", opName, stopwatch.Elapsed));
-            return stopwatch.Elapsed;
+            mark.Stop ();
+            logger.Info (mark.ToString ());
+            return mark.Elapsed;
         }
 
-        public static TimeSpan Time (string opName, int loopCount, Action action)
+        public static TimeSpan Time (string opName, Action action, int loopCount, bool warmup)
         {
-            Stopwatch stopwatch = Stopwatch.StartNew ();
+            if (warmup)
+                action ();
+            var mark = new Benchmark (opName).Start ();
             for (var i = 0; i < loopCount; i++)
                 action ();
-            stopwatch.Stop ();
-            Common.Logging.LogManager.GetCurrentClassLogger ().Info (String.Format ("Timing for {0} run {1} times:\t {1}", opName, loopCount, stopwatch.Elapsed));
-            return stopwatch.Elapsed;
+            mark.Stop ();
+            logger.Info (String.Format ("Timing for {0} run {1} times:\t {1}", opName, loopCount, mark.Elapsed));
+            return mark.Elapsed;
         }
     }
 }

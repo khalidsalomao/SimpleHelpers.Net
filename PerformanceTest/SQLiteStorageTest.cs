@@ -3,6 +3,7 @@ using SimpleHelpers.SQLite;
 using System.Linq;
 using System.Diagnostics;
 using System.Collections.Generic;
+using PerformanceTest.Logging;
 
 namespace PerformanceTest
 {
@@ -10,20 +11,21 @@ namespace PerformanceTest
     {
         static string filename = System.IO.Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "storage.sqlite");
         static SQLiteStorage<string> logDb;
+        static ILog logger = LogProvider.For<SQLiteStorageTest> ();
 
         public SQLiteStorageTest ()
         {
-            Common.Logging.LogManager.GetCurrentClassLogger ().Info ("Initialize");
+            logger.Info ("Initialize");
             logDb = new SQLiteStorage<string> (filename, "Log", SQLiteStorageOptions.KeepItemsHistory ());
         }
 
         public static void Test (int loopCount)
         {
             // warm up
-            Common.Logging.LogManager.GetCurrentClassLogger ().Info ("Warm up");
+            logger.Info ("Warm up");
             TestInternal (1);
 
-            Common.Logging.LogManager.GetCurrentClassLogger ().Info ("Real test");
+            logger.Info ("Real test");
             TestInternal (loopCount);
         }
 
@@ -33,8 +35,8 @@ namespace PerformanceTest
             db.Clear ();
             db.Shrink ();
             ServiceStack.Text.JsConfig.DateHandler = ServiceStack.Text.JsonDateHandler.ISO8601;
-            
-            Common.Logging.LogManager.GetCurrentClassLogger ().Info (String.Format ("Initializing {0} items", loopCount));
+
+            logger.Info (String.Format ("Initializing {0} items", loopCount));
             var list = MockObjectGen.GetTestUserDefinition (loopCount, "group name test", true).ToList ();
 
             int len = loopCount / 50;

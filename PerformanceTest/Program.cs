@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using PerformanceTest.Logging;
 
 namespace PerformanceTest
 {
@@ -10,7 +11,7 @@ namespace PerformanceTest
         static int verbosity;
         static Mono.Options.OptionSet optionsParser = new Mono.Options.OptionSet ();
         static List<string> parsedOptions;
-        static Common.Logging.ILog logger = Common.Logging.LogManager.GetCurrentClassLogger ();
+        static ILog logger = LogProvider.For<Program> ();
         static int loopCount = 1000;
         static string testName;
 
@@ -30,7 +31,7 @@ namespace PerformanceTest
             }
             catch (Exception ex)
             {
-                logger.Fatal ("Unexpected error", ex);
+                logger.FatalException ("Unexpected error", ex);
             }
             // wait before exit
             Console.WriteLine ();
@@ -84,7 +85,7 @@ namespace PerformanceTest
             }
             catch (Mono.Options.OptionException e)
             {
-                logger.Error ("Error parsing argument options", e);
+                logger.ErrorException ("Error parsing argument options", e);
                 Console.WriteLine ("Invalid options: ");
                 Console.WriteLine (e.Message);
                 Console.WriteLine ();
@@ -95,17 +96,17 @@ namespace PerformanceTest
 
         private static void ConfigureLog (string level)
         {
-            // create properties
-            var properties = new System.Collections.Specialized.NameValueCollection ()
-            {
-                { "level", level.ToUpperInvariant () },
-               { "showDateTime", "true" },
-                { "showLogName", "true" },
-                { "dateTimeFormat", "yyyy/MM/dd HH:mm:ss:fff" }
-            };
-            // set Adapter
-            Common.Logging.LogManager.Adapter = new Common.Logging.Simple.ConsoleOutLoggerFactoryAdapter (properties);
-            logger = Common.Logging.LogManager.GetCurrentClassLogger ();
+            //// create properties
+            //var properties = new System.Collections.Specialized.NameValueCollection ()
+            //{
+            //    { "level", level.ToUpperInvariant () },
+            //   { "showDateTime", "true" },
+            //    { "showLogName", "true" },
+            //    { "dateTimeFormat", "yyyy/MM/dd HH:mm:ss:fff" }
+            //};
+            //// set Adapter
+            //Common.Logging.LogManager.Adapter = new Common.Logging.Simple.ConsoleOutLoggerFactoryAdapter (properties);
+            //logger = Common.Logging.LogManager.GetCurrentClassLogger ();
         }
 
         static void ShowHelp ()

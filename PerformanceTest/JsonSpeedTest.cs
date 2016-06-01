@@ -3,24 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ServiceStack.Text;
+using PerformanceTest.Logging;
 
 namespace PerformanceTest
 {
     public class JsonSpeedTest
     {
+        static ILog logger = LogProvider.GetCurrentClassLogger ();
+
         internal static void Test (int loopCount)
         {
             // warm up
-            Common.Logging.LogManager.GetCurrentClassLogger ().Info ("Warm up");
+            logger.Info ("Warm up");
             TestInternal (1);
 
-            Common.Logging.LogManager.GetCurrentClassLogger ().Info ("Real test");
+            logger.Info ("Real test");
             TestInternal (loopCount);
         }
 
         internal static void TestInternal (int loopCount)
         {
-            Common.Logging.LogManager.GetCurrentClassLogger ().Info ("Initializing 10.000 items");
+            logger.Info ("Initializing 10.000 items");
             var list = MockObjectGen.GetTestUserDefinition (10000, "group name test", true).ToList ();
             var txt = new string[list.Count];
 
