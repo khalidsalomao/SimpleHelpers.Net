@@ -65,9 +65,7 @@
   <ItemGroup>
     <Compile Include="SqlCEStorageTest.cs" />
     <Compile Include="SQLiteStorageTest.cs" />
-    <Compile Include="MemoryCacheTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ObjectDiffPatchTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SimpleHelpers\SimpleHelpers.csproj">

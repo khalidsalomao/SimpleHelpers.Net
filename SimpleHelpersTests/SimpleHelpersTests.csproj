@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -58,16 +62,27 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArgumentsTest.cs" />
+    <Compile Include="MemoryCacheTest.cs" />
     <Compile Include="ModuleContainerTest.cs" />
+    <Compile Include="ObjectDiffPatchTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SimpleHelpers.Arguments\SimpleHelpers.Arguments.csproj">
+      <Project>{d7213934-58b4-4c12-b4cf-65ace39c8cdd}</Project>
+      <Name>SimpleHelpers.Arguments</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SimpleHelpers.ModuleContainer\SimpleHelpers.ModuleContainer.csproj">
       <Project>{098c3394-6735-4c33-adba-fbddd97b3f29}</Project>
       <Name>SimpleHelpers.ModuleContainer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SimpleHelpers\SimpleHelpers.csproj">
+      <Project>{aa0f6cea-2779-4b7e-807c-56ada8892b01}</Project>
+      <Name>SimpleHelpers</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
