@@ -38,21 +38,12 @@ namespace SimpleHelpers
     public class FlexibleOptions
     {
         private bool _caseInsensitive = true;
-        private Dictionary<string, string> _options;
+        private Dictionary<string, string> _alias;
 
         /// <summary>
         /// Internal dictionary with all options.
         /// </summary>
-        public Dictionary<string, string> Options
-        {
-            get
-            {
-                if (_options == null)
-                    _options = new Dictionary<string, string> (StringComparer.OrdinalIgnoreCase);
-                return _options;
-            }
-            set { _options = value; }
-        }
+        public Dictionary<string, string> Options { get; set; }
 
         /// <summary>
         /// Gets or sets the <see cref="string" /> with the specified key.
@@ -68,6 +59,7 @@ namespace SimpleHelpers
         /// </summary>
         public FlexibleOptions ()
         {
+            Options = new Dictionary<string, string> (StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -76,7 +68,8 @@ namespace SimpleHelpers
         /// <param name="caseInsensitive">If the intenal dictionary should have case insensitive keys.</param>
         public FlexibleOptions (bool caseInsensitive)
         {
-            ChangeStringComparer (caseInsensitive);
+            _caseInsensitive = caseInsensitive;
+            Options = new Dictionary<string, string> (_caseInsensitive ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
         }
 
         /// <summary>
@@ -87,7 +80,7 @@ namespace SimpleHelpers
         public FlexibleOptions (FlexibleOptions instance, bool caseInsensitive)
         {
             _caseInsensitive = caseInsensitive;
-            _options = new Dictionary<string, string> (instance.Options, _caseInsensitive ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
+            Options = new Dictionary<string, string> (instance.Options, _caseInsensitive ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
         }
  
         private void ChangeStringComparer (bool caseInsensitive)
@@ -95,11 +88,8 @@ namespace SimpleHelpers
             if (_caseInsensitive != caseInsensitive)
             {
                 _caseInsensitive = caseInsensitive;
-                if (_options != null)
-                {
-                    // rebuild internal data structure
-                    _options = new Dictionary<string, string> (_options, _caseInsensitive ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
-                }
+                // rebuild internal data structure
+                Options = new Dictionary<string, string> (Options, _caseInsensitive ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
             }
         }
 
@@ -198,8 +188,20 @@ namespace SimpleHelpers
         /// <returns>The data converted to the desired type or the provided defaultValue.</returns>
         public T Get<T> (string key, T defaultValue, bool preserveQuotes)
         {
+            if (key == null)
+                return defaultValue;
             string v;
-            if (key != null && Options.TryGetValue (key, out v))
+            // 1. get value
+            if (!Options.TryGetValue (key, out v))
+            {
+                // fallback to check alias
+                string alias;
+                if (_alias != null && _alias.TryGetValue (key, out alias))
+                    if (!Options.TryGetValue (alias, out v))
+                        return defaultValue;
+            }
+            // 2. try to convert value to desired type
+            if (Options.TryGetValue (key, out v))
             {
                 try
                 {
@@ -281,7 +283,8 @@ namespace SimpleHelpers
         }
 
         /// <summary>
-        /// Get the option as an array of strings. If the key doen't exist, a zero length array is returned.
+        /// Get the option as an array of strings. If the key doen't exist, a zero length array is returned.<para/>
+        /// Detected formats: json array, delimited string
         /// </summary>
         /// <param name="key">The key, which is case insensitive.</param>
         /// <param name="delimiters">The delimiters.</param>
@@ -300,27 +303,44 @@ namespace SimpleHelpers
                 if (r != null)
                     return r;
             }
-            return v.Split (delimiters != null && delimiters.Length > 0 ? delimiters : defaultDelimiter, StringSplitOptions.None);
+            // split with delimiters
+            var s = v.Split (delimiters != null && delimiters.Length > 0 ? delimiters : defaultDelimiter, StringSplitOptions.None);
+            // trim each string
+            for (var i = 0; i < s.Length; i++)
+                s[i] = s[i].Trim ();
+            return s;
+        }
+
+        public void SetAlias (string key, params string[] alias)
+        {
+            if (_alias == null)
+                _alias = new Dictionary<string, string> (_caseInsensitive ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
+            if (alias != null)
+            {
+                foreach (var a in alias)
+                    _alias[a] = key;
+            }
         }
 
         /// <summary>
-        /// Merge together FlexibleOptions instances, the last object in the list has priority in conflict resolution (overwrite).
+        /// Merge together FlexibleOptions instances, the last object in the list has priority in conflict resolution (overwrite).<para/>
+        /// Merge will return a new instance of FlexibleOptions.
         /// </summary>
         /// <param name="items"></param>
-        /// <returns></returns>
+        /// <returns>A new instance of FlexibleOptions with merged options</returns>
         public static FlexibleOptions Merge (params FlexibleOptions[] items)
         {
             var merge = new FlexibleOptions ();
-            if (items != null)
+            if (items == null || items.Length == 0)
+                return merge;            
+            var dic = merge.Options;
+            for (int i = 0; i < items.Length; i++)
             {
-                foreach (var i in items)
+                if (items[i] == null)
+                    continue;
+                foreach (var o in items[i].Options)
                 {
-                    if (i == null)
-                        continue;
-                    foreach (var o in i.Options)
-                    {
-                        merge.Options[o.Key] = o.Value;
-                    }
+                    dic[o.Key] = o.Value;
                 }
             }
             return merge;
