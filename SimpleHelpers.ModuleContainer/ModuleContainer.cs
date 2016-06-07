@@ -64,20 +64,12 @@ namespace SimpleHelpers
         public delegate void ModuleErrorEventHandler (string message, Exception ex);
 
         public event ModuleErrorEventHandler OnModuleLoadingError;
-
-        private bool HasEventListeners ()
+        
+        private void RaiseModuleLoadingError (string message, Exception ex)
         {
-            if (OnModuleLoadingError != null)
-            {
-                return OnModuleLoadingError.GetInvocationList ().Length != 0;
-            }
-            return false;
-        }
-
-        private void FireModuleLoadingError (string message, Exception ex)
-        {
-            if (HasEventListeners ())
-                OnModuleLoadingError (message, ex);
+            var localHandler = OnModuleLoadingError;
+            if (localHandler != null)
+                localHandler (message, ex);
         }
 
         #endregion
@@ -119,6 +111,16 @@ namespace SimpleHelpers
         public void LoadModules (string modulesFolder, Type[] listOfInterfaces = null)
         {
             ContainerInitialization (new string[] { modulesFolder }, listOfInterfaces);
+        }
+
+        /// <summary>
+        /// Registers a interface by searching all derived types.<para/>
+        /// This method will rebuild the internal cache for a given type.
+        /// </summary>
+        /// <param name="listOfInterfaces">The list of interfaces.</param>
+        public void RegisterInterface (params Type[] listOfInterfaces)
+        {
+            SearchForImplementations (listOfInterfaces);
         }
 
         private void ContainerInitialization (string[] modulesFolder, Type[] listOfInterfaces)
@@ -218,7 +220,7 @@ namespace SimpleHelpers
             }
             catch (Exception ex)
             {
-                FireModuleLoadingError ("Assembly ignored. Load error: " +
+                RaiseModuleLoadingError ("Assembly ignored. Load error: " +
                               ex.GetType ().Name + ", location: " + file.FullName.Replace (AppDomain.CurrentDomain.BaseDirectory, "./").Replace ('\\', '/'), ex);
                 return;
             }
@@ -240,7 +242,7 @@ namespace SimpleHelpers
             }
             catch (Exception ex)
             {
-                FireModuleLoadingError ("Assembly ignored. Load error: " +
+                RaiseModuleLoadingError ("Assembly ignored. Load error: " +
                               ex.GetType ().Name + ", location: " + file.FullName.Replace (AppDomain.CurrentDomain.BaseDirectory, "./").Replace ('\\', '/'), ex);
             }
         }
@@ -303,7 +305,7 @@ namespace SimpleHelpers
             }
             catch (Exception ex)
             {
-                FireModuleLoadingError ("Error loading assembly types.", ex);
+                RaiseModuleLoadingError ("Error loading assembly types.", ex);
             }
         }
 
@@ -327,7 +329,7 @@ namespace SimpleHelpers
             {
                 foreach (var name in fullTypeNameList)
                 {
-                    if (name == t.FullName)                    
+                    if (name == t.FullName)
                         yield return t;
                 }
             }
@@ -355,7 +357,7 @@ namespace SimpleHelpers
                 }
                 catch (Exception ex)
                 {
-                    FireModuleLoadingError ("Assembly .net version lower than .net 4.5. Assembly: " + a.FullName + ", location: " + a.Location.Replace (AppDomain.CurrentDomain.BaseDirectory, "./").Replace ('\\', '/'), ex);
+                    RaiseModuleLoadingError ("Assembly .net version lower than .net 4.5. Assembly: " + a.FullName + ", location: " + a.Location.Replace (AppDomain.CurrentDomain.BaseDirectory, "./").Replace ('\\', '/'), ex);
                 }
 
                 // check if types were listed!
@@ -404,10 +406,11 @@ namespace SimpleHelpers
             int i = name.IndexOf ('.');
             return (i > 0) ? name.Substring (0, i) : name;
         }
+
         /// <summary>
         /// Adjust file path.
         /// </summary>
-        public static Tuple<string, string> PrepareFilePath (string path)
+        private static Tuple<string, string> PrepareFilePath (string path)
         {
             if (String.IsNullOrWhiteSpace (path))
                 return null;
@@ -438,7 +441,7 @@ namespace SimpleHelpers
             return s;
         }
 
-        public static Tuple<string, string> SplitByLastPathPart (string pattern)
+        private static Tuple<string, string> SplitByLastPathPart (string pattern)
         {
             if (pattern != null)
             {
@@ -613,6 +616,33 @@ namespace SimpleHelpers
             // return implementations
             for (int i = 0; i < list.Count; i++)
                 yield return list[i];
+        }
+
+        /// <summary>
+        /// Gets all registered types for a given interface or base type.
+        /// </summary>
+        /// <param name="typeName">Name of the type.</param>
+        /// <returns>List of registered types</returns>
+        public IEnumerable<Type> GetTypesOf (string typeName)
+        {
+            List<Type> list;
+            // load interface implementations
+            if (!exportedTypesByBaseType.TryGetValue (typeName, out list))
+            {
+                // if none was found, it was not initilized yet...
+                var tp = SearchForType (typeName);
+                if (tp != null)
+                {
+                    foreach (var t in GetTypesOf (tp))
+                        yield return t;
+                }
+            }
+            else
+            {
+                // return implementations
+                for (int i = 0; i < list.Count; i++)
+                    yield return list[i];
+            }
         }
 
         /// <summary>
