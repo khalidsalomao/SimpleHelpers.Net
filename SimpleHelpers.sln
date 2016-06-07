@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleHelpersTests", "Simpl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleHelpers.ConsoleUtils", "SimpleHelpers.ConsoleUtils\SimpleHelpers.ConsoleUtils.csproj", "{DB36A17F-5685-4B1B-A583-32EE05297952}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleHelpers.Arguments", "SimpleHelpers.Arguments\SimpleHelpers.Arguments.csproj", "{D7213934-58B4-4C12-B4CF-65ACE39C8CDD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{DB36A17F-5685-4B1B-A583-32EE05297952}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB36A17F-5685-4B1B-A583-32EE05297952}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB36A17F-5685-4B1B-A583-32EE05297952}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7213934-58B4-4C12-B4CF-65ACE39C8CDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7213934-58B4-4C12-B4CF-65ACE39C8CDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7213934-58B4-4C12-B4CF-65ACE39C8CDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7213934-58B4-4C12-B4CF-65ACE39C8CDD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
