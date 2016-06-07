@@ -117,15 +117,6 @@ namespace SimpleHelpers
         public delegate void SimpleMemoryCacheItemExpirationEventHandler (string key, T item);
 
         public static event SimpleMemoryCacheItemExpirationEventHandler OnExpiration;
-        
-        private static bool HasEventListeners ()
-        {
-            if (OnExpiration != null)
-            {
-            	return OnExpiration.GetInvocationList ().Length != 0;
-            }
-            return false;
-        }
 
         #endregion
 
@@ -373,16 +364,17 @@ namespace SimpleHelpers
                 {
                     CachedItem item;
                     DateTime oldThreshold = DateTime.UtcNow - m_timeout;
-                    bool hasEvents = HasEventListeners ();
+                    // make a local copy of our event
+                    var localOnExpiration = OnExpiration;
                     // select elegible records
                     var expiredItems = m_cacheMap.Where (i => i.Value.Updated < oldThreshold).Select (i => i.Key);
                     // remove from cache and fire OnExpiration event
                     foreach (var key in expiredItems)
                     {
                         m_cacheMap.TryRemove (key, out item);
-                        if (hasEvents)
+                        if (localOnExpiration != null)
                         {
-                            OnExpiration (key, item.Data);
+                            localOnExpiration (key, item.Data);
                         }
                     }
                 }
