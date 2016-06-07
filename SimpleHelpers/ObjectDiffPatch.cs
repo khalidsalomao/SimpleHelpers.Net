@@ -49,7 +49,7 @@ namespace SimpleHelpers
         /// <param name="original">The original.</param>
         /// <param name="updated">The updated.</param>
         /// <returns>The result of the diff operation</returns>
-        public static ObjectDiffPatchResult GenerateDiff<T1, T2> (T1 original, T2 updated) where T1 : class
+        public static ObjectDiffPatchResult GenerateDiff<T1, T2> (T1 original, T2 updated) where T1 : class where T2 : class 
         {
             // ensure the serializer will not ignore null values
             var writer = GetJsonSerializer ();
@@ -112,7 +112,7 @@ namespace SimpleHelpers
         /// <param name="updated">The updated.</param>
         /// <param name="comparedType">Type of the compared.</param>
         /// <returns>The result of the diff operation</returns>
-        public static ObjectDiffPatchResult GenerateDiff (JObject original, JObject updated, Type comparedType = null)
+        public static ObjectDiffPatchResult GenerateDiff (JObject original, JObject updated, Type comparedType)
         {
             // analyse their differences!
             var result = Diff (original, updated);
