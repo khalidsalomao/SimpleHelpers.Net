@@ -1,0 +1,18 @@
+﻿##########################################
+List of Parameters
+
+	-h | ? | -help : Display help information in console.
+	-logLevel : change the verbosity of log messages written to the logfile. Defaults to Info. Values = [Trace, Debug, Info, Warn, Error, Fatal]
+	-logFilename : name of the log file. Defaults to "${basedir}/log/aplication_name.log".
+	-config : Address to an external file with a json format configuration options. At service start up the file will be loaded and parsed. 
+	-waitForKeyBeforeExit : If the console application should ask for user input at the end, before exiting the application.
+	-disableLogFile : If the local log file should be disabled. Defaults to enabled.	
+	-disableLogTargets : List of Log targets that should be disabled.
+	-enableLogTargets : List of target to be enabled. This option takes precedence over `disableLogTargets` and `disableLogFile`.
+
+	-t | test : The name|id of the {test} to be executed.", v => testName = v);
+    -r | repeat : The number of {TIMES} to repeat the test tin a single loop to get the total timming.\nThis must be an integer.\nDefault to 1000.", v => loopCount = Int32.Parse (v));
+    -q | quiet : Application will only display errors messages", o => ConfigureLog ("ERROR"));
+    -v | verbose : Application will only display errors messages", o => ConfigureLog ("TRACE"));
+
+##########################################

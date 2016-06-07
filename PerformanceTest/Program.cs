@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using PerformanceTest.Logging;
+using SimpleHelpers;
 
 namespace PerformanceTest
 {
     class Program
     {
         static int verbosity;
-        static Mono.Options.OptionSet optionsParser = new Mono.Options.OptionSet ();
         static List<string> parsedOptions;
         static ILog logger = LogProvider.For<Program> ();
         static int loopCount = 1000;
@@ -20,7 +20,7 @@ namespace PerformanceTest
             try
             {
                 // Program initialization
-                Initialize ();
+                ConsoleUtils.Initialize (args, false);
 
                 logger.Info ("test");
                 // Initialize possible options
@@ -39,21 +39,6 @@ namespace PerformanceTest
             Console.ReadKey ();
             // exit
             ApplicationExit (0);
-        }
-
-        /// <summary>
-        /// Perform some intial configurations.
-        /// </summary>
-        private static void Initialize ()
-        {
-            // Force culture info to english
-            var cultureEN = new System.Globalization.CultureInfo ("en-US");
-            System.Threading.Thread.CurrentThread.CurrentCulture = cultureEN;
-            System.Threading.Thread.CurrentThread.CurrentUICulture = cultureEN;
-            // Remove TCP connection limit
-            System.Net.ServicePointManager.DefaultConnectionLimit = 1024;
-            // configure logging
-            ConfigureLog ("INFO");
         }
 
         /// <summary>
