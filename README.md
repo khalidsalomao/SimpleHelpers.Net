@@ -23,6 +23,7 @@ Micro-libraries
 ### FileEncoding
 
 - Detect any text file charset encoding using Mozilla Charset Detector.
+- Check if a file is text or binary.
 - [See documentation](docs/fileencoding.md)
 
 ### MemoryCache
@@ -75,11 +76,12 @@ Micro-libraries
 
 ### ScriptEvaluator
 
-- Load C# source code.
+- Loads C# source code.
 
 ### ModuleContainer
 
 - Easy, fast and non-invasive dependency injection and plugin system.
+- [See documentation](docs/modulecontainer.md)
 
 ### RabbitWorkQueue
 
