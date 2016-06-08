@@ -9,19 +9,19 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     
       
-        <title>NamedLock - SimpleHelpers.Net</title>
+        <title>ObjectDiffPatch - SimpleHelpers.Net</title>
       
       
       
-        <link rel="canonical" href="http://khalidsalomao.github.io/SimpleHelpers.Net/docs/namedlock/">
+        <link rel="canonical" href="http://khalidsalomao.github.io/SimpleHelpers.Net/docs/objectdiffpatch/">
       
       
         <meta name="author" content="Khalid Salomão">
       
     
-    <meta property="og:url" content="http://khalidsalomao.github.io/SimpleHelpers.Net/docs/namedlock/">
+    <meta property="og:url" content="http://khalidsalomao.github.io/SimpleHelpers.Net/docs/objectdiffpatch/">
     <meta property="og:title" content="SimpleHelpers.Net">
-    <meta property="og:image" content="http://khalidsalomao.github.io/SimpleHelpers.Net/docs/namedlock//../../">
+    <meta property="og:image" content="http://khalidsalomao.github.io/SimpleHelpers.Net/docs/objectdiffpatch//../../">
     <meta name="apple-mobile-web-app-title" content="SimpleHelpers.Net">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -100,7 +100,7 @@
             
           </span>
         
-        NamedLock
+        ObjectDiffPatch
       </div>
     </div>
     
@@ -216,8 +216,17 @@
       
         
   <li>
-    <a class="current" title="NamedLock" href="./">
+    <a class="" title="NamedLock" href="../namedlock/">
       NamedLock
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="current" title="ObjectDiffPatch" href="./">
+      ObjectDiffPatch
     </a>
     
       
@@ -227,14 +236,20 @@
         <ul>
           
             <li class="anchor">
+              <a title="Features" href="#features">
+                Features
+              </a>
+            </li>
+          
+            <li class="anchor">
               <a title="Installation" href="#installation">
                 Installation
               </a>
             </li>
           
             <li class="anchor">
-              <a title="Examples" href="#examples">
-                Examples
+              <a title="API" href="#api">
+                API
               </a>
             </li>
           
@@ -246,15 +261,6 @@
           
         </ul>
       
-    
-  </li>
-
-      
-        
-  <li>
-    <a class="" title="ObjectDiffPatch" href="../objectdiffpatch/">
-      ObjectDiffPatch
-    </a>
     
   </li>
 
@@ -341,15 +347,22 @@
       <article class="article">
         <div class="wrapper">
           
-          <h1 id="simplehelpersnamedlock"><a name="user-content-simplehelpersnamedlock" href="#simplehelpersnamedlock" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>SimpleHelpers.NamedLock<a class="headerlink" href="#simplehelpersnamedlock" title="Permanent link">#</a></h1>
-<p><a href="https://www.nuget.org/packages/SimpleHelpers.NamedLock/"><img alt="NuGet" src="https://img.shields.io/nuget/v/SimpleHelpers.NamedLock.svg?maxAge=1200&amp;style=flat-square" /></a>
+          <h1 id="simplehelpersobjectdiffpatch"><a name="user-content-simplehelpersobjectdiffpatch" href="#simplehelpersobjectdiffpatch" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>SimpleHelpers.ObjectDiffPatch<a class="headerlink" href="#simplehelpersobjectdiffpatch" title="Permanent link">#</a></h1>
+<p><a href="https://www.nuget.org/packages/SimpleHelpers.ObjectDiffPatch/"><img alt="NuGet" src="https://img.shields.io/nuget/v/SimpleHelpers.ObjectDiffPatch.svg?maxAge=1200&amp;style=flat-square" /></a>
 <a href="https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/LICENSE.txt"><img alt="GitHub license" src="https://img.shields.io/badge/license-MIT-brightgreen.svg?maxAge=3600&amp;style=flat-square" /></a></p>
-<p>Synchronization helper: a static lock collection associated with a key.</p>
-<p>NamedLock manages the lifetime of critical sections that can be accessed by a key (name) throughout the application. It also have some helper methods to allow a maximum wait time (timeout) to acquire the lock and safely release it.</p>
+<p>Simple Object Comparer that generates a Diff between objects and is able to Patch one object to transforms into the other.</p>
+<p>ObjectDiffPatch uses <em>Newtonsoft.Json</em> internally to create a <code>JObject</code> that we use to run a simple and reliable deep/recursive object comparison.</p>
+<h2 id="features"><a name="user-content-features" href="#features" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Features<a class="headerlink" href="#features" title="Permanent link">#</a></h2>
+<ul>
+<li>Deep/recursive comparison</li>
+<li>Reliable</li>
+<li>Diff</li>
+<li>Patch</li>
+</ul>
 <h2 id="installation"><a name="user-content-installation" href="#installation" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Installation<a class="headerlink" href="#installation" title="Permanent link">#</a></h2>
 <h3 id="nuget-package-details"><a name="user-content-nuget-package-details" href="#nuget-package-details" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>NuGet Package Details<a class="headerlink" href="#nuget-package-details" title="Permanent link">#</a></h3>
-<p>You can install using NuGet, see <a href="https://www.nuget.org/packages/SimpleHelpers.NamedLock/">SimpleHelpers.NamedLock at NuGet.org</a></p>
-<div class="code"><pre><span></span><span class="n">PM</span><span class="p">&gt;</span> <span class="n">Install-Package</span> <span class="n">SimpleHelpers</span><span class="p">.</span><span class="n">NamedLock</span>
+<p>You can install using NuGet, see <a href="https://www.nuget.org/packages/SimpleHelpers.ObjectDiffPatch/">SimpleHelpers.ObjectDiffPatch at NuGet.org</a></p>
+<div class="code"><pre><span></span><span class="n">PM</span><span class="p">&gt;</span> <span class="n">Install-Package</span> <span class="n">SimpleHelpers</span><span class="p">.</span><span class="n">ObjectDiffPatch</span>
 </pre></div>
 
 
@@ -357,41 +370,23 @@
 <p>The source code will be installed in your project with the following file system structure:</p>
 <div class="code"><pre><span></span>|-- &lt;project root&gt;
     |-- SimpleHelpers
-        |-- NamedLock.cs
+        |-- ObjectDiffPatch.cs
 </pre></div>
 
 
 <h3 id="download"><a name="user-content-download" href="#download" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Download<a class="headerlink" href="#download" title="Permanent link">#</a></h3>
-<p>If you prefer, you can also download the source code: <a href="https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/NamedLock.cs">NamedLock.cs</a></p>
-<h2 id="examples"><a name="user-content-examples" href="#examples" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Examples<a class="headerlink" href="#examples" title="Permanent link">#</a></h2>
-<p>Simple usage where we try to acquire the lock for 100 ms.
-So if somewhere else in our application this same lock was already acquired, we will wait until we acquire the lock or 100 ms has passed.</p>
-<div class="code"><pre><span></span><span class="kt">string</span> <span class="n">key</span> <span class="p">=</span> <span class="s">&quot;our lock name&quot;</span><span class="p">;</span>
+<p>If you prefer, you can also download the source code: <a href="https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/ObjectDiffPatch.cs">ObjectDiffPatch.cs</a></p>
+<h2 id="api"><a name="user-content-api" href="#api" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>API<a class="headerlink" href="#api" title="Permanent link">#</a></h2>
+<h3 id="generatediff"><a name="user-content-generatediff" href="#generatediff" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>GenerateDiff<a class="headerlink" href="#generatediff" title="Permanent link">#</a></h3>
+<p>Compares two objects and generates the differences between them returning an object listing all changes.</p>
+<p>Detected changes are expressed as two <code>JObject</code>, old and new values.</p>
+<div class="code"><pre><span></span><span class="kt">var</span> <span class="n">diff</span> <span class="p">=</span> <span class="n">ObjectDiffPatch</span><span class="p">.</span><span class="n">GenerateDiff</span> <span class="p">(</span><span class="n">originalObj</span><span class="p">,</span> <span class="n">updateObj</span><span class="p">);</span>
 
-<span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">padlock</span> <span class="p">=</span> <span class="k">new</span> <span class="n">NamedLock</span> <span class="p">(</span><span class="n">key</span><span class="p">))</span>
-<span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">padlock</span><span class="p">.</span><span class="n">Enter</span> <span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMilliseconds</span> <span class="p">(</span><span class="m">100</span><span class="p">)))</span>
-    <span class="p">{</span>
-        <span class="c1">// do something as we now own the lock</span>
-    <span class="p">}</span>
-    <span class="k">else</span>
-    <span class="p">{</span>
-        <span class="c1">// do some other thing since we could not aquire the lock</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
+<span class="c1">// original properties values</span>
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span> <span class="p">(</span><span class="n">diff</span><span class="p">.</span><span class="n">OldValues</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
 
-
-<p>Another usage example with a static helper method.</p>
-<div class="code"><pre><span></span><span class="kt">string</span> <span class="n">key</span> <span class="p">=</span> <span class="s">&quot;our lock name&quot;</span><span class="p">;</span>
-
-<span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">padlock</span> <span class="p">=</span> <span class="n">NamedLock</span><span class="p">.</span><span class="n">CreateAndEnter</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMilliseconds</span> <span class="p">(</span><span class="m">100</span><span class="p">)))</span>
-<span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">padlock</span><span class="p">.</span><span class="n">IsLocked</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="c1">// do something</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+<span class="c1">// updated properties values</span>
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span> <span class="p">(</span><span class="n">diff</span><span class="p">.</span><span class="n">NewValues</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
 </pre></div>
 
 
@@ -419,7 +414,7 @@ So if somewhere else in our application this same lock was already acquired, we 
   <nav class="pagination" aria-label="Footer">
     <div class="previous">
       
-        <a href="../modulecontainer/" title="ModuleContainer">
+        <a href="../namedlock/" title="NamedLock">
           <span class="direction">
             Previous
           </span>
@@ -429,7 +424,7 @@ So if somewhere else in our application this same lock was already acquired, we 
             </div>
             <div class="stretch">
               <div class="title">
-                ModuleContainer
+                NamedLock
               </div>
             </div>
           </div>
@@ -438,14 +433,14 @@ So if somewhere else in our application this same lock was already acquired, we 
     </div>
     <div class="next">
       
-        <a href="../objectdiffpatch/" title="ObjectDiffPatch">
+        <a href="../objectpool/" title="ObjectPool">
           <span class="direction">
             Next
           </span>
           <div class="page">
             <div class="stretch">
               <div class="title">
-                ObjectDiffPatch
+                ObjectPool
               </div>
             </div>
             <div class="button button-next" role="button" aria-label="Next">

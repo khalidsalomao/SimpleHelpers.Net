@@ -4,7 +4,7 @@
     
     <url>
      <loc>http://khalidsalomao.github.io/SimpleHelpers.Net//</loc>
-     <lastmod>2016-06-07</lastmod>
+     <lastmod>2016-06-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -12,44 +12,56 @@
     
         
     <url>
-     <loc>http://khalidsalomao.github.io/SimpleHelpers.Net//docs/memorycache/</loc>
-     <lastmod>2016-06-07</lastmod>
+     <loc>http://khalidsalomao.github.io/SimpleHelpers.Net//docs/fileencoding/</loc>
+     <lastmod>2016-06-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>http://khalidsalomao.github.io/SimpleHelpers.Net//docs/fileencoding/</loc>
-     <lastmod>2016-06-07</lastmod>
+     <loc>http://khalidsalomao.github.io/SimpleHelpers.Net//docs/memorycache/</loc>
+     <lastmod>2016-06-08</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://khalidsalomao.github.io/SimpleHelpers.Net//docs/modulecontainer/</loc>
+     <lastmod>2016-06-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://khalidsalomao.github.io/SimpleHelpers.Net//docs/namedlock/</loc>
-     <lastmod>2016-06-07</lastmod>
+     <lastmod>2016-06-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>http://khalidsalomao.github.io/SimpleHelpers.Net//docs/sqlitestorage/</loc>
-     <lastmod>2016-06-07</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>http://khalidsalomao.github.io/SimpleHelpers.Net//docs/timedqueue/</loc>
-     <lastmod>2016-06-07</lastmod>
+     <loc>http://khalidsalomao.github.io/SimpleHelpers.Net//docs/objectdiffpatch/</loc>
+     <lastmod>2016-06-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://khalidsalomao.github.io/SimpleHelpers.Net//docs/objectpool/</loc>
-     <lastmod>2016-06-07</lastmod>
+     <lastmod>2016-06-08</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://khalidsalomao.github.io/SimpleHelpers.Net//docs/sqlitestorage/</loc>
+     <lastmod>2016-06-08</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://khalidsalomao.github.io/SimpleHelpers.Net//docs/timedqueue/</loc>
+     <lastmod>2016-06-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://khalidsalomao.github.io/SimpleHelpers.Net//docs/configmanager/</loc>
-     <lastmod>2016-06-07</lastmod>
+     <lastmod>2016-06-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -59,7 +71,7 @@
         
     <url>
      <loc>http://khalidsalomao.github.io/SimpleHelpers.Net//docs/builddocssite/</loc>
-     <lastmod>2016-06-07</lastmod>
+     <lastmod>2016-06-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
         

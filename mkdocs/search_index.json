@@ -101,6 +101,61 @@
             "title": "License"
         },
         {
+            "location": "/docs/fileencoding/",
+            "text": "SimpleHelpers.FileEncoding\n#\n\n\n\n\n\n\nDetect any text file charset encoding using Mozilla Charset Detector (UDE.CSharp).\n\n\nFileEncoding support almost all charset encodings (utf-8, utf-7, utf-32, ISO-8859-1, \n). It checks if the file has a \nBOM header\n, and if not FileEncoding will load and analize the file bytes and try to decide its charset encoding.\n\n\nFeatures\n#\n\n\n\n\nByte order mark (BOM) detection\n\n\nAnalyse file content\n\n\nAlmost all charset encodings\n\n\nLarge files support\n\n\n\n\nInstallation\n#\n\n\nNuGet Package Details\n#\n\n\nYou can install using NuGet, see \nSimpleHelpers.FileEncoding at NuGet.org\n\n\nPM\n \nInstall-Package\n \nSimpleHelpers\n.\nFileEncoding\n\n\n\n\n\n\nThe nuget package contains \nC# source code\n.\n\n\nThe source code will be installed in your project with the following file system structure:\n\n\n|-- \nproject root\n\n    |-- SimpleHelpers\n        |-- FileEncoding.cs\n\n\n\n\n\nDownload\n#\n\n\nIf you prefer, you can also download the source code: \nFileEncoding.cs\n\n\nDependencies\n#\n\n\n\n\nUDE.CSharp\n\n\n\n\n\n\nCompiled version of \nC# port of Mozilla Universal Charset Detector\n\n\n\n\nThis userful library can detect the charset encoding by analysing a byte array.\n\n\nExample\n#\n\n\nDetectFileEncoding\n#\n\n\n    \nvar\n \nencoding\n \n=\n \nFileEncoding\n.\nDetectFileEncoding\n \n(\n./my_text_file.txt\n);\n\n\n\n\n\n\nTryLoadFile\n#\n\n\n    \nvar\n \ncontent\n \n=\n \nFileEncoding\n.\nTryLoadFile\n \n(\n./my_text_file.txt\n);\n\n\n\n\n\n\nProject Information\n#\n\n\n\n\nContribute\n\n\nSupport\n\n\nLicense",
+            "title": "FileEncoding"
+        },
+        {
+            "location": "/docs/fileencoding/#simplehelpersfileencoding",
+            "text": "Detect any text file charset encoding using Mozilla Charset Detector (UDE.CSharp).  FileEncoding support almost all charset encodings (utf-8, utf-7, utf-32, ISO-8859-1,  ). It checks if the file has a  BOM header , and if not FileEncoding will load and analize the file bytes and try to decide its charset encoding.",
+            "title": "SimpleHelpers.FileEncoding"
+        },
+        {
+            "location": "/docs/fileencoding/#features",
+            "text": "Byte order mark (BOM) detection  Analyse file content  Almost all charset encodings  Large files support",
+            "title": "Features"
+        },
+        {
+            "location": "/docs/fileencoding/#installation",
+            "text": "",
+            "title": "Installation"
+        },
+        {
+            "location": "/docs/fileencoding/#nuget-package-details",
+            "text": "You can install using NuGet, see  SimpleHelpers.FileEncoding at NuGet.org  PM   Install-Package   SimpleHelpers . FileEncoding   The nuget package contains  C# source code .  The source code will be installed in your project with the following file system structure:  |--  project root \n    |-- SimpleHelpers\n        |-- FileEncoding.cs",
+            "title": "NuGet Package Details"
+        },
+        {
+            "location": "/docs/fileencoding/#download",
+            "text": "If you prefer, you can also download the source code:  FileEncoding.cs",
+            "title": "Download"
+        },
+        {
+            "location": "/docs/fileencoding/#dependencies",
+            "text": "UDE.CSharp    Compiled version of  C# port of Mozilla Universal Charset Detector   This userful library can detect the charset encoding by analysing a byte array.",
+            "title": "Dependencies"
+        },
+        {
+            "location": "/docs/fileencoding/#example",
+            "text": "",
+            "title": "Example"
+        },
+        {
+            "location": "/docs/fileencoding/#detectfileencoding",
+            "text": "var   encoding   =   FileEncoding . DetectFileEncoding   ( ./my_text_file.txt );",
+            "title": "DetectFileEncoding"
+        },
+        {
+            "location": "/docs/fileencoding/#tryloadfile",
+            "text": "var   content   =   FileEncoding . TryLoadFile   ( ./my_text_file.txt );",
+            "title": "TryLoadFile"
+        },
+        {
+            "location": "/docs/fileencoding/#project-information",
+            "text": "Contribute  Support  License",
+            "title": "Project Information"
+        },
+        {
             "location": "/docs/memorycache/",
             "text": "SimpleHelpers.MemoryCache\n#\n\n\n\n\n\n\nSimple, lightweight and fast in-memory caching.\n\n\nMemoryCache implements a fast in-memory, e.g. in-process, caching for data that are expensive to create and are thread-safe.  manner.\n\n\nAll items are stored in a concurrent data structure (\nSystem.Collections.Concurrent.ConcurrentDictionary\n) to allow fast and safe multi-threaded usage through the MemoryCache static methods, with a lightweight background timer (\nSystem.Threading.Timer\n) to remove expired items.\n\n\nFeatures\n#\n\n\n\n\nSimple to use\n\n\nFast\n\n\nLightweight\n\n\nFlexible\n\n\n\n\nInstallation\n#\n\n\nNuGet Package Details\n#\n\n\nYou can install using NuGet, see \nSimpleHelpers.MemoryCache at NuGet.org\n\n\nPM\n \nInstall-Package\n \nSimpleHelpers\n.\nMemoryCache\n\n\n\n\n\n\nThe nuget package contains \nC# source code\n and depends on \nSystem.Collections.Concurrent\n introduced in .Net 4.0.\n\n\nThe source code will be installed in your project with the following file system structure:\n\n\n|-- \nproject root\n\n    |-- SimpleHelpers\n        |-- MemoryCache.cs\n\n\n\n\n\nDownload\n#\n\n\nIf you prefer, you can also download the source code: \nMemoryCache.cs\n\n\nImplementation\n#\n\n\nMemoryCache is designed as a static class, so all everything you need is either static properties or methods.\n\n\nGeneric Class\n#\n\n\nMemoryCache is a generic class and so two different types cannot access each other cache.\nSince the JIT compiler will generate different code at run time, for example \nMemoryCache\nstring\n is a different class from \nMemoryCache\nStringBuilder\n or \nMemoryCache\nbyte[]\n.\nThis is important to remember whenever working with inheritance, since inherited types won\nt be able to see its parent MemoryCache.\n\n\n    \nMemoryCache\nparent\n \n!=\n \nMemoryCache\nchild\n\n\n\n\n\n\nThread-safe\n#\n\n\nMemoryCache uses \nSystem.Collections.Concurrent.ConcurrentDictionary\n and every property and method are thread-safe.\n\n\n\n\nNote\n\n\nSince we are dealing with \ncaching\n, it is recommended that stored objects be thread-safe, since the same instance of an object can and will be returned by multiple calls of \nGet\n methods.\n\n\nYou still can use non-thread-safe objects, see \nRemove Example\n or \nFAQ\n.\n\n\n\n\nLightweight\n#\n\n\nMemoryCache uses a \nSystem.Threading.Timer\n to periodically check for expired items and remove them.\nThe timer step can be configured, see \nConfiguration\n.\n\n\nThe timer has a lazy start. Only after the first \nSet\n call to store an item, the timer will start.\nIf the cache internal dictionary is empty for a while - after 3 runs - the timer is released and only to start again on next \nSet\n call.\n\n\nConfiguration\n#\n\n\nSimple configuration of the MemoryCache settings.\n\n\nIt should be done for each type, as explained in \nImplentation\n.\n\n\n// setup (called once in application initialization)\n\n\n\n// set a duration of an item in the cache to 1 second\n\n\nMemoryCache\nstring\n.\nExpiration\n \n=\n \nTimeSpan\n.\nFromSeconds\n \n(\n1\n);\n\n\n// set the internal maintenance timed task to run each 500 ms removing expired items\n\n\nMemoryCache\nstring\n.\nMaintenanceStep\n \n=\n \nTimeSpan\n.\nFromMilliseconds\n \n(\n500\n);\n\n\n// Our event, if we want to treat the removed expired items\n\n\nMemoryCache\nstring\n.\nOnExpiration\n \n+=\n \n(\nstring\n \nkey\n,\n \nstring\n \nitem\n)\n \n=\n\n\n{\n\n    \n// do something\n\n\n};\n\n\n\n\n\n\nAPI\n#\n\n\nSet\n#\n\n\nUse \nSet\n method to store data with a key.\n\n\n// store an item\n\n\nMemoryCache\nstring\n.\nSet\n \n(\nk1\n,\n \ntest\n);\n\n\n\n\n\n\nGet\n#\n\n\nUse \nGet\n method to retrieve data associated with a key.\n\n\n// try to get from cache\n\n\nstring\n \nvalue\n \n=\n \nMemoryCache\nstring\n.\nGet\n \n(\nk1\n);\n\n\n// check if we got it\n\n\nif\n \n(\nvalue\n \n!=\n \nnull\n)\n\n\n{\n\n    \n// ok we got it!\n\n\n}\n\n\n\n\n\n\nRemove\n#\n\n\nUse \nRemove\n method to atomically remove and return the value associated with the specified key.\n\n\n// try to get from cache\n\n\nstring\n \nvalue\n \n=\n \nMemoryCache\nstring\n.\nRemove\n \n(\nk1\n);\n\n\n// check if we got it\n\n\nif\n \n(\nvalue\n \n!=\n \nnull\n)\n\n\n{\n\n    \n// ok we got it!\n\n\n}\n\n\n\n\n\n\nGetOrAdd\n#\n\n\nUse \nGetOrAdd\n to try to retrieve data from cache and if the data is not present in cache use a factory method to create the new item.\n\n\n// prepare our factory\n\n\nvar\n \nfactory\n \n=\n \n(\nstring\n \nkey\n)\n \n=\n\n\n{\n\n    \nreturn\n \nkey\n \n+\n \nDateTime\n.\nNow\n.\nToString\n \n();\n\n\n};\n\n\n\n// try to get the associated value if the cache does not have it\n\n\n// then use the factory to create a new one, store and return it.\n\n\nstring\n \nvalue\n \n=\n \nMemoryCache\nstring\n.\nGetOrAdd\n \n(\nkey2\n,\n \nfactory\n);\n\n\n\n\n\n\nGetOrSyncAdd\n#\n\n\nUsing a more complex concurrent scenario where, if the item is not found, we want to call the factory \nonly once\n.\n\nGetOrSyncAdd\n guarantees that the factory method will be called only once in case of concurrent invocations.\nSo all concurrent calls will wait until factory has created and stored the new item, and will return it.\n\n\n// prepare our factory\n\n\nvar\n \nfactory\n \n=\n \n(\nstring\n \nkey\n)\n \n=\n\n\n{\n\n    \nreturn\n \nkey\n \n+\n \nDateTime\n.\nNow\n.\nToString\n \n();\n\n\n};\n\n\n\n// try to get the associated value if the cache does not have it\n\n\n// then use the factory to create a new one, store and return it.\n\n\n// It the factory takes more than 250 milliseconds to create then new instance,\n\n\n// it will exit returning the default value for the class\n\n\nstring\n \nvalue\n \n=\n \nMemoryCache\nstring\n.\nGetOrSyncAdd\n \n(\nkey2\n,\n \nfactory\n,\n \nTimeSpan\n.\nFromMilliseconds\n \n(\n250\n));\n\n\n\n// check if we got it\n\n\nif\n \n(\nvalue\n \n!=\n \nnull\n)\n\n\n{\n\n    \n// ok we got it!\n\n\n}\n\n\n\n\n\n\nFAQ\n#\n\n\nHow to deal with \nnon-thread-safe\n objects\n#\n\n\nIf you wish to use non-thread safe object instances, you can! Instead of using the \nGet\n methods, you \nmust\n use the \nRemove\n method to atomically (safelly) get and remove the object instance from the cache.\n\n\nProject Information\n#\n\n\n\n\nContribute\n\n\nSupport\n\n\nLicense",
             "title": "MemoryCache"
@@ -201,57 +256,97 @@
             "title": "Project Information"
         },
         {
-            "location": "/docs/fileencoding/",
-            "text": "SimpleHelpers.FileEncoding\n#\n\n\n\n\n\n\nDetect any text file charset encoding using Mozilla Charset Detector (UDE.CSharp).\n\n\nFileEncoding support almost all charset encodings (utf-8, utf-7, utf-32, ISO-8859-1, \n). It checks if the file has a \nBOM header\n, and if not FileEncoding will load and analize the file bytes and try to decide its charset encoding.\n\n\nFeatures\n#\n\n\n\n\nByte order mark (BOM) detection\n\n\nAnalyse file content\n\n\nAlmost all charset encodings\n\n\nLarge files support\n\n\n\n\nInstallation\n#\n\n\nNuGet Package Details\n#\n\n\nYou can install using NuGet, see \nSimpleHelpers.FileEncoding at NuGet.org\n\n\nPM\n \nInstall-Package\n \nSimpleHelpers\n.\nFileEncoding\n\n\n\n\n\n\nThe nuget package contains \nC# source code\n.\n\n\nThe source code will be installed in your project with the following file system structure:\n\n\n|-- \nproject root\n\n    |-- SimpleHelpers\n        |-- FileEncoding.cs\n\n\n\n\n\nDownload\n#\n\n\nIf you prefer, you can also download the source code: \nFileEncoding.cs\n\n\nDependencies\n#\n\n\n\n\nUDE.CSharp\n\n\n\n\n\n\nCompiled version of \nC# port of Mozilla Universal Charset Detector\n\n\n\n\nThis userful library can detect the charset encoding by analysing a byte array.\n\n\nExample\n#\n\n\nDetectFileEncoding\n#\n\n\n    \nvar\n \nencoding\n \n=\n \nFileEncoding\n.\nDetectFileEncoding\n \n(\n./my_text_file.txt\n);\n\n\n\n\n\n\nTryLoadFile\n#\n\n\n    \nvar\n \ncontent\n \n=\n \nFileEncoding\n.\nTryLoadFile\n \n(\n./my_text_file.txt\n);\n\n\n\n\n\n\nProject Information\n#\n\n\n\n\nContribute\n\n\nSupport\n\n\nLicense",
-            "title": "FileEncoding"
+            "location": "/docs/modulecontainer/",
+            "text": "SimpleHelpers.ModuleContainer\n#\n\n\n\n\n\n\nEasy, fast and non-invasive dependency injection and plugin system.\n\n\nModuleContainer is for those that don\nt need or want a fully featured DI or IOC framework, but wants to:\n\n\n\n\ncreate an object\n\n\ncreate an object that implements an interface\n\n\ncreate an object from its name (string) at runtime\n\n\nbe able to load an external assembly (like a plugin) from the file system\n\n\n\n\nFeatures\n#\n\n\n\n\nSmall footprint\n\n\nFast initialization\n\n\nNo-dependencies\n\n\nLoad assemblies at runtime (plugins)\n\n\nFast instance creation\n\n\nEasy (almost no learning curve)\n\n\n\n\nInstallation\n#\n\n\nNuGet Package Details\n#\n\n\nYou can install using NuGet, see \nSimpleHelpers.ModuleContainer at NuGet.org\n\n\nPM\n \nInstall-Package\n \nSimpleHelpers\n.\nModuleContainer\n\n\n\n\n\n\nThe nuget package contains \nC# source code\n.\n\n\nThe source code will be installed in your project with the following file system structure:\n\n\n|-- \nproject root\n\n    |-- SimpleHelpers\n        |-- ModuleContainer.cs\n\n\n\n\n\nDownload\n#\n\n\nIf you prefer, you can also download the source code: \nModuleContainer.cs\n\n\nAPI\n#\n\n\nGetInstance\n#\n\n\nCreate an object instance by its type name. The full type name (namespace + class) is preferred but not required.\n\n\nobject\n \ninstance\n \n=\n \nModuleContainer\n.\nInstance\n.\nGetInstance\n \n(\nSimpleHelpers.SampleClass\n);\n\n\n\n// here you have your instance...\n\n\n((\nSampleClass\n)\ninstance\n).\nSampleMethod\n \n();\n\n\n\n\n\n\nIf you have the type at compile time, you can also pass \nType\n as parameter.\n\n\nobject\n \ninstance\n \n=\n \nModuleContainer\n.\nInstance\n.\nGetInstance\n \n(\ntypeof\n(\nSampleClass\n));\n\n\n\n// here you have your instance...\n\n\n((\nSampleClass\n)\ninstance\n).\nSampleMethod\n \n();\n\n\n\n\n\n\nGetInstanceOf\n#\n\n\nSearch for a class that implements the provided type (that can be a base class or an interface) and create an instance.\n\n\nNote that if there is multiple types that implements the provided type, the first one will be returned\n\n\nISampleClass\n \ninstance\n \n=\n \nModuleContainer\n.\nInstance\n.\nGetInstanceOf\nISampleClass\n \n();\n\n\n\n// here you have your instance...\n\n\ninstance\n.\nSampleMethod\n \n();\n\n\n\n\n\n\nGetInstancesOf\n#\n\n\nEnumerates created instances of each found type that implements the provided type (that can be a base class or an interface).\n\n\nvar\n \nlist\n \n=\n \nModuleContainer\n.\nInstance\n.\nGetInstancesOf\nISampleClass\n \n();\n\n\n\n// here you have your instance...\n\n\nforeach\n \n(\nvar\n \ninstance\n \nin\n \nlist\n)\n\n    \ninstance\n.\nSampleMethod\n \n();\n\n\n\n\n\n\nGetTypesOf\n#\n\n\nEnumerates all found types that implements the provided type (that can be a base class or an interface).\n\n\nvar\n \nlist\n \n=\n \nModuleContainer\n.\nInstance\n.\nGetTypesOf\n \n(\ntypeof\n(\nISampleClass\n));\n\n\n\n// here you have your instance...\n\n\nforeach\n \n(\nType\n \ntype\n \nin\n \nlist\n)\n\n    \n// ...\n\n\n\n\n\n\nGetConstructor\n#\n\n\nGet a type constructor. The delegate factory will be generated only once by lambda expressions and cached for future requests.\n\n\nNote that only the parameterless constructor will be used.\n\n\nvar\n \nctor\n \n=\n \nModuleContainer\n.\nInstance\n.\nGetConstructor\n \n(\nSimpleHelpers.SampleClass\n);\n\n\n\n// here you we can use it....\n\n\nfor\n \n(\nvar\n \ni\n;\n \ni\n \n \n1000\n;\n \ni\n++)\n\n    \nctor\n \n();\n\n\n\n\n\n\nLoadModules\n#\n\n\nWill load all valid .net assemblies found in the modules folder and subfolders and scan for the types derived from list of interfaces.\n\n\nThe list of interfaces is optional, since a later call of \nGetInstanceOf\n will search for all derived types to build the internal cache for this type.\n\n\nImportant observations:\n\n\n\n\na loaded assembly cannot be unloaded\n\n\nall assemblies are loaded in the main appdomain\n\n\nthe derived types of a given type are searched only once, unless when \nLoadModules\n are used with a list of interfaces.\n\n\n\n\nModuleContainer\n.\nInstance\n.\nLoadModules\n \n(\nmy/path/plugins\n);\n\n\n\n\n\n\nRegisterInterface\n#\n\n\nRegisters a interface by searching all derived types.\n\n\nThis method will rebuild the internal cache for a given type.\n\n\nModuleContainer\n.\nInstance\n.\nRegisterInterface\n \n(\ntypeof\n(\nSampleClass\n));\n\n\n\n\n\n\nRestrictions\n#\n\n\nOnly types with a parameterless constructor can be created by \nGetInstance\n, \nGetInstanceOf\n or \nGetInstancesOf\n.\nMultiple constructors are allowed, but the parameterless constructor will be used!\n\n\nFAQ\n#\n\n\nWhat about the performance of instance creation\n#\n\n\nThe instance creation is optimized with usage of \nLambdaExpression\n and caching. So it is fast!\n\n\nIf you are creating lots of instances in a loop, for example, you can get an \nextra performance\n by using \nGetConstructor\n method (\nsee GetConstructor\n)\n\n\nHow do I unload a module\n#\n\n\nModuleContainer does not implement appdomain management funcionality and all modules are loaded in the current appdomain.\nIf you wish to be able load and unload assemblies, than you must implement your own appdomain management logic\n\n\nProject Information\n#\n\n\n\n\nContribute\n\n\nSupport\n\n\nLicense",
+            "title": "ModuleContainer"
         },
         {
-            "location": "/docs/fileencoding/#simplehelpersfileencoding",
-            "text": "Detect any text file charset encoding using Mozilla Charset Detector (UDE.CSharp).  FileEncoding support almost all charset encodings (utf-8, utf-7, utf-32, ISO-8859-1,  ). It checks if the file has a  BOM header , and if not FileEncoding will load and analize the file bytes and try to decide its charset encoding.",
-            "title": "SimpleHelpers.FileEncoding"
+            "location": "/docs/modulecontainer/#simplehelpersmodulecontainer",
+            "text": "Easy, fast and non-invasive dependency injection and plugin system.  ModuleContainer is for those that don t need or want a fully featured DI or IOC framework, but wants to:   create an object  create an object that implements an interface  create an object from its name (string) at runtime  be able to load an external assembly (like a plugin) from the file system",
+            "title": "SimpleHelpers.ModuleContainer"
         },
         {
-            "location": "/docs/fileencoding/#features",
-            "text": "Byte order mark (BOM) detection  Analyse file content  Almost all charset encodings  Large files support",
+            "location": "/docs/modulecontainer/#features",
+            "text": "Small footprint  Fast initialization  No-dependencies  Load assemblies at runtime (plugins)  Fast instance creation  Easy (almost no learning curve)",
             "title": "Features"
         },
         {
-            "location": "/docs/fileencoding/#installation",
+            "location": "/docs/modulecontainer/#installation",
             "text": "",
             "title": "Installation"
         },
         {
-            "location": "/docs/fileencoding/#nuget-package-details",
-            "text": "You can install using NuGet, see  SimpleHelpers.FileEncoding at NuGet.org  PM   Install-Package   SimpleHelpers . FileEncoding   The nuget package contains  C# source code .  The source code will be installed in your project with the following file system structure:  |--  project root \n    |-- SimpleHelpers\n        |-- FileEncoding.cs",
+            "location": "/docs/modulecontainer/#nuget-package-details",
+            "text": "You can install using NuGet, see  SimpleHelpers.ModuleContainer at NuGet.org  PM   Install-Package   SimpleHelpers . ModuleContainer   The nuget package contains  C# source code .  The source code will be installed in your project with the following file system structure:  |--  project root \n    |-- SimpleHelpers\n        |-- ModuleContainer.cs",
             "title": "NuGet Package Details"
         },
         {
-            "location": "/docs/fileencoding/#download",
-            "text": "If you prefer, you can also download the source code:  FileEncoding.cs",
+            "location": "/docs/modulecontainer/#download",
+            "text": "If you prefer, you can also download the source code:  ModuleContainer.cs",
             "title": "Download"
         },
         {
-            "location": "/docs/fileencoding/#dependencies",
-            "text": "UDE.CSharp    Compiled version of  C# port of Mozilla Universal Charset Detector   This userful library can detect the charset encoding by analysing a byte array.",
-            "title": "Dependencies"
-        },
-        {
-            "location": "/docs/fileencoding/#example",
+            "location": "/docs/modulecontainer/#api",
             "text": "",
-            "title": "Example"
+            "title": "API"
         },
         {
-            "location": "/docs/fileencoding/#detectfileencoding",
-            "text": "var   encoding   =   FileEncoding . DetectFileEncoding   ( ./my_text_file.txt );",
-            "title": "DetectFileEncoding"
+            "location": "/docs/modulecontainer/#getinstance",
+            "text": "Create an object instance by its type name. The full type name (namespace + class) is preferred but not required.  object   instance   =   ModuleContainer . Instance . GetInstance   ( SimpleHelpers.SampleClass );  // here you have your instance...  (( SampleClass ) instance ). SampleMethod   ();   If you have the type at compile time, you can also pass  Type  as parameter.  object   instance   =   ModuleContainer . Instance . GetInstance   ( typeof ( SampleClass ));  // here you have your instance...  (( SampleClass ) instance ). SampleMethod   ();",
+            "title": "GetInstance"
         },
         {
-            "location": "/docs/fileencoding/#tryloadfile",
-            "text": "var   content   =   FileEncoding . TryLoadFile   ( ./my_text_file.txt );",
-            "title": "TryLoadFile"
+            "location": "/docs/modulecontainer/#getinstanceof",
+            "text": "Search for a class that implements the provided type (that can be a base class or an interface) and create an instance.  Note that if there is multiple types that implements the provided type, the first one will be returned  ISampleClass   instance   =   ModuleContainer . Instance . GetInstanceOf ISampleClass   ();  // here you have your instance...  instance . SampleMethod   ();",
+            "title": "GetInstanceOf"
         },
         {
-            "location": "/docs/fileencoding/#project-information",
+            "location": "/docs/modulecontainer/#getinstancesof",
+            "text": "Enumerates created instances of each found type that implements the provided type (that can be a base class or an interface).  var   list   =   ModuleContainer . Instance . GetInstancesOf ISampleClass   ();  // here you have your instance...  foreach   ( var   instance   in   list ) \n     instance . SampleMethod   ();",
+            "title": "GetInstancesOf"
+        },
+        {
+            "location": "/docs/modulecontainer/#gettypesof",
+            "text": "Enumerates all found types that implements the provided type (that can be a base class or an interface).  var   list   =   ModuleContainer . Instance . GetTypesOf   ( typeof ( ISampleClass ));  // here you have your instance...  foreach   ( Type   type   in   list ) \n     // ...",
+            "title": "GetTypesOf"
+        },
+        {
+            "location": "/docs/modulecontainer/#getconstructor",
+            "text": "Get a type constructor. The delegate factory will be generated only once by lambda expressions and cached for future requests.  Note that only the parameterless constructor will be used.  var   ctor   =   ModuleContainer . Instance . GetConstructor   ( SimpleHelpers.SampleClass );  // here you we can use it....  for   ( var   i ;   i     1000 ;   i ++) \n     ctor   ();",
+            "title": "GetConstructor"
+        },
+        {
+            "location": "/docs/modulecontainer/#loadmodules",
+            "text": "Will load all valid .net assemblies found in the modules folder and subfolders and scan for the types derived from list of interfaces.  The list of interfaces is optional, since a later call of  GetInstanceOf  will search for all derived types to build the internal cache for this type.  Important observations:   a loaded assembly cannot be unloaded  all assemblies are loaded in the main appdomain  the derived types of a given type are searched only once, unless when  LoadModules  are used with a list of interfaces.   ModuleContainer . Instance . LoadModules   ( my/path/plugins );",
+            "title": "LoadModules"
+        },
+        {
+            "location": "/docs/modulecontainer/#registerinterface",
+            "text": "Registers a interface by searching all derived types.  This method will rebuild the internal cache for a given type.  ModuleContainer . Instance . RegisterInterface   ( typeof ( SampleClass ));",
+            "title": "RegisterInterface"
+        },
+        {
+            "location": "/docs/modulecontainer/#restrictions",
+            "text": "Only types with a parameterless constructor can be created by  GetInstance ,  GetInstanceOf  or  GetInstancesOf .\nMultiple constructors are allowed, but the parameterless constructor will be used!",
+            "title": "Restrictions"
+        },
+        {
+            "location": "/docs/modulecontainer/#faq",
+            "text": "",
+            "title": "FAQ"
+        },
+        {
+            "location": "/docs/modulecontainer/#what-about-the-performance-of-instance-creation",
+            "text": "The instance creation is optimized with usage of  LambdaExpression  and caching. So it is fast!  If you are creating lots of instances in a loop, for example, you can get an  extra performance  by using  GetConstructor  method ( see GetConstructor )",
+            "title": "What about the performance of instance creation"
+        },
+        {
+            "location": "/docs/modulecontainer/#how-do-i-unload-a-module",
+            "text": "ModuleContainer does not implement appdomain management funcionality and all modules are loaded in the current appdomain.\nIf you wish to be able load and unload assemblies, than you must implement your own appdomain management logic",
+            "title": "How do I unload a module"
+        },
+        {
+            "location": "/docs/modulecontainer/#project-information",
             "text": "Contribute  Support  License",
             "title": "Project Information"
         },
@@ -287,6 +382,91 @@
         },
         {
             "location": "/docs/namedlock/#project-information",
+            "text": "Contribute  Support  License",
+            "title": "Project Information"
+        },
+        {
+            "location": "/docs/objectdiffpatch/",
+            "text": "SimpleHelpers.ObjectDiffPatch\n#\n\n\n\n\n\n\nSimple Object Comparer that generates a Diff between objects and is able to Patch one object to transforms into the other.\n\n\nObjectDiffPatch uses \nNewtonsoft.Json\n internally to create a \nJObject\n that we use to run a simple and reliable deep/recursive object comparison.\n\n\nFeatures\n#\n\n\n\n\nDeep/recursive comparison\n\n\nReliable\n\n\nDiff\n\n\nPatch\n\n\n\n\nInstallation\n#\n\n\nNuGet Package Details\n#\n\n\nYou can install using NuGet, see \nSimpleHelpers.ObjectDiffPatch at NuGet.org\n\n\nPM\n \nInstall-Package\n \nSimpleHelpers\n.\nObjectDiffPatch\n\n\n\n\n\n\nThe nuget package contains \nC# source code\n.\n\n\nThe source code will be installed in your project with the following file system structure:\n\n\n|-- \nproject root\n\n    |-- SimpleHelpers\n        |-- ObjectDiffPatch.cs\n\n\n\n\n\nDownload\n#\n\n\nIf you prefer, you can also download the source code: \nObjectDiffPatch.cs\n\n\nAPI\n#\n\n\nGenerateDiff\n#\n\n\nCompares two objects and generates the differences between them returning an object listing all changes.\n\n\nDetected changes are expressed as two \nJObject\n, old and new values.\n\n\nvar\n \ndiff\n \n=\n \nObjectDiffPatch\n.\nGenerateDiff\n \n(\noriginalObj\n,\n \nupdateObj\n);\n\n\n\n// original properties values\n\n\nConsole\n.\nWriteLine\n \n(\ndiff\n.\nOldValues\n.\nToString\n());\n\n\n\n// updated properties values\n\n\nConsole\n.\nWriteLine\n \n(\ndiff\n.\nNewValues\n.\nToString\n());\n\n\n\n\n\n\nProject Information\n#\n\n\n\n\nContribute\n\n\nSupport\n\n\nLicense",
+            "title": "ObjectDiffPatch"
+        },
+        {
+            "location": "/docs/objectdiffpatch/#simplehelpersobjectdiffpatch",
+            "text": "Simple Object Comparer that generates a Diff between objects and is able to Patch one object to transforms into the other.  ObjectDiffPatch uses  Newtonsoft.Json  internally to create a  JObject  that we use to run a simple and reliable deep/recursive object comparison.",
+            "title": "SimpleHelpers.ObjectDiffPatch"
+        },
+        {
+            "location": "/docs/objectdiffpatch/#features",
+            "text": "Deep/recursive comparison  Reliable  Diff  Patch",
+            "title": "Features"
+        },
+        {
+            "location": "/docs/objectdiffpatch/#installation",
+            "text": "",
+            "title": "Installation"
+        },
+        {
+            "location": "/docs/objectdiffpatch/#nuget-package-details",
+            "text": "You can install using NuGet, see  SimpleHelpers.ObjectDiffPatch at NuGet.org  PM   Install-Package   SimpleHelpers . ObjectDiffPatch   The nuget package contains  C# source code .  The source code will be installed in your project with the following file system structure:  |--  project root \n    |-- SimpleHelpers\n        |-- ObjectDiffPatch.cs",
+            "title": "NuGet Package Details"
+        },
+        {
+            "location": "/docs/objectdiffpatch/#download",
+            "text": "If you prefer, you can also download the source code:  ObjectDiffPatch.cs",
+            "title": "Download"
+        },
+        {
+            "location": "/docs/objectdiffpatch/#api",
+            "text": "",
+            "title": "API"
+        },
+        {
+            "location": "/docs/objectdiffpatch/#generatediff",
+            "text": "Compares two objects and generates the differences between them returning an object listing all changes.  Detected changes are expressed as two  JObject , old and new values.  var   diff   =   ObjectDiffPatch . GenerateDiff   ( originalObj ,   updateObj );  // original properties values  Console . WriteLine   ( diff . OldValues . ToString ());  // updated properties values  Console . WriteLine   ( diff . NewValues . ToString ());",
+            "title": "GenerateDiff"
+        },
+        {
+            "location": "/docs/objectdiffpatch/#project-information",
+            "text": "Contribute  Support  License",
+            "title": "Project Information"
+        },
+        {
+            "location": "/docs/objectpool/",
+            "text": "SimpleHelpers.ObjectPool\n#\n\n\n\n\n\n\nA fast lightweight object pool for fast and simple object reuse.\n\n\nSimple to use, fast, lightweight and thread-safe object pool for objects that are expensive to create or could efficiently be reused.\n\n\nNote: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.\n\n\nFeatures\n#\n\n\n\n\nSimple to use\n\n\nFast\n\n\nLightweight\n\n\nThread-safe\n\n\n\n\nInstallation\n#\n\n\nNuGet Package Details\n#\n\n\nYou can install using NuGet, see \nSimpleHelpers.ObjectPool at NuGet.org\n\n\nPM\n \nInstall-Package\n \nSimpleHelpers\n.\nObjectPool\n\n\n\n\n\n\nThe nuget package contains \nC# source code\n.\n\n\nThe source code will be installed in your project with the following file system structure:\n\n\n|-- \nproject root\n\n    |-- SimpleHelpers\n        |-- ObjectPool.cs\n\n\n\n\n\nDownload\n#\n\n\nIf you prefer, you can also download the source code: \nObjectPool.cs\n\n\nExamples\n#\n\n\n// Get or create a new random generator\n\n\nRandom\n \nrnd\n \n=\n \nObjectPool\nRandom\n.\nGet\n \n(\nCreateRandomGenerator\n);\n\n\n// start generating random numbers\n\n\ntry\n\n\n{\n\n    \n// ...\n\n\n    \nvar\n \nnum\n \n=\n \nrnd\n.\nNext\n \n(\nmax\n);\n\n\n    \n// ...\n\n\n}\n\n\nfinally\n\n\n{\n\n    \n// Release the random generator by putting it back in the object pool\n\n    \nObjectPool\nRandom\n.\nPut\n \n(\nrnd\n);\n\n\n}\n\n\n\n// our factory\n\n\nprivate\n \nstatic\n \nRandom\n \nCreateRandomGenerator\n \n()\n\n\n{\n\n    \nreturn\n \nnew\n \nRandom\n \n((\nint\n)\nDateTime\n.\nUtcNow\n.\nTicks\n);\n\n\n}\n\n\n\n\n\n\nProject Information\n#\n\n\n\n\nContribute\n\n\nSupport\n\n\nLicense",
+            "title": "ObjectPool"
+        },
+        {
+            "location": "/docs/objectpool/#simplehelpersobjectpool",
+            "text": "A fast lightweight object pool for fast and simple object reuse.  Simple to use, fast, lightweight and thread-safe object pool for objects that are expensive to create or could efficiently be reused.  Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.",
+            "title": "SimpleHelpers.ObjectPool"
+        },
+        {
+            "location": "/docs/objectpool/#features",
+            "text": "Simple to use  Fast  Lightweight  Thread-safe",
+            "title": "Features"
+        },
+        {
+            "location": "/docs/objectpool/#installation",
+            "text": "",
+            "title": "Installation"
+        },
+        {
+            "location": "/docs/objectpool/#nuget-package-details",
+            "text": "You can install using NuGet, see  SimpleHelpers.ObjectPool at NuGet.org  PM   Install-Package   SimpleHelpers . ObjectPool   The nuget package contains  C# source code .  The source code will be installed in your project with the following file system structure:  |--  project root \n    |-- SimpleHelpers\n        |-- ObjectPool.cs",
+            "title": "NuGet Package Details"
+        },
+        {
+            "location": "/docs/objectpool/#download",
+            "text": "If you prefer, you can also download the source code:  ObjectPool.cs",
+            "title": "Download"
+        },
+        {
+            "location": "/docs/objectpool/#examples",
+            "text": "// Get or create a new random generator  Random   rnd   =   ObjectPool Random . Get   ( CreateRandomGenerator );  // start generating random numbers  try  { \n     // ... \n\n     var   num   =   rnd . Next   ( max ); \n\n     // ...  }  finally  { \n     // Release the random generator by putting it back in the object pool \n     ObjectPool Random . Put   ( rnd );  }  // our factory  private   static   Random   CreateRandomGenerator   ()  { \n     return   new   Random   (( int ) DateTime . UtcNow . Ticks );  }",
+            "title": "Examples"
+        },
+        {
+            "location": "/docs/objectpool/#project-information",
             "text": "Contribute  Support  License",
             "title": "Project Information"
         },
@@ -372,46 +552,6 @@
         },
         {
             "location": "/docs/timedqueue/#project-information",
-            "text": "Contribute  Support  License",
-            "title": "Project Information"
-        },
-        {
-            "location": "/docs/objectpool/",
-            "text": "SimpleHelpers.ObjectPool\n#\n\n\n\n\n\n\nA fast lightweight object pool for fast and simple object reuse.\n\n\nSimple to use, fast, lightweight and thread-safe object pool for objects that are expensive to create or could efficiently be reused.\n\n\nNote: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.\n\n\nFeatures\n#\n\n\n\n\nSimple to use\n\n\nFast\n\n\nLightweight\n\n\nThread-safe\n\n\n\n\nInstallation\n#\n\n\nNuGet Package Details\n#\n\n\nYou can install using NuGet, see \nSimpleHelpers.ObjectPool at NuGet.org\n\n\nPM\n \nInstall-Package\n \nSimpleHelpers\n.\nObjectPool\n\n\n\n\n\n\nThe nuget package contains \nC# source code\n.\n\n\nThe source code will be installed in your project with the following file system structure:\n\n\n|-- \nproject root\n\n    |-- SimpleHelpers\n        |-- ObjectPool.cs\n\n\n\n\n\nDownload\n#\n\n\nIf you prefer, you can also download the source code: \nObjectPool.cs\n\n\nExamples\n#\n\n\n// Get or create a new random generator\n\n\nRandom\n \nrnd\n \n=\n \nObjectPool\nRandom\n.\nGet\n \n(\nCreateRandomGenerator\n);\n\n\n// start generating random numbers\n\n\ntry\n\n\n{\n\n    \n// ...\n\n\n    \nvar\n \nnum\n \n=\n \nrnd\n.\nNext\n \n(\nmax\n);\n\n\n    \n// ...\n\n\n}\n\n\nfinally\n\n\n{\n\n    \n// Release the random generator by putting it back in the object pool\n\n    \nObjectPool\nRandom\n.\nPut\n \n(\nrnd\n);\n\n\n}\n\n\n\n// our factory\n\n\nprivate\n \nstatic\n \nRandom\n \nCreateRandomGenerator\n \n()\n\n\n{\n\n    \nreturn\n \nnew\n \nRandom\n \n((\nint\n)\nDateTime\n.\nUtcNow\n.\nTicks\n);\n\n\n}\n\n\n\n\n\n\nProject Information\n#\n\n\n\n\nContribute\n\n\nSupport\n\n\nLicense",
-            "title": "ObjectPool"
-        },
-        {
-            "location": "/docs/objectpool/#simplehelpersobjectpool",
-            "text": "A fast lightweight object pool for fast and simple object reuse.  Simple to use, fast, lightweight and thread-safe object pool for objects that are expensive to create or could efficiently be reused.  Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.",
-            "title": "SimpleHelpers.ObjectPool"
-        },
-        {
-            "location": "/docs/objectpool/#features",
-            "text": "Simple to use  Fast  Lightweight  Thread-safe",
-            "title": "Features"
-        },
-        {
-            "location": "/docs/objectpool/#installation",
-            "text": "",
-            "title": "Installation"
-        },
-        {
-            "location": "/docs/objectpool/#nuget-package-details",
-            "text": "You can install using NuGet, see  SimpleHelpers.ObjectPool at NuGet.org  PM   Install-Package   SimpleHelpers . ObjectPool   The nuget package contains  C# source code .  The source code will be installed in your project with the following file system structure:  |--  project root \n    |-- SimpleHelpers\n        |-- ObjectPool.cs",
-            "title": "NuGet Package Details"
-        },
-        {
-            "location": "/docs/objectpool/#download",
-            "text": "If you prefer, you can also download the source code:  ObjectPool.cs",
-            "title": "Download"
-        },
-        {
-            "location": "/docs/objectpool/#examples",
-            "text": "// Get or create a new random generator  Random   rnd   =   ObjectPool Random . Get   ( CreateRandomGenerator );  // start generating random numbers  try  { \n     // ... \n\n     var   num   =   rnd . Next   ( max ); \n\n     // ...  }  finally  { \n     // Release the random generator by putting it back in the object pool \n     ObjectPool Random . Put   ( rnd );  }  // our factory  private   static   Random   CreateRandomGenerator   ()  { \n     return   new   Random   (( int ) DateTime . UtcNow . Ticks );  }",
-            "title": "Examples"
-        },
-        {
-            "location": "/docs/objectpool/#project-information",
             "text": "Contribute  Support  License",
             "title": "Project Information"
         },

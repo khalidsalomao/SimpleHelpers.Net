@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="no-js ie6"><![endif]-->
+<!--[if IE 7 ]><html class="no-js ie7"><![endif]-->
+<!--[if IE 8 ]><html class="no-js ie8"><![endif]-->
+<!--[if IE 9 ]><html class="no-js ie9"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    
+      
+        <title>ModuleContainer - SimpleHelpers.Net</title>
+      
+      
+      
+        <link rel="canonical" href="http://khalidsalomao.github.io/SimpleHelpers.Net/docs/modulecontainer/">
+      
+      
+        <meta name="author" content="Khalid Salomão">
+      
+    
+    <meta property="og:url" content="http://khalidsalomao.github.io/SimpleHelpers.Net/docs/modulecontainer/">
+    <meta property="og:title" content="SimpleHelpers.Net">
+    <meta property="og:image" content="http://khalidsalomao.github.io/SimpleHelpers.Net/docs/modulecontainer//../../">
+    <meta name="apple-mobile-web-app-title" content="SimpleHelpers.Net">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    
+    <link rel="shortcut icon" type="image/x-icon" href="../../None">
+    <link rel="icon" type="image/x-icon" href="../../None">
+    <style>
+      @font-face {
+      	font-family: 'Icon';
+      	src: url('../../assets/fonts/icon.eot?52m981');
+      	src: url('../../assets/fonts/icon.eot?#iefix52m981')
+               format('embedded-opentype'),
+      		   url('../../assets/fonts/icon.woff?52m981')
+               format('woff'),
+      		   url('../../assets/fonts/icon.ttf?52m981')
+               format('truetype'),
+      		   url('../../assets/fonts/icon.svg?52m981#icon')
+               format('svg');
+      	font-weight: normal;
+      	font-style: normal;
+      }
+    </style>
+    <link rel="stylesheet" href="../../assets/stylesheets/application-0dac3e5884.css">
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/palettes-05ab2406df.css">
+    
+    
+      
+      
+      
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open Sans:400,700|Roboto+Mono">
+      <style>
+        body, input {
+          font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+        }
+        pre, code {
+          font-family: 'Roboto Mono', 'Courier New', 'Courier', monospace;
+        }
+      </style>
+    
+    
+    <script src="../../assets/javascripts/modernizr-4ab42b99fd.js"></script>
+    
+  </head>
+  
+  
+  
+  <body class="palette-primary-blue-grey palette-accent-cyan">
+    
+      
+      
+    
+    <div class="backdrop">
+      <div class="backdrop-paper"></div>
+    </div>
+    <input class="toggle" type="checkbox" id="toggle-drawer">
+    <input class="toggle" type="checkbox" id="toggle-search">
+    <label class="toggle-button overlay" for="toggle-drawer"></label>
+    <header class="header">
+      <nav aria-label="Header">
+  <div class="bar default">
+    <div class="button button-menu" role="button" aria-label="Menu">
+      <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+    </div>
+    <div class="stretch">
+      <div class="title">
+        
+          <span class="path">
+            
+              
+                Micro-libraries <i class="icon icon-link"></i>
+              
+            
+          </span>
+        
+        ModuleContainer
+      </div>
+    </div>
+    
+    
+      
+      <div class="button button-github" role="button" aria-label="GitHub">
+        <a href="https://github.com/khalidsalomao" title="@khalidsalomao on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+      </div>
+    
+    <div class="button button-search" role="button" aria-label="Search">
+      <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+    </div>
+  </div>
+  <div class="bar search">
+    <div class="button button-close" role="button" aria-label="Close">
+      <label class="toggle-button icon icon-back" for="toggle-search"></label>
+    </div>
+    <div class="stretch">
+      <div class="field">
+        <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+      </div>
+    </div>
+    <div class="button button-reset" role="button" aria-label="Search">
+      <button class="toggle-button icon icon-close" id="reset-search"></button>
+    </div>
+  </div>
+</nav>
+    </header>
+    <main class="main">
+      
+      <div class="drawer">
+        <nav aria-label="Navigation">
+  
+  <a href="https://github.com/khalidsalomao/SimpleHelpers.Net" class="project">
+    <div class="banner">
+      
+      <div class="name">
+        <strong>
+          SimpleHelpers.Net
+          <span class="version">
+            
+          </span>
+        </strong>
+        
+          <br>
+          khalidsalomao/SimpleHelpers.Net
+        
+      </div>
+    </div>
+  </a>
+  <div class="scrollable">
+    <div class="wrapper">
+      
+        <ul class="repo">
+          <li class="repo-download">
+            
+            <a href="https://github.com/khalidsalomao/SimpleHelpers.Net/archive/master.zip" target="_blank" title="Download" data-action="download">
+              <i class="icon icon-download"></i> Download
+            </a>
+          </li>
+          <li class="repo-stars">
+            <a href="https://github.com/khalidsalomao/SimpleHelpers.Net/stargazers" target="_blank" title="Stargazers" data-action="star">
+              <i class="icon icon-star"></i> Stars
+              <span class="count">&ndash;</span>
+            </a>
+          </li>
+        </ul>
+        <hr>
+      
+      <div class="toc">
+        <ul>
+          
+            
+  <li>
+    <a class="" title="SimpleHelpers.Net" href="../..">
+      SimpleHelpers.Net
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
+    <span class="section">Micro-libraries</span>
+    <ul>
+      
+        
+  <li>
+    <a class="" title="FileEncoding" href="../fileencoding/">
+      FileEncoding
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="MemoryCache" href="../memorycache/">
+      MemoryCache
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="current" title="ModuleContainer" href="./">
+      ModuleContainer
+    </a>
+    
+      
+        
+      
+      
+        <ul>
+          
+            <li class="anchor">
+              <a title="Features" href="#features">
+                Features
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Installation" href="#installation">
+                Installation
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="API" href="#api">
+                API
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Restrictions" href="#restrictions">
+                Restrictions
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="FAQ" href="#faq">
+                FAQ
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Project Information" href="#project-information">
+                Project Information
+              </a>
+            </li>
+          
+        </ul>
+      
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="NamedLock" href="../namedlock/">
+      NamedLock
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="ObjectDiffPatch" href="../objectdiffpatch/">
+      ObjectDiffPatch
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="ObjectPool" href="../objectpool/">
+      ObjectPool
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="SQLiteStorage" href="../sqlitestorage/">
+      SQLiteStorage
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="TimedQueue" href="../timedqueue/">
+      TimedQueue
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="ConfigManager" href="../configmanager/">
+      ConfigManager
+    </a>
+    
+  </li>
+
+      
+    </ul>
+  </li>
+
+          
+            
+  <li>
+    <span class="section">Extra</span>
+    <ul>
+      
+        
+  <li>
+    <a class="" title="gh-pages build" href="../builddocssite/">
+      gh-pages build
+    </a>
+    
+  </li>
+
+      
+    </ul>
+  </li>
+
+          
+        </ul>
+        
+          <hr>
+          <span class="section">The author</span>
+          <ul>
+            
+            
+              
+              <li>
+                <a href="https://github.com/khalidsalomao" target="_blank" title="@khalidsalomao on GitHub">
+                  @khalidsalomao on GitHub
+                </a>
+              </li>
+            
+          </ul>
+        
+      </div>
+    </div>
+  </div>
+</nav>
+      </div>
+      <article class="article">
+        <div class="wrapper">
+          
+          <h1 id="simplehelpersmodulecontainer"><a name="user-content-simplehelpersmodulecontainer" href="#simplehelpersmodulecontainer" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>SimpleHelpers.ModuleContainer<a class="headerlink" href="#simplehelpersmodulecontainer" title="Permanent link">#</a></h1>
+<p><a href="https://www.nuget.org/packages/SimpleHelpers.ModuleContainer/"><img alt="NuGet" src="https://img.shields.io/nuget/v/SimpleHelpers.ModuleContainer.svg?maxAge=1200&amp;style=flat-square" /></a>
+<a href="https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/LICENSE.txt"><img alt="GitHub license" src="https://img.shields.io/badge/license-MIT-brightgreen.svg?maxAge=3600&amp;style=flat-square" /></a></p>
+<p>Easy, fast and non-invasive dependency injection and plugin system.</p>
+<p>ModuleContainer is for those that don&rsquo;t need or want a fully featured DI or IOC framework, but wants to:</p>
+<ul>
+<li>create an object</li>
+<li>create an object that implements an interface</li>
+<li>create an object from its name (string) at runtime</li>
+<li>be able to load an external assembly (like a plugin) from the file system</li>
+</ul>
+<h2 id="features"><a name="user-content-features" href="#features" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Features<a class="headerlink" href="#features" title="Permanent link">#</a></h2>
+<ul>
+<li>Small footprint</li>
+<li>Fast initialization</li>
+<li>No-dependencies</li>
+<li>Load assemblies at runtime (plugins)</li>
+<li>Fast instance creation</li>
+<li>Easy (almost no learning curve)</li>
+</ul>
+<h2 id="installation"><a name="user-content-installation" href="#installation" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Installation<a class="headerlink" href="#installation" title="Permanent link">#</a></h2>
+<h3 id="nuget-package-details"><a name="user-content-nuget-package-details" href="#nuget-package-details" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>NuGet Package Details<a class="headerlink" href="#nuget-package-details" title="Permanent link">#</a></h3>
+<p>You can install using NuGet, see <a href="https://www.nuget.org/packages/SimpleHelpers.ModuleContainer/">SimpleHelpers.ModuleContainer at NuGet.org</a></p>
+<div class="code"><pre><span></span><span class="n">PM</span><span class="p">&gt;</span> <span class="n">Install-Package</span> <span class="n">SimpleHelpers</span><span class="p">.</span><span class="n">ModuleContainer</span>
+</pre></div>
+
+
+<p>The nuget package contains <strong>C# source code</strong>.</p>
+<p>The source code will be installed in your project with the following file system structure:</p>
+<div class="code"><pre><span></span>|-- &lt;project root&gt;
+    |-- SimpleHelpers
+        |-- ModuleContainer.cs
+</pre></div>
+
+
+<h3 id="download"><a name="user-content-download" href="#download" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Download<a class="headerlink" href="#download" title="Permanent link">#</a></h3>
+<p>If you prefer, you can also download the source code: <a href="https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/ModuleContainer.cs">ModuleContainer.cs</a></p>
+<h2 id="api"><a name="user-content-api" href="#api" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>API<a class="headerlink" href="#api" title="Permanent link">#</a></h2>
+<h3 id="getinstance"><a name="user-content-getinstance" href="#getinstance" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>GetInstance<a class="headerlink" href="#getinstance" title="Permanent link">#</a></h3>
+<p>Create an object instance by its type name. The full type name (namespace + class) is preferred but not required.</p>
+<div class="code"><pre><span></span><span class="kt">object</span> <span class="n">instance</span> <span class="p">=</span> <span class="n">ModuleContainer</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">GetInstance</span> <span class="p">(</span><span class="s">&quot;SimpleHelpers.SampleClass&quot;</span><span class="p">);</span>
+
+<span class="c1">// here you have your instance...</span>
+<span class="p">((</span><span class="n">SampleClass</span><span class="p">)</span><span class="n">instance</span><span class="p">).</span><span class="n">SampleMethod</span> <span class="p">();</span>
+</pre></div>
+
+
+<p>If you have the type at compile time, you can also pass <code>Type</code> as parameter.</p>
+<div class="code"><pre><span></span><span class="kt">object</span> <span class="n">instance</span> <span class="p">=</span> <span class="n">ModuleContainer</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">GetInstance</span> <span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">SampleClass</span><span class="p">));</span>
+
+<span class="c1">// here you have your instance...</span>
+<span class="p">((</span><span class="n">SampleClass</span><span class="p">)</span><span class="n">instance</span><span class="p">).</span><span class="n">SampleMethod</span> <span class="p">();</span>
+</pre></div>
+
+
+<h3 id="getinstanceof"><a name="user-content-getinstanceof" href="#getinstanceof" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>GetInstanceOf<a class="headerlink" href="#getinstanceof" title="Permanent link">#</a></h3>
+<p>Search for a class that implements the provided type (that can be a base class or an interface) and create an instance.</p>
+<p>Note that if there is multiple types that implements the provided type, the first one will be returned&hellip;</p>
+<div class="code"><pre><span></span><span class="n">ISampleClass</span> <span class="n">instance</span> <span class="p">=</span> <span class="n">ModuleContainer</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">GetInstanceOf</span><span class="p">&lt;</span><span class="n">ISampleClass</span><span class="p">&gt;</span> <span class="p">();</span>
+
+<span class="c1">// here you have your instance...</span>
+<span class="n">instance</span><span class="p">.</span><span class="n">SampleMethod</span> <span class="p">();</span>
+</pre></div>
+
+
+<h3 id="getinstancesof"><a name="user-content-getinstancesof" href="#getinstancesof" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>GetInstancesOf<a class="headerlink" href="#getinstancesof" title="Permanent link">#</a></h3>
+<p>Enumerates created instances of each found type that implements the provided type (that can be a base class or an interface).</p>
+<div class="code"><pre><span></span><span class="kt">var</span> <span class="n">list</span> <span class="p">=</span> <span class="n">ModuleContainer</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">GetInstancesOf</span><span class="p">&lt;</span><span class="n">ISampleClass</span><span class="p">&gt;</span> <span class="p">();</span>
+
+<span class="c1">// here you have your instance...</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">instance</span> <span class="k">in</span> <span class="n">list</span><span class="p">)</span>
+    <span class="n">instance</span><span class="p">.</span><span class="n">SampleMethod</span> <span class="p">();</span>
+</pre></div>
+
+
+<h3 id="gettypesof"><a name="user-content-gettypesof" href="#gettypesof" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>GetTypesOf<a class="headerlink" href="#gettypesof" title="Permanent link">#</a></h3>
+<p>Enumerates all found types that implements the provided type (that can be a base class or an interface).</p>
+<div class="code"><pre><span></span><span class="kt">var</span> <span class="n">list</span> <span class="p">=</span> <span class="n">ModuleContainer</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">GetTypesOf</span> <span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">ISampleClass</span><span class="p">));</span>
+
+<span class="c1">// here you have your instance...</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="n">Type</span> <span class="n">type</span> <span class="k">in</span> <span class="n">list</span><span class="p">)</span>
+    <span class="c1">// ...</span>
+</pre></div>
+
+
+<h3 id="getconstructor"><a name="user-content-getconstructor" href="#getconstructor" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>GetConstructor<a class="headerlink" href="#getconstructor" title="Permanent link">#</a></h3>
+<p>Get a type constructor. The delegate factory will be generated only once by lambda expressions and cached for future requests.</p>
+<p>Note that only the parameterless constructor will be used.</p>
+<div class="code"><pre><span></span><span class="kt">var</span> <span class="n">ctor</span> <span class="p">=</span> <span class="n">ModuleContainer</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">GetConstructor</span> <span class="p">(</span><span class="s">&quot;SimpleHelpers.SampleClass&quot;</span><span class="p">);</span>
+
+<span class="c1">// here you we can use it....</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">var</span> <span class="n">i</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="m">1000</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span>
+    <span class="n">ctor</span> <span class="p">();</span>
+</pre></div>
+
+
+<h3 id="loadmodules"><a name="user-content-loadmodules" href="#loadmodules" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>LoadModules<a class="headerlink" href="#loadmodules" title="Permanent link">#</a></h3>
+<p>Will load all valid .net assemblies found in the modules folder and subfolders and scan for the types derived from list of interfaces.</p>
+<p>The list of interfaces is optional, since a later call of <code>GetInstanceOf</code> will search for all derived types to build the internal cache for this type.</p>
+<p><strong>Important observations:</strong></p>
+<ul>
+<li>a loaded assembly cannot be unloaded</li>
+<li>all assemblies are loaded in the main appdomain</li>
+<li>the derived types of a given type are searched only once, unless when <code>LoadModules</code> are used with a list of interfaces.</li>
+</ul>
+<div class="code"><pre><span></span><span class="n">ModuleContainer</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">LoadModules</span> <span class="p">(</span><span class="s">&quot;my/path/plugins&quot;</span><span class="p">);</span>
+</pre></div>
+
+
+<h3 id="registerinterface"><a name="user-content-registerinterface" href="#registerinterface" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>RegisterInterface<a class="headerlink" href="#registerinterface" title="Permanent link">#</a></h3>
+<p>Registers a interface by searching all derived types.</p>
+<p>This method will rebuild the internal cache for a given type.</p>
+<div class="code"><pre><span></span><span class="n">ModuleContainer</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">RegisterInterface</span> <span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">SampleClass</span><span class="p">));</span>
+</pre></div>
+
+
+<h2 id="restrictions"><a name="user-content-restrictions" href="#restrictions" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Restrictions<a class="headerlink" href="#restrictions" title="Permanent link">#</a></h2>
+<p>Only types with a parameterless constructor can be created by <code>GetInstance</code>, <code>GetInstanceOf</code> or <code>GetInstancesOf</code>.
+Multiple constructors are allowed, but the parameterless constructor will be used!</p>
+<h2 id="faq"><a name="user-content-faq" href="#faq" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>FAQ<a class="headerlink" href="#faq" title="Permanent link">#</a></h2>
+<h3 id="what-about-the-performance-of-instance-creation"><a name="user-content-what-about-the-performance-of-instance-creation" href="#what-about-the-performance-of-instance-creation" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>What about the performance of instance creation<a class="headerlink" href="#what-about-the-performance-of-instance-creation" title="Permanent link">#</a></h3>
+<p>The instance creation is optimized with usage of <code>LambdaExpression</code> and caching. So it is fast!</p>
+<p>If you are creating lots of instances in a loop, for example, you can get an <em>extra performance</em> by using <code>GetConstructor</code> method (<a href="#GetConstructor">see GetConstructor</a>)</p>
+<h3 id="how-do-i-unload-a-module"><a name="user-content-how-do-i-unload-a-module" href="#how-do-i-unload-a-module" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>How do I unload a module<a class="headerlink" href="#how-do-i-unload-a-module" title="Permanent link">#</a></h3>
+<p>ModuleContainer does not implement appdomain management funcionality and all modules are loaded in the current appdomain.
+If you wish to be able load and unload assemblies, than you must implement your own appdomain management logic&hellip;</p>
+<h2 id="project-information"><a name="user-content-project-information" href="#project-information" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Project Information<a class="headerlink" href="#project-information" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="../../#contribute">Contribute</a></li>
+<li><a href="../../#support">Support</a></li>
+<li><a href="../../#license">License</a></li>
+</ul>
+          <aside class="copyright" role="note">
+            
+              Copyright (c) 2016 Khalid Salomão &ndash;
+            
+            Documentation built with
+            <a href="http://www.mkdocs.org" target="_blank">MkDocs</a>
+            using the
+            <a href="http://squidfunk.github.io/mkdocs-material/" target="_blank">
+              Material
+            </a>
+            theme.
+          </aside>
+          
+            <footer class="footer">
+              
+  <nav class="pagination" aria-label="Footer">
+    <div class="previous">
+      
+        <a href="../memorycache/" title="MemoryCache">
+          <span class="direction">
+            Previous
+          </span>
+          <div class="page">
+            <div class="button button-previous" role="button" aria-label="Previous">
+              <i class="icon icon-back"></i>
+            </div>
+            <div class="stretch">
+              <div class="title">
+                MemoryCache
+              </div>
+            </div>
+          </div>
+        </a>
+      
+    </div>
+    <div class="next">
+      
+        <a href="../namedlock/" title="NamedLock">
+          <span class="direction">
+            Next
+          </span>
+          <div class="page">
+            <div class="stretch">
+              <div class="title">
+                NamedLock
+              </div>
+            </div>
+            <div class="button button-next" role="button" aria-label="Next">
+              <i class="icon icon-forward"></i>
+            </div>
+          </div>
+        </a>
+      
+    </div>
+  </nav>
+
+            </footer>
+          
+        </div>
+      </article>
+      <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+          <div class="wrapper">
+            <div class="meta"></div>
+            <div class="list"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      var base_url = '../..';
+      var repo_id  = 'khalidsalomao/SimpleHelpers.Net';
+    </script>
+    <script src="../../assets/javascripts/application-997097ee0c.js"></script>
+    
+    
+  </body>
+</html>
