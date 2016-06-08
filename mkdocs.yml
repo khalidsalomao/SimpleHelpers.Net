@@ -49,12 +49,14 @@ extra:
 pages:
     - 'SimpleHelpers.Net': 'index.md'
     - 'Micro-libraries':
-        - MemoryCache: 'docs/memorycache.md'
         - FileEncoding: 'docs/fileencoding.md'
+        - MemoryCache: 'docs/memorycache.md'
+        - ModuleContainer: 'docs/modulecontainer.md'
         - NamedLock: 'docs/namedlock.md'
+        - ObjectDiffPatch: 'docs/objectdiffpatch.md'
+        - ObjectPool: 'docs/objectpool.md'
         - SQLiteStorage: 'docs/sqlitestorage.md'
         - TimedQueue: 'docs/timedqueue.md'
-        - ObjectPool: 'docs/objectpool.md'
         - ConfigManager: 'docs/configmanager.md'
     - 'Extra':
         - 'gh-pages build': 'docs/builddocssite.md'
