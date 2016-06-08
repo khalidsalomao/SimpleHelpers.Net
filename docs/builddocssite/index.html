@@ -337,7 +337,7 @@
 <h2 id="build-steps"><a name="user-content-build-steps" href="#build-steps" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Build steps<a class="headerlink" href="#build-steps" title="Permanent link">#</a></h2>
 <ol>
 <li>
-<p>Make sure MkDocs is installed, using python package manager - pip:</p>
+<p>Make sure MkDocs is installed, using python package manager - pip.</p>
 <div class="code"><pre><span></span>python --version
 pip install mkdocs pymdown-extensions pygments mkdocs-material --upgrade
 npm install
@@ -346,16 +346,19 @@ npm install
 
 </li>
 <li>
+<p>Edit documentation files located in <code>./docs</code></p>
+</li>
+<li>
 <p>Test the docs site:
-    &lsquo;&rsquo;&lsquo;
-    npm run test:docs
-    &lsquo;&rsquo;&lsquo;</p>
+    <div class="code"><pre><span></span>npm run test:docs
+</pre></div>
+</p>
 </li>
 <li>
 <p>Build and deploy on gh-pages:
-    &lsquo;&rsquo;&lsquo;
-    npm run deploy:docs
-    &lsquo;&rsquo;&lsquo;</p>
+    <div class="code"><pre><span></span>npm run deploy:docs
+</pre></div>
+</p>
 </li>
 </ol>
           <aside class="copyright" role="note">

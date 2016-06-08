@@ -212,8 +212,8 @@
             </li>
           
             <li class="anchor">
-              <a title="Example" href="#example">
-                Example
+              <a title="API" href="#api">
+                API
               </a>
             </li>
           
@@ -356,7 +356,7 @@
 <ul>
 <li>Byte order mark (BOM) detection</li>
 <li>Analyse file content</li>
-<li>Almost all charset encodings</li>
+<li>Comprehensive charset encodings detection</li>
 <li>Large files support</li>
 </ul>
 <h2 id="installation"><a name="user-content-installation" href="#installation" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Installation<a class="headerlink" href="#installation" title="Permanent link">#</a></h2>
@@ -384,14 +384,36 @@
 <p>Compiled version of &ldquo;C# port of Mozilla Universal Charset Detector&rdquo;</p>
 </blockquote>
 <p>This userful library can detect the charset encoding by analysing a byte array.</p>
-<h2 id="example"><a name="user-content-example" href="#example" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
+<h2 id="api"><a name="user-content-api" href="#api" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>API<a class="headerlink" href="#api" title="Permanent link">#</a></h2>
 <h3 id="detectfileencoding"><a name="user-content-detectfileencoding" href="#detectfileencoding" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>DetectFileEncoding<a class="headerlink" href="#detectfileencoding" title="Permanent link">#</a></h3>
+<p>Tries to detect the file encoding by checking byte order mark (BOM) existence and then loading a part of the file and tries to detect the charset using <a href="https://github.com/errepi/ude#readme">UDE.CSharp</a></p>
 <div class="code"><pre><span></span>    <span class="kt">var</span> <span class="n">encoding</span> <span class="p">=</span> <span class="n">FileEncoding</span><span class="p">.</span><span class="n">DetectFileEncoding</span> <span class="p">(</span><span class="s">&quot;./my_text_file.txt&quot;</span><span class="p">);</span>
 </pre></div>
 
 
 <h3 id="tryloadfile"><a name="user-content-tryloadfile" href="#tryloadfile" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>TryLoadFile<a class="headerlink" href="#tryloadfile" title="Permanent link">#</a></h3>
-<div class="code"><pre><span></span>    <span class="kt">var</span> <span class="n">content</span> <span class="p">=</span> <span class="n">FileEncoding</span><span class="p">.</span><span class="n">TryLoadFile</span> <span class="p">(</span><span class="s">&quot;./my_text_file.txt&quot;</span><span class="p">);</span>
+<p>Tries to load file content with the correct encoding.
+This is a shortcut that uses <code>System.IO.File.ReadAllText</code> to load the file content, but first it detects the correct encoding.</p>
+<p>If the file doesn&rsquo;t exist or it couldn&rsquo;t be loaded, the provided <code>defaultValue</code> (second parameter) will be returned.</p>
+<div class="code"><pre><span></span>    <span class="kt">var</span> <span class="n">content</span> <span class="p">=</span> <span class="n">FileEncoding</span><span class="p">.</span><span class="n">TryLoadFile</span> <span class="p">(</span><span class="s">&quot;./my_text_file.txt&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">);</span>
+</pre></div>
+
+
+<h3 id="detect"><a name="user-content-detect" href="#detect" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Detect<a class="headerlink" href="#detect" title="Permanent link">#</a></h3>
+<p>Detects the encoding of textual data of the specified input data</p>
+<div class="code"><pre><span></span>var det = new FileEncoding ();
+using (var stream = new System.IO.FileStream (inputFilename, System.IO.FileMode.Open))
+{
+    det.Detect (inputStream);
+}
+
+// Finalize detection phase and gets detected encoding name
+var encoding = det.Complete ();
+
+// check results
+Console.WriteLine (&quot;IsText = {0}&quot;, det.IsText);
+Console.WriteLine (&quot;HasByteOrderMark = {0}&quot;, det.HasByteOrderMark);
+Console.WriteLine (&quot;EncodingName = {0}&quot;, det.EncodingName);
 </pre></div>
 
 

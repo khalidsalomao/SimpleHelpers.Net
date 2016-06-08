@@ -379,14 +379,39 @@
 <h2 id="api"><a name="user-content-api" href="#api" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>API<a class="headerlink" href="#api" title="Permanent link">#</a></h2>
 <h3 id="generatediff"><a name="user-content-generatediff" href="#generatediff" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>GenerateDiff<a class="headerlink" href="#generatediff" title="Permanent link">#</a></h3>
 <p>Compares two objects and generates the differences between them returning an object listing all changes.</p>
-<p>Detected changes are expressed as two <code>JObject</code>, old and new values.</p>
-<div class="code"><pre><span></span><span class="kt">var</span> <span class="n">diff</span> <span class="p">=</span> <span class="n">ObjectDiffPatch</span><span class="p">.</span><span class="n">GenerateDiff</span> <span class="p">(</span><span class="n">originalObj</span><span class="p">,</span> <span class="n">updateObj</span><span class="p">);</span>
+<p>Detected changes are expressed as two <code>Newtonsoft.Json.Linq.JObject</code>, old and new values.</p>
+<div class="code"><pre><span></span><span class="kt">var</span> <span class="n">diff</span> <span class="p">=</span> <span class="n">ObjectDiffPatch</span><span class="p">.</span><span class="n">GenerateDiff</span> <span class="p">(</span><span class="n">originalObj</span><span class="p">,</span> <span class="n">updatedObj</span><span class="p">);</span>
 
 <span class="c1">// original properties values</span>
 <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span> <span class="p">(</span><span class="n">diff</span><span class="p">.</span><span class="n">OldValues</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
 
 <span class="c1">// updated properties values</span>
 <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span> <span class="p">(</span><span class="n">diff</span><span class="p">.</span><span class="n">NewValues</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
+</pre></div>
+
+
+<h3 id="snapshot"><a name="user-content-snapshot" href="#snapshot" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Snapshot<a class="headerlink" href="#snapshot" title="Permanent link">#</a></h3>
+<p>Creates an object snapshots as a <code>Newtonsoft.Json.Linq.JObject</code>.</p>
+<div class="code"><pre><span></span><span class="kt">var</span> <span class="n">snapshot</span> <span class="p">=</span> <span class="n">ObjectDiffPatch</span><span class="p">.</span><span class="n">Snapshot</span> <span class="p">(</span><span class="n">obj</span><span class="p">);</span>
+
+<span class="c1">// do something....</span>
+<span class="n">do_something</span> <span class="p">(</span><span class="n">obj</span><span class="p">);</span>
+
+<span class="c1">// log changes</span>
+<span class="kt">var</span> <span class="n">diff</span> <span class="p">=</span> <span class="n">ObjectDiffPatch</span><span class="p">.</span><span class="n">GenerateDiff</span> <span class="p">(</span><span class="n">snapshot</span><span class="p">,</span> <span class="n">obj</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(!</span><span class="n">diff</span><span class="p">.</span><span class="n">AreEqual</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span> <span class="p">(</span><span class="n">diff</span><span class="p">.</span><span class="n">NewValues</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3 id="patchobject"><a name="user-content-patchobject" href="#patchobject" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>PatchObject<a class="headerlink" href="#patchobject" title="Permanent link">#</a></h3>
+<p>Modifies an object according to a diff.</p>
+<div class="code"><pre><span></span><span class="kt">var</span> <span class="n">diff</span> <span class="p">=</span> <span class="n">ObjectDiffPatch</span><span class="p">.</span><span class="n">GenerateDiff</span> <span class="p">(</span><span class="n">originalObj</span><span class="p">,</span> <span class="n">updatedObj</span><span class="p">);</span>
+
+<span class="c1">// recreate originalObj from updatedObj</span>
+<span class="kt">var</span> <span class="n">patched</span> <span class="p">=</span> <span class="n">ObjectDiffPatch</span><span class="p">.</span><span class="n">PatchObject</span> <span class="p">(</span><span class="n">updatedObj</span><span class="p">,</span> <span class="n">diff</span><span class="p">.</span><span class="n">OldValues</span><span class="p">);</span>
 </pre></div>
 
 
