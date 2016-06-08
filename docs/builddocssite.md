@@ -8,7 +8,7 @@ How to build docs site
 Build steps
 -----------
 
-1. Make sure MkDocs is installed, using python package manager - pip:
+1. Make sure MkDocs is installed, using python package manager - pip.
 
     ```
     python --version
@@ -16,13 +16,15 @@ Build steps
     npm install
     ```
 
-2. Test the docs site:
-    '''
-    npm run test:docs
-    '''
+2. Edit documentation files located in `./docs`
 
-3. Build and deploy on gh-pages:
-    '''
+3. Test the docs site:
+    ```
+    npm run test:docs
+    ```
+
+4. Build and deploy on gh-pages:
+    ```
     npm run deploy:docs
-    '''
+    ```
 

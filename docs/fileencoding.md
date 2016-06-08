@@ -14,7 +14,7 @@ Features
 
 * Byte order mark (BOM) detection
 * Analyse file content
-* Almost all charset encodings
+* Comprehensive charset encodings detection
 * Large files support
 
 
@@ -53,10 +53,12 @@ If you prefer, you can also download the source code: [FileEncoding.cs](https://
 This userful library can detect the charset encoding by analysing a byte array.
 
 
-Example
+API
 -------
 
 ### DetectFileEncoding
+
+Tries to detect the file encoding by checking byte order mark (BOM) existence and then loading a part of the file and tries to detect the charset using [UDE.CSharp](https://github.com/errepi/ude#readme)
 
 ```csharp
     var encoding = FileEncoding.DetectFileEncoding ("./my_text_file.txt");
@@ -64,10 +66,35 @@ Example
 
 ### TryLoadFile
 
+Tries to load file content with the correct encoding.
+This is a shortcut that uses `System.IO.File.ReadAllText` to load the file content, but first it detects the correct encoding.
+
+If the file doesn't exist or it couldn't be loaded, the provided `defaultValue` (second parameter) will be returned.
+
 ```csharp
-    var content = FileEncoding.TryLoadFile ("./my_text_file.txt");
+    var content = FileEncoding.TryLoadFile ("./my_text_file.txt", "");
 ```
 
+
+### Detect
+
+Detects the encoding of textual data of the specified input data
+
+```
+var det = new FileEncoding ();
+using (var stream = new System.IO.FileStream (inputFilename, System.IO.FileMode.Open))
+{
+    det.Detect (inputStream);
+}
+
+// Finalize detection phase and gets detected encoding name
+var encoding = det.Complete ();
+
+// check results
+Console.WriteLine ("IsText = {0}", det.IsText);
+Console.WriteLine ("HasByteOrderMark = {0}", det.HasByteOrderMark);
+Console.WriteLine ("EncodingName = {0}", det.EncodingName);
+```
 
 Project Information
 -------------------

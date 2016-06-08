@@ -50,17 +50,48 @@ API
 
 Compares two objects and generates the differences between them returning an object listing all changes.
 
-Detected changes are expressed as two `JObject`, old and new values.
+Detected changes are expressed as two `Newtonsoft.Json.Linq.JObject`, old and new values.
 
 
 ```csharp
-var diff = ObjectDiffPatch.GenerateDiff (originalObj, updateObj);
+var diff = ObjectDiffPatch.GenerateDiff (originalObj, updatedObj);
 
 // original properties values
 Console.WriteLine (diff.OldValues.ToString());
 
 // updated properties values
 Console.WriteLine (diff.NewValues.ToString());
+```
+
+
+### Snapshot
+
+Creates an object snapshots as a `Newtonsoft.Json.Linq.JObject`.
+
+```csharp
+var snapshot = ObjectDiffPatch.Snapshot (obj);
+
+// do something....
+do_something (obj);
+
+// log changes
+var diff = ObjectDiffPatch.GenerateDiff (snapshot, obj);
+if (!diff.AreEqual)
+{
+    Console.WriteLine (diff.NewValues.ToString());
+}
+```
+
+
+### PatchObject
+
+Modifies an object according to a diff.
+
+```csharp
+var diff = ObjectDiffPatch.GenerateDiff (originalObj, updatedObj);
+
+// recreate originalObj from updatedObj
+var patched = ObjectDiffPatch.PatchObject (updatedObj, diff.OldValues);
 ```
 
 
