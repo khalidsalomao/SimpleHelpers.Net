@@ -60,7 +60,7 @@ var diff = ObjectDiffPatch.GenerateDiff (originalObj, updateObj);
 Console.WriteLine (diff.OldValues.ToString());
 
 // updated properties values
-Console.WriteLine (diff.OldValues.ToString());
+Console.WriteLine (diff.NewValues.ToString());
 ```
 
 
