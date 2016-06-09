@@ -17,11 +17,15 @@ Distributing source code also make things easier in case of doubt or curiosity. 
 All micro-libraries are well-tested for both performance and reliability. So feel free to use them!
 
 
+-----
+
 Documentation Site
 ------------------
 
 http://khalidsalomao.github.io/SimpleHelpers.Net/
 
+
+-----
 
 Micro-libraries
 ---------------
@@ -115,4 +119,4 @@ If you are having issues, please let us know [here](https://github.com/khalidsal
 License
 -------
 
-The project is licensed under the MIT license.
+The project is licensed under the [MIT license](https://raw.github.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/LICENSE.txt).

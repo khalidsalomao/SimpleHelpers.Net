@@ -43,6 +43,13 @@ The source code will be installed in your project with the following file system
 If you prefer, you can also download the source code: [ObjectDiffPatch.cs](https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/ObjectDiffPatch.cs)
 
 
+### Dependencies
+
+- [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json/)
+
+Tested with versions 6 and later.
+
+
 API
 --------
 
