@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>SimpleHelpers.FileEncoding</id>
+        <version>1.4.0</version>
+        <title>SimpleHelpers.FileEncoding (C# - Source file)</title>
+        <authors>Khalid Salomão</authors>
+        <owners>Khalid Salomão</owners>
+        <licenseUrl>https://raw.github.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/LICENSE.txt</licenseUrl>
+        <projectUrl>https://github.com/khalidsalomao/SimpleHelpers.Net</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Detect any text file charset encoding using Mozilla Charset Detector (C# - Source file).</description>
+        <summary>Detect any text file charset encoding using Mozilla Charset Detector (UDE.CSharp) and is distributed as a C# source file.</summary>
+        <releaseNotes>1.4.0
+* Improved detection rules</releaseNotes>
+        <copyright>Khalid Salomão</copyright>
+        <language>en-US</language>
+        <tags>simplehelpers encoding ude</tags>
+        <serviceable>false</serviceable>
+        <dependencies>
+            <dependency id="UDE.CSharp" version="1.1.0" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="content\SimpleHelpers\FileEncoding.cs.pp" target="content\SimpleHelpers\FileEncoding.cs.pp" />
+    </files>
+</package>
