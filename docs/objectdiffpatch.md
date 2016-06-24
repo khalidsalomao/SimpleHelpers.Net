@@ -102,6 +102,38 @@ var patched = ObjectDiffPatch.PatchObject (updatedObj, diff.OldValues);
 ```
 
 
+### DefaultSerializerSettings
+
+Gets or sets the default newtonsoft json serializer settings.
+
+```csharp
+// enable circular reference handling
+ObjectDiffPatch.DefaultSerializerSettings.PreserveReferencesHandling =
+    Newtonsoft.Json.PreserveReferencesHandling.All;
+```
+
+----
+
+FAQ
+---
+
+### How to enable circular references?
+
+The default serializer settings are exposed in `ObjectDiffPatch.DefaultSerializerSettings`.
+You can change the default settings to enable circular references.
+
+The resulting json will have additional fields `$id/$ref` to mark the object references.
+For more details of the inner workings see http://www.newtonsoft.com/json/help/html/PreserveReferencesHandlingObject.htm
+
+```csharp
+// enable circular reference handling
+ObjectDiffPatch.DefaultSerializerSettings.PreserveReferencesHandling =
+    Newtonsoft.Json.PreserveReferencesHandling.All;
+```
+
+
+----
+
 Project Information
 -------------------
 

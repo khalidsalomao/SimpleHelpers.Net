@@ -42,6 +42,33 @@ namespace SimpleHelpers
         private const string PREFIX_ARRAY_SIZE = "@@ Count";
         private const string PREFIX_REMOVED_FIELDS = "@@ Removed";
 
+        private static JsonSerializerSettings defaultSerializerSettings;
+
+        private static System.Func<JsonSerializer> defaultSerializer;
+
+        /// <summary>
+        /// Gets or sets the default newtonsoft json serializer factory function.
+        /// </summary>
+        public static System.Func<JsonSerializer> DefaultSerializer
+        {
+            get { return (defaultSerializer ?? InternalDefaultSerializer); }
+            set { defaultSerializer = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the default newtonsoft json serializer settings.
+        /// </summary>
+        public static JsonSerializerSettings DefaultSerializerSettings
+        {
+            get
+            {
+                if (defaultSerializerSettings == null)
+                    defaultSerializerSettings = InternalDefaultSerializerSettings ();
+                return defaultSerializerSettings;
+            }
+            set { defaultSerializerSettings = value; }
+        }
+
         /// <summary>
         /// Compares two objects and generates the differences between them.
         /// </summary>
@@ -52,7 +79,7 @@ namespace SimpleHelpers
         public static ObjectDiffPatchResult GenerateDiff<T1, T2> (T1 original, T2 updated) where T1 : class where T2 : class 
         {
             // ensure the serializer will not ignore null values
-            var writer = GetJsonSerializer ();
+            var writer = DefaultSerializer ();
             // parse our objects
             JObject originalJson = original != null ? Newtonsoft.Json.Linq.JObject.FromObject (original, writer) : null;
             JObject updatedJson = updated != null ? Newtonsoft.Json.Linq.JObject.FromObject (updated, writer) : null;
@@ -71,7 +98,7 @@ namespace SimpleHelpers
         public static ObjectDiffPatchResult GenerateDiff<T> (T original, JObject updated) where T : class
         {
             // parse our objects
-            JObject parsed = original != null ? Newtonsoft.Json.Linq.JObject.FromObject (original, GetJsonSerializer ()) : null;
+            JObject parsed = original != null ? Newtonsoft.Json.Linq.JObject.FromObject (original, DefaultSerializer ()) : null;
 
             // analyse their differences!
             return GenerateDiff (parsed, updated, typeof (T));
@@ -87,7 +114,7 @@ namespace SimpleHelpers
         public static ObjectDiffPatchResult GenerateDiff<T> (JObject original, T updated) where T : class
         {
             // parse our objects
-            JObject parsed = updated != null ? Newtonsoft.Json.Linq.JObject.FromObject (updated, GetJsonSerializer ()) : null;
+            JObject parsed = updated != null ? Newtonsoft.Json.Linq.JObject.FromObject (updated, DefaultSerializer ()) : null;
 
             // analyse their differences!
             return GenerateDiff (original, parsed, typeof(T));
@@ -121,7 +148,7 @@ namespace SimpleHelpers
         }
 
         /// <summary>
-        /// Modifies an object according to a diff.
+        /// Modifies an object according to a diff, retuning a new object with applied patch.
         /// </summary>
         /// <typeparam name="T">The type of the T.</typeparam>
         /// <param name="source">The source.</param>
@@ -134,7 +161,7 @@ namespace SimpleHelpers
         }
 
         /// <summary>
-        /// Modifies an object according to a diff.
+        /// Modifies an object according to a diff, retuning a new object with applied patch.
         /// </summary>
         /// <typeparam name="T">The type of the T.</typeparam>
         /// <param name="source">The source.</param>
@@ -142,7 +169,7 @@ namespace SimpleHelpers
         /// <returns>A new object with applied patch</returns>
         public static T PatchObject<T> (T source, JObject diffJson) where T : class
         {
-            var sourceJson = source != null ? Newtonsoft.Json.Linq.JObject.FromObject (source, GetJsonSerializer ()) : null;
+            var sourceJson = source != null ? Newtonsoft.Json.Linq.JObject.FromObject (source, DefaultSerializer ()) : null;
             var resultJson = Patch (sourceJson, diffJson);
 
             return resultJson != null ? resultJson.ToObject<T> () : null;
@@ -160,7 +187,7 @@ namespace SimpleHelpers
                 return null;
             if (typeof (JObject).IsAssignableFrom (typeof (T)))
                 return (JObject)(source as JObject).DeepClone ();
-            return Newtonsoft.Json.Linq.JObject.FromObject (source, GetJsonSerializer ());
+            return Newtonsoft.Json.Linq.JObject.FromObject (source, DefaultSerializer ());
         }
 
         private static ObjectDiffPatchResult Diff (JObject source, JObject target)
@@ -284,8 +311,15 @@ namespace SimpleHelpers
             }
             return result;
         }
-                
-        private static JsonSerializer GetJsonSerializer ()
+
+        private static JsonSerializer InternalDefaultSerializer ()
+        {
+            // create our custom serializer
+            var writer = JsonSerializer.Create (DefaultSerializerSettings);
+            return writer;
+        }
+
+        private static JsonSerializerSettings InternalDefaultSerializerSettings ()
         {
             // ensure the serializer will not ignore null values
             JsonSerializerSettings settings = null;
@@ -299,11 +333,9 @@ namespace SimpleHelpers
             settings.Formatting = Formatting.None;
             settings.MissingMemberHandling = MissingMemberHandling.Ignore;
             settings.ObjectCreationHandling = ObjectCreationHandling.Replace;
-			
-            // create our custom serializer
-            var writer = JsonSerializer.Create (settings);
-            return writer;
-        }
+
+            return settings;
+        } 
 
         private static JToken Patch (JToken sourceJson, JToken diffJson)
         {

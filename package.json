@@ -20,9 +20,13 @@
     "pretest:docs": "npm run build:docs",
     "build:docs": "rd mkdocs_site\\ /s /q & md mkdocs_site & COPY README.md mkdocs_site\\index.md /y & XCOPY docs\\* mkdocs_site\\docs\\ /y /i",
     "deploy:docs": "mkdocs gh-deploy --clean",
-    "predeploy:docs": "npm run build:docs"
+    "predeploy:docs": "npm run build:docs",
+    "build:nuget": "node NugetPackaging/build.js"
   },
   "devDependencies": {
-    "watch-cli": "*"
+    "async": "^2.0.0-rc.6",
+    "commander": "^2.9.0",
+    "watch-cli": "*",
+    "lodash": "*"
   }
 }

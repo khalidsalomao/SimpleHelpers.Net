@@ -8,6 +8,12 @@ namespace SimpleHelpersTests
 {
 	public class ObjectDiffPatchTest
 	{
+        public ObjectDiffPatchTest ()
+        {
+            // make sure we are using default settings
+            ObjectDiffPatch.DefaultSerializerSettings = null;
+        }
+
         [Fact]
         public void AbleToDiffAndPatchSimpleObject ()
 		{
@@ -157,9 +163,86 @@ namespace SimpleHelpersTests
             Assert.Equal (diff.NewValues.Value<string> ("StringProperty"), testObj.StringProperty);
             Assert.Null (diff.OldValues);
         }
+
+        [Fact]
+        public void AbleToHandleCircularReferences_Ignore ()
+        {
+            CircularObject original = new CircularObject ();
+            original.AddChild ();
+            original.AddChild ();
+            original.FirstChild.AddChild ();
+
+            var snapshot = ObjectDiffPatch.Snapshot (original).ToString ();
+
+            ObjectDiffPatch.DefaultSerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.All;
+
+            var snapshotWithRefs = ObjectDiffPatch.Snapshot (original).ToString ();
+
+            Assert.NotEqual (snapshot, snapshotWithRefs);
+
+            var updated = ObjectDiffPatch.PatchObject (new CircularObject (), snapshotWithRefs);
+            // they should be different, since all circular references are ignored!
+            Assert.NotEqual (updated, original);
+        }
+
+        [Fact]
+        public void AbleToHandleCircularReferences_All ()
+        {
+            CircularObject original = new CircularObject ();
+            original.AddChild ();
+            original.AddChild ();
+            original.FirstChild.AddChild ();
+
+            var snapshot = ObjectDiffPatch.Snapshot (original).ToString ();
+
+            ObjectDiffPatch.DefaultSerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.All;
+            // see http://www.newtonsoft.com/json/help/html/PreserveReferencesHandlingObject.htm
+
+            var snapshotWithRefs = ObjectDiffPatch.Snapshot (original).ToString ();
+
+            Assert.NotEqual (snapshot, snapshotWithRefs);
+
+            var updated = ObjectDiffPatch.PatchObject (new CircularObject (), snapshotWithRefs);
+           // they should be equal
+            Assert.Equal (Newtonsoft.Json.JsonConvert.SerializeObject (updated, ObjectDiffPatch.DefaultSerializerSettings),
+                Newtonsoft.Json.JsonConvert.SerializeObject (original, ObjectDiffPatch.DefaultSerializerSettings));
+            Assert.NotNull (updated.FirstChild);
+            Assert.NotNull (updated.FirstChild.Parent);
+            Assert.NotNull (updated.FirstChild.FirstChild);
+
+            // revertBack
+            var diff = ObjectDiffPatch.GenerateDiff (original, new CircularObject ());
+
+            updated = ObjectDiffPatch.PatchObject (original, diff.NewValues);
+            //ensure everything is alright
+            Assert.Null (updated.FirstChild);
+            Assert.Null (updated.Parent);
+            Assert.Null (updated.Children);
+        }
     }
 
-	public class TestClass
+    class CircularObject
+    {
+        public CircularObject FirstChild { get; set; }
+        public List<CircularObject> Children { get; set; }
+        public CircularObject Parent { get; set; }
+        public CircularObject AddChild ()
+        {
+            var item = new CircularObject () { Parent = this };
+            if (FirstChild == null)
+                FirstChild = item;
+            if (Children == null)
+                Children = new List<CircularObject> ();
+            Children.Add (item);
+            return item;
+        }
+        //public CircularObject (CircularObject parent)
+        //{
+        //    Parent = parent;
+        //}
+    }
+
+	class TestClass
 	{
 		public string StringProperty { get; set; }
 		public int IntProperty { get; set; }
