@@ -1,0 +1,12 @@
+{
+    "ObjectDiffPath": {
+        "source": "./SimpleHelpers/ObjectDiffPatch.cs",
+        "dest": "./NugetPackaging/ObjectDiffPatch/content/SimpleHelpers/ObjectDiffPatch.cs.pp"
+    },
+    "MemoryCache": {
+
+    },
+    "ConsoleUtils": {
+
+    }
+}
