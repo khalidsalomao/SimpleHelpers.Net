@@ -165,6 +165,79 @@ namespace SimpleHelpersTests
         }
 
         [Fact]
+        public void AbleToDiffAndPathDictionary ()
+        {
+            var testObj = TestClass.CreateSimpleInstance ();
+            testObj.Map = new Dictionary<string, string> ();
+            testObj.Map.Add ("1", "one");
+            testObj.Map.Add ("2", "two");
+            testObj.Map.Add ("3", "three");
+            testObj.Map.Add ("4", "four");
+
+            testObj.Childs = new Dictionary<string, TestClass> ();
+            testObj.Childs.Add ("c1", new TestClass { StringProperty = "one", IntProperty = 1 });
+            testObj.Childs.Add ("c2", new TestClass { StringProperty = "two", IntProperty = 2 });
+            testObj.Childs.Add ("c3", new TestClass { StringProperty = "three", IntProperty = 3 });
+
+            var snapshot = ObjectDiffPatch.Snapshot (testObj);
+
+            testObj.Map["2"] = "updated string";
+            testObj.Map.Remove ("3");
+            testObj.Map.Remove ("4");
+            testObj.Map.Add ("5", "five");
+            testObj.Map.Add ("6", "six");
+
+            testObj.Childs["c1"].IntProperty = 2;
+            testObj.Childs["c2"].StringProperty = "updated string";
+            testObj.Childs["c2"].IntProperty = 100;
+            testObj.Map.Remove ("c3");
+            testObj.Childs.Add ("c4", TestClass.CreateSimpleInstance ());
+            testObj.Childs.Add ("c5", TestClass.CreateSimpleInstance ());
+
+            var diff = ObjectDiffPatch.GenerateDiff (snapshot, testObj);
+
+            var revertedObj = ObjectDiffPatch.PatchObject (testObj, diff.OldValues.ToString ());
+
+            Assert.Equal ("one", revertedObj.Map["1"]);
+            Assert.Equal ("two", revertedObj.Map["2"]);
+            Assert.Equal ("three", revertedObj.Map["3"]);
+            Assert.Equal ("four", revertedObj.Map["4"]);
+            Assert.False (revertedObj.Map.ContainsKey ("5"));
+            Assert.False (revertedObj.Map.ContainsKey ("6"));
+
+            Assert.Equal ("one", revertedObj.Childs["c1"].StringProperty);
+            Assert.Equal (1, revertedObj.Childs["c1"].IntProperty);
+            Assert.Equal ("two", revertedObj.Childs["c2"].StringProperty);
+            Assert.Equal (2, revertedObj.Childs["c2"].IntProperty);            
+            Assert.Equal ("three", revertedObj.Childs["c3"].StringProperty);
+            Assert.False (revertedObj.Map.ContainsKey ("c4"));
+            Assert.False (revertedObj.Map.ContainsKey ("c5"));
+        }
+
+        [Fact]
+        public void AbleToDiffAndPathListOfObjects ()
+        {
+            var testObj = TestClass.CreateSimpleInstance ();
+            testObj.ListOfObjectProperty = new List<TestClass> ();
+            testObj.ListOfObjectProperty.Add (new TestClass { StringProperty = "one", IntProperty = 1 });
+            testObj.ListOfObjectProperty.Add (new TestClass { StringProperty = "two", IntProperty = 2, Map = new Dictionary<string, string> { { "m1", "1" }, { "m2", "2" } } });
+            testObj.ListOfObjectProperty.Add (new TestClass { StringProperty = "three", IntProperty = 3, Map = new Dictionary<string,string> { {"m1", "1"} }});
+            testObj.ListOfObjectProperty.Add (new TestClass { StringProperty = "four", IntProperty = 4 });
+
+            var snapshot = ObjectDiffPatch.Snapshot (testObj);
+
+            testObj.ListOfObjectProperty.Add (testObj.ListOfObjectProperty[0]);
+            testObj.ListOfObjectProperty.RemoveAt (0);
+
+            var diff = ObjectDiffPatch.GenerateDiff (snapshot, testObj);
+
+            var revertedObj = ObjectDiffPatch.PatchObject (testObj, diff.OldValues.ToString ());
+
+            Assert.Equal ("one", revertedObj.ListOfObjectProperty[0].StringProperty);
+            Assert.Equal ("two", revertedObj.ListOfObjectProperty[2].StringProperty);
+        }
+
+        [Fact]
         public void AbleToHandleCircularReferences_Ignore ()
         {
             CircularObject original = new CircularObject ();
@@ -251,6 +324,8 @@ namespace SimpleHelpersTests
 		public List<string> ListOfStringProperty { get; set; }
 		public List<int> ListOfIntProperty { get; set; }
 		public List<double> ListOfDoubleProperty { get; set; }
+        public Dictionary<string, string> Map { get; set; }
+        public Dictionary<string, TestClass> Childs { get; set; }
 
         public static TestClass CreateSimpleInstance ()
         {
