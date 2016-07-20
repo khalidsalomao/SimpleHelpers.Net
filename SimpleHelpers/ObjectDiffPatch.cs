@@ -176,6 +176,21 @@ namespace SimpleHelpers
         }
 
         /// <summary>
+        /// Modifies an object according to a diff, retuning a new object with applied patch.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="diffJson">The diff json.</param>
+        /// <param name="destinationType">The destination type</param>
+        /// <returns>A new object with applied patch</returns>
+        public static object PatchObject(object source, JObject diffJson, Type destinationType)
+        {
+            var sourceJson = source != null ? Newtonsoft.Json.Linq.JObject.FromObject(source, DefaultSerializer()) : null;
+            var resultJson = Patch(sourceJson, diffJson);
+
+            return resultJson != null ? resultJson.ToObject(destinationType) : null;
+        }
+
+        /// <summary>
         /// Create an object snapshots as a Newtonsoft.Json.Linq.JObject.
         /// </summary>
         /// <typeparam name="T">The type of the T.</typeparam>
