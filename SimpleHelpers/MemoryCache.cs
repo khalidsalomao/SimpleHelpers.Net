@@ -150,6 +150,29 @@ namespace SimpleHelpers
             }
             return null;
         }
+        
+        /// <summary>
+        /// Gets the stored value associated with the specified key.
+        /// Result is set to null if cache miss
+        /// Returns true if cache hit and false for cache miss
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <paramref name="result" >The resulting cache object.</param>
+        /// <returns>Boolean indicating cache hit or miss</returns>
+        public static bool TryGet(string key, out T result)
+        {
+            if (key != null)
+            {
+                CachedItem item;
+                if (m_cacheMap.TryGetValue(key, out item))
+                {
+                    result = item.Data;
+                    return true;
+                }
+            }
+            result = null;
+            return false;
+        }
 
         /// <summary>
         /// Stores or updates the value associated with the key.
