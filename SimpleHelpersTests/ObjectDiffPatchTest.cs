@@ -234,7 +234,7 @@ namespace SimpleHelpersTests
             var revertedObj = ObjectDiffPatch.PatchObject (testObj, diff.OldValues.ToString ());
 
             Assert.Equal ("one", revertedObj.ListOfObjectProperty[0].StringProperty);
-            Assert.Equal ("two", revertedObj.ListOfObjectProperty[2].StringProperty);
+            Assert.Equal ("two", revertedObj.ListOfObjectProperty[1].StringProperty);
         }
 
         [Fact]
@@ -292,7 +292,152 @@ namespace SimpleHelpersTests
             Assert.Null (updated.Parent);
             Assert.Null (updated.Children);
         }
+
+        [Fact]
+        public void AbleToDiffEqualObjects()
+        {
+            var source = TestClass.CreateSimpleInstance();
+            var target = TestClass.CreateSimpleInstance();
+            var diff = ObjectDiffPatch.GenerateDiff(source, target);
+            Assert.True(diff.AreEqual);
+        }
+
+        [Fact]
+        public void AbleToDiffStringProperty()
+        {
+            var source = TestClass.CreateSimpleInstance();
+            var target = TestClass.CreateSimpleInstance();
+            source.StringProperty = "123";
+            target.StringProperty = "234";
+            var diff = ObjectDiffPatch.GenerateDiff(source, target);
+            Assert.False(diff.AreEqual);
+        }
+
+        [Fact]
+        public void AbleToDiffSIntProperty()
+        {
+            var source = TestClass.CreateSimpleInstance();
+            var target = TestClass.CreateSimpleInstance();
+            source.IntProperty = 123;
+            target.IntProperty = 234;
+            var diff = ObjectDiffPatch.GenerateDiff(source, target);
+            Assert.False(diff.AreEqual);
+        }
+
+        [Fact]
+        public void AbleToDiffDoubleProperty()
+        {
+            var source = TestClass.CreateSimpleInstance();
+            var target = TestClass.CreateSimpleInstance();
+            source.DoubleProperty = 123;
+            target.DoubleProperty = 234;
+            var diff = ObjectDiffPatch.GenerateDiff(source, target);
+            Assert.False(diff.AreEqual);
+        }
+
+        [Fact]
+        public void AbleToDiffListOfStrings()
+        {
+            var source = TestClass.CreateSimpleInstance();
+            var target = TestClass.CreateSimpleInstance();
+            source.ListOfStringProperty = new List<string> { "1", "2" };
+            target.ListOfStringProperty = new List<string> { "1", "3" };
+            var diff = ObjectDiffPatch.GenerateDiff(source, target);
+            Assert.False(diff.AreEqual);
+        }
+
+        [Fact]
+        public void AbleToDiffListOfInt()
+        {
+            var source = TestClass.CreateSimpleInstance();
+            var target = TestClass.CreateSimpleInstance();
+            source.ListOfIntProperty = new List<int> { 1, 2, 3 };
+            target.ListOfIntProperty = new List<int> { 1, 2, 4 };
+            var diff = ObjectDiffPatch.GenerateDiff(source, target);
+            Assert.False(diff.AreEqual);
+        }
+
+        [Fact]
+        public void AbleToDiffListOfDouble()
+        {
+            var source = TestClass.CreateSimpleInstance();
+            var target = TestClass.CreateSimpleInstance();
+            source.ListOfDoubleProperty = new List<double> { 1, 2, 3 };
+            target.ListOfDoubleProperty = new List<double> { 1, 2, 4 };
+            var diff = ObjectDiffPatch.GenerateDiff(source, target);
+            Assert.False(diff.AreEqual);
+        }
+
+        [Fact]
+        public void AbleToDiffStringPropertyWithSourceNull()
+        {
+            var source = TestClass.CreateSimpleInstance();
+            var target = TestClass.CreateSimpleInstance();
+            source.StringProperty = "123";
+            target.StringProperty = null;
+            var diff = ObjectDiffPatch.GenerateDiff(source, target);
+            Assert.False(diff.AreEqual);
+        }
+
+        [Fact]
+        public void AbleToDiffStringPropertyWithTargetNull()
+        {
+            var source = TestClass.CreateSimpleInstance();
+            var target = TestClass.CreateSimpleInstance();
+            source.StringProperty = null;
+            target.StringProperty = "123";
+            var diff = ObjectDiffPatch.GenerateDiff(source, target);
+            Assert.False(diff.AreEqual);
+        }
+
+        [Fact]
+        public void AbleToDiffListOfStringsWithTargetNull()
+        {
+            var source = TestClass.CreateSimpleInstance();
+            var target = TestClass.CreateSimpleInstance();
+            source.ListOfStringProperty = null;
+            target.ListOfStringProperty = new List<string> { "1", "2" };
+            var diff = ObjectDiffPatch.GenerateDiff(source, target);
+            Assert.False(diff.AreEqual);
+        }
+
+        [Fact]
+        public void AbleToDiffListOfStringsWithSourceNull()
+        {
+            var source = TestClass.CreateSimpleInstance();
+            var target = TestClass.CreateSimpleInstance();
+            source.ListOfStringProperty = new List<string> { "1", "2" };
+            target.ListOfStringProperty = null;
+            var diff = ObjectDiffPatch.GenerateDiff(source, target);
+            Assert.False(diff.AreEqual);
+        }
+
+        [Fact]
+        public void AbleToDiffListOfStringsWithNullItemInSource()
+        {
+            var source = TestClass.CreateSimpleInstance();
+            var target = TestClass.CreateSimpleInstance();
+            source.ListOfStringProperty = new List<string> { "1", null };
+            target.ListOfStringProperty = new List<string> { "1", "0" };
+            var diff = ObjectDiffPatch.GenerateDiff(source, target);
+            Assert.False(diff.AreEqual);
+        }
+
+        [Fact]
+        public void AbleToDiffListOfStringsWithNullItemInTarget()
+        {
+            var source = TestClass.CreateSimpleInstance();
+            var target = TestClass.CreateSimpleInstance();
+            source.ListOfStringProperty = new List<string> { "1", "2" };
+            target.ListOfStringProperty = new List<string> { "1", null };
+            var diff = ObjectDiffPatch.GenerateDiff(source, target);
+            Assert.False(diff.AreEqual);
+        }
+
     }
+
+
+
 
     class CircularObject
     {
