@@ -262,14 +262,14 @@ namespace SimpleHelpers
         {
             if (result == null)
                 result = new ObjectDiffPatchResult ();
-            if (source == null)
+            if (IsNull(source))
             {
-                if (target != null)
+                if (!IsNull(target))
                 {
                     AddToken (result, fieldName, source, target);
                 }
             }
-            else if (target == null)
+            else if (IsNull(target))
             {
                 AddToken (result, fieldName, source, target);
             }
@@ -443,6 +443,11 @@ namespace SimpleHelpers
         private static void AddToken (ObjectDiffPatchResult item, string fieldName, ObjectDiffPatchResult diff)
         {
             AddToken (item, fieldName, diff.OldValues, diff.NewValues);
+        }
+
+        private static bool IsNull(JToken value)
+        {
+            return value == null || value.Type == JTokenType.Null;
         }
     }
 
