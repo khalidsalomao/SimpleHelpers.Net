@@ -172,7 +172,7 @@ namespace SimpleHelpers
             var sourceJson = source != null ? Newtonsoft.Json.Linq.JObject.FromObject (source, DefaultSerializer ()) : null;
             var resultJson = Patch (sourceJson, diffJson);
 
-            return resultJson != null ? resultJson.ToObject<T> () : null;
+            return resultJson != null ? resultJson.ToObject<T> (DefaultSerializer ()) : null;
         }
 
         /// <summary>
