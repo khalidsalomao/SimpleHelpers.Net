@@ -41,7 +41,7 @@ namespace SimpleHelpers
     /// All stored items are kept in concurrent data structures (ConcurrentDictionary) to allow multi-thread usage of the MemoryCache static methods.
     /// Note that the stored objects must be **thread-safe**, since the same instace of an object can and will be returned by multiple calls of *Get* methods. 
     /// If you wish to use non-thread safe object instances you must use the *Remove* method to atomically (safelly) get and remove the object instance from the cache.
-    /// Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
+    /// Note: this nuget package contains C# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
     /// </summary>
     /// <example>
     /// // setup:

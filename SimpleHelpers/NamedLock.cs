@@ -38,7 +38,7 @@ namespace SimpleHelpers
     /// Synchronization helper: a static lock collection associated with a key.
     /// NamedLock manages the lifetime of critical sections that can be accessed by a key (name) throughout the application. 
     /// It also have some helper methods to allow a maximum wait time (timeout) to aquire the lock and safelly release it.    
-    /// Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
+    /// Note: this nuget package contains C# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
     /// </summary>
     /// <example>
     /// // create a lock for this key

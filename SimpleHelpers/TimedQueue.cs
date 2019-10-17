@@ -118,7 +118,7 @@ namespace SimpleHelpers
     /// * grouping data for later processing;
     /// * async processing (consumer/producer);
     /// * etc.
-    /// Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
+    /// Note: this nuget package contains C# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
     /// </summary>    
     public class TimedQueue<T> : IDisposable where T : class
     {

@@ -37,7 +37,7 @@ namespace $rootnamespace$.SimpleHelpers
     /// <summary>
     /// A simple lightweight object pool for fast and simple object reuse.
     /// Fast lightweight thread-safe object pool for objects that are expensive to create or could efficiently be reused.
-    /// Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
+    /// Note: this nuget package contains C# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
     /// </summary>
     public class ObjectPool<T> where T : class
     {
