@@ -191,7 +191,7 @@ FAQ
 ---
 
 ### How to deal with *non-thread-safe* objects
-If you wish to use non-thread safe object instances, you can! Instead of using the `Get` methods, you **must** use the `Remove` method to atomically (safelly) get and remove the object instance from the cache.
+If you wish to use non-thread safe object instances, you can! Instead of using the `Get` methods, you **must** use the `Remove` method to atomically (safely) get and remove the object instance from the cache.
 
 Project Information
 -------------------

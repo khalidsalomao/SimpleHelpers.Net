@@ -40,7 +40,7 @@ namespace SimpleHelpers.SQLCE
 {    
     /// <summary>
     /// Simple key value storage using sqlce.
-    /// All member methods are thread-safe, so any instance can be safelly be accessed by multiple threads.
+    /// All member methods are thread-safe, so any instance can be safely be accessed by multiple threads.
     /// All stored items are serialized to json by json.net.
     /// Note: this nuget package contains C# source code and depends on .Net 4.0.
     /// </summary>    

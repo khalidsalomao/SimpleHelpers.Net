@@ -40,7 +40,7 @@ namespace SimpleHelpers
     /// Fast in-memory cache for data that are expensive to create and can be used in a thread-safe manner.
     /// All stored items are kept in concurrent data structures (ConcurrentDictionary) to allow multi-thread usage of the MemoryCache static methods.
     /// Note that the stored objects must be **thread-safe**, since the same instace of an object can and will be returned by multiple calls of *Get* methods. 
-    /// If you wish to use non-thread safe object instances you must use the *Remove* method to atomically (safelly) get and remove the object instance from the cache.
+    /// If you wish to use non-thread safe object instances you must use the *Remove* method to atomically (safely) get and remove the object instance from the cache.
     /// Note: this nuget package contains C# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
     /// </summary>
     /// <example>
@@ -61,7 +61,7 @@ namespace SimpleHelpers
     /// </example>    
     /// <remarks>
     /// Note that the stored objects must be thread-safe, since the same instace of an object can and will be returned
-    /// by multiple calls of Get methods. To avoid this you must use the Remove method, to atomically (safelly) 
+    /// by multiple calls of Get methods. To avoid this you must use the Remove method, to atomically (safely) 
     /// get and remove the object instance of the cache.
     /// </remarks>
     public class MemoryCache<T> where T : class
