@@ -1,6 +1,6 @@
 ﻿#region *   License     *
 /*
-    SimpleHelpers - ParallelTasks   
+    SimpleHelpers - ParallelTasks
 
     Copyright © 2015 Khalid Salomão
 
@@ -23,7 +23,7 @@
     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-    OTHER DEALINGS IN THE SOFTWARE. 
+    OTHER DEALINGS IN THE SOFTWARE.
 
     License: http://www.opensource.org/licenses/mit-license.php
     Website: https://github.com/khalidsalomao/SimpleHelpers.Net
@@ -39,7 +39,7 @@ using System.Threading.Tasks;
 namespace SimpleHelpers
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public sealed class ParallelTasks<T> : IDisposable
     {
@@ -144,10 +144,10 @@ namespace SimpleHelpers
             // create task queue
             Initialize (initialNumberOfThreads, queueBoundedCapacity, action);
         }
- 
+
         private void Initialize (int numberOfThreads, int queueBoundedCapacity, Action<T> action)
         {
-            // sanity check            
+            // sanity check
             if (numberOfThreads < 0)
                 throw new ArgumentOutOfRangeException ("Number of threads cannot negative.", "numberOfThreads");
             if (action == null)
@@ -161,7 +161,7 @@ namespace SimpleHelpers
 
             // register action
             _action = action;
-			
+
             // create task queue
             m_tasks = (queueBoundedCapacity > 0) ? new BlockingCollection<T> (queueBoundedCapacity) : new BlockingCollection<T>();
 
@@ -169,7 +169,7 @@ namespace SimpleHelpers
             m_threads = new List<Task> (numberOfThreads);
             CreateThreads (numberOfThreads, action);
         }
- 
+
         private void CreateThreads (int numberOfThreads, Action<T> action)
         {
             for (var i = 0; i < numberOfThreads; i++)
@@ -182,7 +182,7 @@ namespace SimpleHelpers
                     }
                 });
 
-                lock (m_threads) 
+                lock (m_threads)
                     m_threads.Add (thread);
             }
         }
@@ -267,7 +267,7 @@ namespace SimpleHelpers
                 StopMaintenance ();
 
                 // signal that there is no more items
-                m_tasks.CompleteAdding ();                
+                m_tasks.CompleteAdding ();
 
                 // flush queue if waitForWorkToFinish is false
                 if (!waitForWorkToFinish)
@@ -290,7 +290,7 @@ namespace SimpleHelpers
                     foreach (var thread in m_threads)
                         thread.Wait (0);
                 }
-                
+
                 // clean up
                 m_tasks.Dispose ();
                 m_tasks = null;
@@ -370,20 +370,20 @@ namespace SimpleHelpers
                         StopMaintenance ();
                 }
                 else
-                {                    
+                {
                     // create threads while there is tasks to be processed
                     do
                         CreateThreads (1, _action);
                     while (m_threads.Count < _maxNumberOfThreads && m_tasks.Count > 0);
                     // clear idle queue marker
                     m_idleCounter = 0;
-                }   
+                }
             }
             finally
             {
                 // release lock
                 System.Threading.Interlocked.Exchange (ref m_executing, 0);
-            }           
+            }
             return true;
         }
 

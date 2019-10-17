@@ -9,7 +9,7 @@ namespace SimpleHelpers
 {
     public class SimpleIncrementer
     {
-        // Query statistics        
+        // Query statistics
         private readonly ConcurrentDictionary<string, IncrementerElement> m_statsMap = new ConcurrentDictionary<string, IncrementerElement> (StringComparer.Ordinal);
 
         /// <summary>

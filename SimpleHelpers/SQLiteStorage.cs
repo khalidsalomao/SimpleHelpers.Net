@@ -1,6 +1,6 @@
 #region *   License     *
 /*
-    SimpleHelpers - SQLiteStorage   
+    SimpleHelpers - SQLiteStorage
 
     Copyright © 2013 Khalid Salomão
 
@@ -23,7 +23,7 @@
     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-    OTHER DEALINGS IN THE SOFTWARE. 
+    OTHER DEALINGS IN THE SOFTWARE.
 
     License: http://www.opensource.org/licenses/mit-license.php
     Website: https://github.com/khalidsalomao/SimpleHelpers.Net
@@ -37,25 +37,25 @@ using System.Linq;
 using Dapper;
 
 namespace SimpleHelpers.SQLite
-{    
+{
     /// <summary>
     /// Simple key value storage using sqlite.
     /// All member methods are thread-safe, so any instance can be safely be accessed by multiple threads.
     /// All stored items are serialized to json by Newtonsoft.Json.
     /// Note: this nuget package contains C# source code and depends on .Net 4.0.
-    /// </summary>    
+    /// </summary>
     /// <example>
     /// // create a new instance
     /// SQLiteStorage db = new SQLiteStorage ("path_to_my_file.sqlite", SQLiteStorageOptions.UniqueKeys ());
     /// // save an item
     /// db.Set ("my_key_for_this_item", new My_Class ());
     /// // get it back
-    /// var my_obj = db.Get ("my_key_for_this_item").FirstOrDefault ();    
+    /// var my_obj = db.Get ("my_key_for_this_item").FirstOrDefault ();
     /// </example>
     public class SQLiteStorage<T> where T : class
-    {        
-        protected string m_connectionString = null; 
-        
+    {
+        protected string m_connectionString = null;
+
         protected SQLiteStorageOptions m_options = null;
 
         public string TableName { get; set; }
@@ -85,7 +85,7 @@ namespace SimpleHelpers.SQLite
         /// </summary>
         /// <param name="filename">The filename.</param>
         /// <param name="options">The options.</param>
-        public SQLiteStorage (string filename, SQLiteStorageOptions options) 
+        public SQLiteStorage (string filename, SQLiteStorageOptions options)
             : this (filename, typeof (T).Name, options)
         {
         }
@@ -112,8 +112,8 @@ namespace SimpleHelpers.SQLite
         {
             get { return m_options; }
             set
-            {                
-                if (value == null) throw new ArgumentNullException("DefaultOptions"); 
+            {
+                if (value == null) throw new ArgumentNullException("DefaultOptions");
                 m_options = value;
             }
         }
@@ -161,15 +161,15 @@ namespace SimpleHelpers.SQLite
                 // https://wiki.mozilla.org/Performance/Avoid_SQLite_In_Your_Next_Firefox_Feature
                 /* wal_autocheckpoint: number of 32KiB pages in the journal */
                 /* journal_size_limit: size the sqlite will try to maintain the journal */
-                // ensures we have a 2.5 sec retry/timeout in case of database heavy use                
+                // ensures we have a 2.5 sec retry/timeout in case of database heavy use
                 var pragmas = "PRAGMA wal_autocheckpoint=32; PRAGMA journal_size_limit = 4096; PRAGMA busy_timeout=2500;";
 
                 // check if we should try to use memory mapper I/O
                  if (m_options.UseMemoryMappedIO)
                      pragmas += " PRAGMA mmap_size=" + 32 * 1024 * 1024  + ";";
-                
+
                 connection.Execute (pragmas);
-                
+
                 // check table if table exists
                 if (connection.Query<Int64> ("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=@table", new { table = TableName }).FirstOrDefault () == 0)
                 {
@@ -183,7 +183,7 @@ namespace SimpleHelpers.SQLite
 
         /// <summary>
         /// Helper method to optimize the sqlite file.<para/>
-        /// Executes 'Analyze' to gather index statistics and 
+        /// Executes 'Analyze' to gather index statistics and
         /// 'Vacuum' to defragment the data file.
         /// </summary>
         /// <remarks>
@@ -204,7 +204,7 @@ namespace SimpleHelpers.SQLite
                 db.Execute ("vacuum");
             }
         }
-        
+
         protected string[] GetTableCreateSQL ()
         {
             return new string[]
@@ -256,9 +256,9 @@ namespace SimpleHelpers.SQLite
             {
                 var trans = db.BeginTransaction ();
                 try
-                {                    
+                {
                     foreach (var i in items)
-                    {                        
+                    {
                         // serialize &&
                         // insert in database
                         setInternal (i.Key, Newtonsoft.Json.JsonConvert.SerializeObject (i.Value), Options.MaximumItemsPerKeys, Options.OverwriteSimilarItems, trans, db);
@@ -396,8 +396,8 @@ namespace SimpleHelpers.SQLite
 
         /// <summary>
         /// Finds each item associated with the provided key and modifies
-        /// using the provided update function. 
-        /// If the update function return true, the item is updated in the database using 
+        /// using the provided update function.
+        /// If the update function return true, the item is updated in the database using
         /// the same transaction of the find operation.
         /// </summary>
         /// <remarks>
@@ -415,7 +415,7 @@ namespace SimpleHelpers.SQLite
                 // begin a transaction acquiring the write lock immediately
                 using (var trans = db.BeginTransaction (System.Data.IsolationLevel.ReadCommitted))
                 {
-                    // load all selected items 
+                    // load all selected items
                     // note that Get () will begin another transaction to get a consistent read
                     foreach (var item in Get (key))
                     {
@@ -427,13 +427,13 @@ namespace SimpleHelpers.SQLite
                     }
                     trans.Commit ();
                 }
-            }            
+            }
         }
 
         /// <summary>
         /// Finds each item associated with the provided key and modifies
-        /// using the provided update function. 
-        /// If the update function return true, the item is updated in the database using 
+        /// using the provided update function.
+        /// If the update function return true, the item is updated in the database using
         /// the same transaction of the find operation.
         /// </summary>
         /// <remarks>
@@ -448,7 +448,7 @@ namespace SimpleHelpers.SQLite
                 // begin a transaction acquiring the write lock immediately
                 using (var trans = db.BeginTransaction (System.Data.IsolationLevel.ReadCommitted))
                 {
-                    // load all selected items 
+                    // load all selected items
                     // note that Get () will begin another transaction to get a consistent read
                     foreach (var i in GetDetails ())
                     {
@@ -491,7 +491,7 @@ namespace SimpleHelpers.SQLite
         {
             return getInternal (keys, sortNewestFirst);
         }
-        
+
         private IEnumerable<T> getInternal (object key, bool sortNewestFirst = true, SQLiteTransaction trans = null, SQLiteConnection connection = null)
         {
             // prepare SQL
@@ -583,7 +583,7 @@ namespace SimpleHelpers.SQLite
         {
             // prepare SQL
             string query;
-            string keyFilter = key == null ? "" : "[Key] = @Key";            
+            string keyFilter = key == null ? "" : "[Key] = @Key";
             if (sortNewestFirst)
                 query = "Select [Value] FROM \"" + TableName + "\" Where " + keyFilter + " AND [Value] LIKE @value Order by [Id] DESC";
             else
@@ -651,7 +651,7 @@ namespace SimpleHelpers.SQLite
             // prepare SQL
             string query;
             object queryParameter;
-            prepareFindSqlQuery (key, parameters, sortNewestFirst, out query, out queryParameter);            
+            prepareFindSqlQuery (key, parameters, sortNewestFirst, out query, out queryParameter);
             // execute query
             using (var db = Open ())
             {
@@ -661,13 +661,13 @@ namespace SimpleHelpers.SQLite
         }
 
         private void prepareGetSqlQuery (object key, bool selectValueOnly, bool? sortDescendingByDate, out string sqlQuery, out object parameters)
-        {            
+        {
             System.Text.StringBuilder query = new System.Text.StringBuilder ("Select ", 100);
             if (selectValueOnly)
                 query.Append (" [Value] FROM \"");
             else
                 query.Append (" * FROM \"");
-            query.Append (TableName).Append ('\"');            
+            query.Append (TableName).Append ('\"');
             // create filter
             if (key != null)
             {
@@ -728,7 +728,7 @@ namespace SimpleHelpers.SQLite
                 foreach (System.ComponentModel.PropertyDescriptor property in properties)
                 {
                     ++i;
-                    object value = property.GetValue (parameters);                    
+                    object value = property.GetValue (parameters);
                     string vName = "v" + i;
                     if (i > 1 || key != null)
                         query.Append (" AND");
@@ -737,7 +737,7 @@ namespace SimpleHelpers.SQLite
                 }
                 queryParameter = createAnonymousType (values);
             }
-            else 
+            else
             {
                 queryParameter = new { Key = key };
             }
@@ -756,7 +756,7 @@ namespace SimpleHelpers.SQLite
                     query.Append (" Order by [Id]");
                 }
             }
-            whereClause = query.ToString ();            
+            whereClause = query.ToString ();
         }
 
         static string prepareSearchParam (string fieldName, object fieldValue)
@@ -775,7 +775,7 @@ namespace SimpleHelpers.SQLite
             return (dynamic)eo;
         }
     }
-    
+
     /// <summary>
     /// SQLiteStorage options
     /// </summary>
@@ -817,7 +817,7 @@ namespace SimpleHelpers.SQLite
         {
             get { return m_maximumItemsPerKeys; }
             set
-            {                
+            {
                 m_maximumItemsPerKeys = value;
                 m_allowDuplicatedKeys = value != 1;
             }
@@ -888,7 +888,7 @@ namespace SimpleHelpers.SQLite
     public class SQLiteStorageItem<T> where T : class
     {
         private string m_value;
-        
+
         private T m_item = null;
 
         /// <summary>

@@ -1,6 +1,6 @@
 #region *   License     *
 /*
-    SimpleHelpers - SqlCEStorage   
+    SimpleHelpers - SqlCEStorage
 
     Copyright © 2013 Khalid Salomão
 
@@ -23,7 +23,7 @@
     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-    OTHER DEALINGS IN THE SOFTWARE. 
+    OTHER DEALINGS IN THE SOFTWARE.
 
     License: http://www.opensource.org/licenses/mit-license.php
     Website: https://github.com/khalidsalomao/SimpleHelpers.Net
@@ -37,27 +37,27 @@ using System.Linq;
 using Dapper;
 
 namespace SimpleHelpers.SQLCE
-{    
+{
     /// <summary>
     /// Simple key value storage using sqlce.
     /// All member methods are thread-safe, so any instance can be safely be accessed by multiple threads.
     /// All stored items are serialized to json by json.net.
     /// Note: this nuget package contains C# source code and depends on .Net 4.0.
-    /// </summary>    
+    /// </summary>
     /// <example>
     /// // create a new instance
     /// SqlCEStorage db = new SqlCEStorage ("path_to_my_file.sqlite", SqlCEStorageOptions.UniqueKeys ());
     /// // save an item
     /// db.Set ("my_key_for_this_item", new My_Class ());
     /// // get it back
-    /// var my_obj = db.Get ("my_key_for_this_item").FirstOrDefault ();    
+    /// var my_obj = db.Get ("my_key_for_this_item").FirstOrDefault ();
     /// </example>
     public class SqlCEStorage<T> where T : class
     {
         protected const int cacheSize = 1000;
-        
-        protected string m_connectionString = null; 
-        
+
+        protected string m_connectionString = null;
+
         protected SqlCEStorageOptions defaultOptions = null;
 
         public string TableName { get; set; }
@@ -114,8 +114,8 @@ namespace SimpleHelpers.SQLCE
         {
             get { return defaultOptions; }
             set
-            {                
-                if (value == null) throw new ArgumentNullException("DefaultOptions"); 
+            {
+                if (value == null) throw new ArgumentNullException("DefaultOptions");
                 defaultOptions = value;
             }
         }
@@ -155,7 +155,7 @@ namespace SimpleHelpers.SQLCE
 
         public void Close ()
         {
-            Open ().Close ();            
+            Open ().Close ();
         }
 
         protected void CreateTable ()
@@ -169,18 +169,18 @@ namespace SimpleHelpers.SQLCE
                 }
             }
         }
-        
+
         /// <summary>
         /// Helper method to optimize the sqlce file.
         /// </summary>
         public void Shrink ()
-        {            
+        {
             using (var db = new SqlCeEngine (m_connectionString))
             {
                 db.Shrink ();
             }
         }
-        
+
         protected string[] GetTableCreateSQL ()
         {
             return new string[]
@@ -214,7 +214,7 @@ namespace SimpleHelpers.SQLCE
             {
                 insertInternal (key, Newtonsoft.Json.JsonConvert.SerializeObject (value), DefaultOptions.MaximumItemsPerKeys, DefaultOptions.OverwriteSimilarItems, trans, db);
                 trans.Commit ();
-            }                    
+            }
          }
 
         /// <summary>
@@ -373,7 +373,7 @@ namespace SimpleHelpers.SQLCE
         {
             return getInternal (keys, sortNewestFirst);
         }
-        
+
         private IEnumerable<T> getInternal (object key, bool sortNewestFirst = true)
         {
             // prepare SQL
@@ -419,7 +419,7 @@ namespace SimpleHelpers.SQLCE
         {
             // prepare SQL
             string query;
-            object parameter;            
+            object parameter;
             prepareGetSqlQuery (key, false, sortNewestFirst, out query, out parameter);
             // execute query
             var db = Open ();
@@ -439,7 +439,7 @@ namespace SimpleHelpers.SQLCE
         {
             // prepare SQL
             string query;
-            string keyFilter = key == null ? "" : "[Key] = @Key";            
+            string keyFilter = key == null ? "" : "[Key] = @Key";
             if (sortNewestFirst)
                 query = "Select [Value] FROM \"" + TableName + "\" Where " + keyFilter + " AND [Value] LIKE @value Order by [Id] DESC";
             else
@@ -503,7 +503,7 @@ namespace SimpleHelpers.SQLCE
             // prepare SQL
             string query;
             object queryParameter;
-            prepareFindSqlQuery (key, parameters, sortNewestFirst, out query, out queryParameter);            
+            prepareFindSqlQuery (key, parameters, sortNewestFirst, out query, out queryParameter);
             // execute query
             var db = Open ();
             foreach (var i in db.Query<string> (query, queryParameter, null, false))
@@ -517,7 +517,7 @@ namespace SimpleHelpers.SQLCE
                 query.Append (" [Value] FROM \"");
             else
                 query.Append (" * FROM \"");
-            query.Append (TableName).Append ('\"');            
+            query.Append (TableName).Append ('\"');
             // create filter
             if (key != null)
             {
@@ -578,7 +578,7 @@ namespace SimpleHelpers.SQLCE
                 foreach (System.ComponentModel.PropertyDescriptor property in properties)
                 {
                     ++i;
-                    object value = property.GetValue (parameters);                    
+                    object value = property.GetValue (parameters);
                     string vName = "v" + i;
                     if (i > 1 || key != null)
                         query.Append (" AND");
@@ -587,7 +587,7 @@ namespace SimpleHelpers.SQLCE
                 }
                 queryParameter = createAnonymousType (values);
             }
-            else 
+            else
             {
                 queryParameter = new { Key = key };
             }
@@ -606,7 +606,7 @@ namespace SimpleHelpers.SQLCE
                     query.Append (" Order by [Id]");
                 }
             }
-            whereClause = query.ToString ();            
+            whereClause = query.ToString ();
         }
 
         static string prepareSearchParam (string fieldName, object fieldValue)
@@ -625,7 +625,7 @@ namespace SimpleHelpers.SQLCE
             return (dynamic)eo;
         }
     }
-    
+
     /// <summary>
     /// SqlCEStorage options
     /// </summary>
@@ -663,7 +663,7 @@ namespace SimpleHelpers.SQLCE
         {
             get { return m_maximumItemsPerKeys; }
             set
-            {                
+            {
                 m_maximumItemsPerKeys = value;
                 m_allowDuplicatedKeys = value != 1;
             }
@@ -712,7 +712,7 @@ namespace SimpleHelpers.SQLCE
     public class SqlCEStorageItem<T> where T : class
     {
         private string m_value;
-        
+
         private T m_item = null;
 
         /// <summary>

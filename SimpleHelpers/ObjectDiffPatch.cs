@@ -1,6 +1,6 @@
 ﻿#region *   License     *
 /*
-    SimpleHelpers - ObjectDiffPatch   
+    SimpleHelpers - ObjectDiffPatch
 
     Copyright © 2014 Khalid Salomão
 
@@ -23,7 +23,7 @@
     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-    OTHER DEALINGS IN THE SOFTWARE. 
+    OTHER DEALINGS IN THE SOFTWARE.
 
     License: http://www.opensource.org/licenses/mit-license.php
     Website: https://github.com/khalidsalomao/SimpleHelpers.Net
@@ -36,7 +36,7 @@ using System;
 using System.Collections.Generic;
 
 namespace SimpleHelpers
-{    
+{
     public class ObjectDiffPatch
     {
         private const string PREFIX_ARRAY_SIZE = "@@ Count";
@@ -76,7 +76,7 @@ namespace SimpleHelpers
         /// <param name="original">The original.</param>
         /// <param name="updated">The updated.</param>
         /// <returns>The result of the diff operation</returns>
-        public static ObjectDiffPatchResult GenerateDiff<T1, T2> (T1 original, T2 updated) where T1 : class where T2 : class 
+        public static ObjectDiffPatchResult GenerateDiff<T1, T2> (T1 original, T2 updated) where T1 : class where T2 : class
         {
             // ensure the serializer will not ignore null values
             var writer = DefaultSerializer ();
@@ -220,7 +220,7 @@ namespace SimpleHelpers
                 return result;
             }
 
-            // compare internal fields           
+            // compare internal fields
             JArray removedNew = new JArray ();
             JArray removedOld = new JArray ();
             JToken token;
@@ -350,7 +350,7 @@ namespace SimpleHelpers
             settings.ObjectCreationHandling = ObjectCreationHandling.Replace;
 
             return settings;
-        } 
+        }
 
         private static JToken Patch (JToken sourceJson, JToken diffJson)
         {
@@ -369,13 +369,13 @@ namespace SimpleHelpers
             {
                 JObject diffObj = (JObject)diffJson;
                 if (sourceJson.Type == JTokenType.Array)
-                {                    
+                {
                     int sz = 0;
                     bool foundArraySize = diffObj.TryGetValue(PREFIX_ARRAY_SIZE, out token);
                     if (foundArraySize)
                     {
                         diffObj.Remove (PREFIX_ARRAY_SIZE);
-                        sz = token.Value<int> ();                        
+                        sz = token.Value<int> ();
                     }
                     var array = sourceJson as JArray;
                     // resize array

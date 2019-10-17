@@ -10,7 +10,7 @@ namespace AudioParserLib.SimpleHelpers
     public class PriorityQueue<T>
     {
         #region **  internal variables  **
-        
+
         private T[] m_nodes = null;
         int m_count = 0;
         int m_size = 0;
@@ -21,7 +21,7 @@ namespace AudioParserLib.SimpleHelpers
         public Func<T, T, int> ComparisonMethod = null;
 
         static int DefaultSimpleCompare (T p1, T p2)
-        {            
+        {
             return String.CompareOrdinal (p1.ToString (), p2.ToString ());
         }
 
@@ -93,7 +93,7 @@ namespace AudioParserLib.SimpleHelpers
                 var result = m_nodes[0];
                 m_nodes[0] = m_defaultValue;
                 --m_count;
-                // check heap 
+                // check heap
                 if (m_count > 0)
                 {
                     //put last element at removed node position
@@ -168,7 +168,7 @@ namespace AudioParserLib.SimpleHelpers
             return m_defaultValue;
         }
 
-        // Method Clear will remove all elements from heap	
+        // Method Clear will remove all elements from heap
         public void Clear ()
         {
             for (int i = 0; i < m_count; ++i)

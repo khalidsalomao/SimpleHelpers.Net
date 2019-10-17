@@ -1,6 +1,6 @@
 ﻿#region *   License     *
 /*
-    SimpleHelpers - MemoryCache   
+    SimpleHelpers - MemoryCache
 
     Copyright © 2013 Khalid Salomão
 
@@ -23,7 +23,7 @@
     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-    OTHER DEALINGS IN THE SOFTWARE. 
+    OTHER DEALINGS IN THE SOFTWARE.
 
     License: http://www.opensource.org/licenses/mit-license.php
     Website: https://github.com/khalidsalomao/SimpleHelpers.Net
@@ -39,7 +39,7 @@ namespace SimpleHelpers
     /// Simple lightweight object in-memory cache, with a background timer to remove expired objects.
     /// Fast in-memory cache for data that are expensive to create and can be used in a thread-safe manner.
     /// All stored items are kept in concurrent data structures (ConcurrentDictionary) to allow multi-thread usage of the MemoryCache static methods.
-    /// Note that the stored objects must be **thread-safe**, since the same instace of an object can and will be returned by multiple calls of *Get* methods. 
+    /// Note that the stored objects must be **thread-safe**, since the same instace of an object can and will be returned by multiple calls of *Get* methods.
     /// If you wish to use non-thread safe object instances you must use the *Remove* method to atomically (safely) get and remove the object instance from the cache.
     /// Note: this nuget package contains C# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
     /// </summary>
@@ -51,17 +51,17 @@ namespace SimpleHelpers
     /// MemoryCache<string>.MaintenanceStep = TimeSpan.FromMilliseconds (500);
     /// // Our event, if we want to treat the removed expired items
     /// MemoryCache<string>.OnExpiration += (string key, string item) => {};
-    /// 
+    ///
     /// // Simple usage:
     /// // store an item:
     /// MemoryCache<string>.Set ("k1", "test");
-    /// 
+    ///
     /// // get it back (if it is still valid, otherwise we get null):
     /// string value = MemoryCache<string>.Get ("k1");
-    /// </example>    
+    /// </example>
     /// <remarks>
     /// Note that the stored objects must be thread-safe, since the same instace of an object can and will be returned
-    /// by multiple calls of Get methods. To avoid this you must use the Remove method, to atomically (safely) 
+    /// by multiple calls of Get methods. To avoid this you must use the Remove method, to atomically (safely)
     /// get and remove the object instance of the cache.
     /// </remarks>
     public class MemoryCache<T> where T : class
@@ -69,9 +69,9 @@ namespace SimpleHelpers
         private static readonly System.Collections.Concurrent.ConcurrentDictionary <string, CachedItem> m_cacheMap = new System.Collections.Concurrent.ConcurrentDictionary<string, CachedItem> (StringComparer.Ordinal);
 
         private static TimeSpan m_timeout = TimeSpan.FromMinutes (5);
-        
+
         private static TimeSpan m_maintenanceStep = TimeSpan.FromMinutes (5);
-        
+
         private static bool m_ignoreNullValues = true;
 
         /// <summary>
@@ -101,15 +101,15 @@ namespace SimpleHelpers
                 }
             }
         }
-        
+
         /// <summary>
         /// If the Set method should silently ignore any null value.
         /// Default value is true.
         /// </summary>
-        public static bool IgnoreNullValues 
-        { 
-            get { return m_ignoreNullValues; }            
-            set { m_ignoreNullValues = value; } 
+        public static bool IgnoreNullValues
+        {
+            get { return m_ignoreNullValues; }
+            set { m_ignoreNullValues = value; }
         }
 
         #region *   Events and Event Handlers   *
@@ -150,7 +150,7 @@ namespace SimpleHelpers
             }
             return null;
         }
-        
+
         /// <summary>
         /// Gets the stored value associated with the specified key.
         /// Result is set to null if cache miss
@@ -229,7 +229,7 @@ namespace SimpleHelpers
             if (!String.IsNullOrEmpty (key))
             {
                 CachedItem item;
-                if (m_cacheMap.TryRemove (key, out item))                
+                if (m_cacheMap.TryRemove (key, out item))
                     return item.Data;
             }
             return default (T);
@@ -273,7 +273,7 @@ namespace SimpleHelpers
             if (!m_cacheMap.TryGetValue (key, out item))
             {
                 if (valueFactory == null)
-                    throw new System.ArgumentNullException ("valueFactory");                    
+                    throw new System.ArgumentNullException ("valueFactory");
                 // create the new value
                 T data = valueFactory (key);
                 // add or update cache
@@ -291,7 +291,7 @@ namespace SimpleHelpers
         /// Gets the stored value associated with the specified key or store a new value
         /// generated by the provided factory function and return it.
         /// If the value factory function is called to create a new item, a lock is acquired to supress
-        /// multiple call to the factory function for the specified key (calls to others keys are not blocked). 
+        /// multiple call to the factory function for the specified key (calls to others keys are not blocked).
         /// If the lock times out (i.e. the factory takes more waitTimeout to create then new instance), the default value for the type is returned.
         /// </summary>
         /// <param name="key">The key.</param>
@@ -326,7 +326,7 @@ namespace SimpleHelpers
                 {
                     if (padlock.Enter (waitTimeoutMilliseconds))
                     {
-                        return GetOrAdd (key, valueFactory);                            
+                        return GetOrAdd (key, valueFactory);
                     }
                     else
                     {
@@ -408,7 +408,7 @@ namespace SimpleHelpers
                 System.Threading.Interlocked.Exchange (ref m_executing, 0);
             }
         }
-        
+
         #endregion
     }
 

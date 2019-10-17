@@ -1,6 +1,6 @@
 #region *   License     *
 /*
-    SimpleHelpers - NamedLock   
+    SimpleHelpers - NamedLock
 
     Copyright © 2013 Khalid Salomão
 
@@ -23,7 +23,7 @@
     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-    OTHER DEALINGS IN THE SOFTWARE. 
+    OTHER DEALINGS IN THE SOFTWARE.
 
     License: http://www.opensource.org/licenses/mit-license.php
     Website: https://github.com/khalidsalomao/SimpleHelpers.Net
@@ -36,8 +36,8 @@ namespace SimpleHelpers
 {
     /// <summary>
     /// Synchronization helper: a static lock collection associated with a key.
-    /// NamedLock manages the lifetime of critical sections that can be accessed by a key (name) throughout the application. 
-    /// It also have some helper methods to allow a maximum wait time (timeout) to acquire the lock and safely release it.    
+    /// NamedLock manages the lifetime of critical sections that can be accessed by a key (name) throughout the application.
+    /// It also have some helper methods to allow a maximum wait time (timeout) to acquire the lock and safely release it.
     /// Note: this nuget package contains C# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
     /// </summary>
     /// <example>
@@ -59,7 +59,7 @@ namespace SimpleHelpers
         #region *   Internal static methods   *
 
         private static readonly System.Collections.Concurrent.ConcurrentDictionary <string, CountedLock> m_waitLock = new System.Collections.Concurrent.ConcurrentDictionary<string, CountedLock> (StringComparer.Ordinal);
-        
+
         private static object GetOrAdd (string key)
         {
             CountedLock padlock = m_waitLock.GetOrAdd (key, LockFactory);
@@ -106,7 +106,7 @@ namespace SimpleHelpers
         private object m_padlock;
 
         private bool m_locked = false;
-        
+
         /// <summary>
         /// Check if a lock was acquired.
         /// </summary>
@@ -205,7 +205,7 @@ namespace SimpleHelpers
             if (m_locked)
             {
                 m_locked = false;
-                System.Threading.Monitor.Exit (m_padlock);                
+                System.Threading.Monitor.Exit (m_padlock);
             }
             return false;
         }

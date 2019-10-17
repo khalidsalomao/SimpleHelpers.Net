@@ -1,6 +1,6 @@
 ﻿#region *   License     *
 /*
-    SimpleHelpers - ObjectPool   
+    SimpleHelpers - ObjectPool
 
     Copyright © 2013 Khalid Salomão
 
@@ -23,7 +23,7 @@
     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-    OTHER DEALINGS IN THE SOFTWARE. 
+    OTHER DEALINGS IN THE SOFTWARE.
 
     License: http://www.opensource.org/licenses/mit-license.php
     Website: https://github.com/khalidsalomao/SimpleHelpers.Net
@@ -42,7 +42,7 @@ namespace SimpleHelpers
     public class ObjectPool<T> where T : class
     {
         static System.Collections.Concurrent.ConcurrentStack<T> m_bag = new System.Collections.Concurrent.ConcurrentStack<T> ();
-        
+
         /// <summary>
         /// Maximum capactity of the pool, used in Put to discards objects if the capacity was reached.
         /// </summary>
@@ -76,7 +76,7 @@ namespace SimpleHelpers
 
         /// <summary>
         /// Removes a stored object from the pool and return it.
-        /// If the pool is empty and a 'DefaultInstanceFactory' was provided, 
+        /// If the pool is empty and a 'DefaultInstanceFactory' was provided,
         /// then 'DefaultInstanceFactory' will be called to generate a new object,
         /// otherwise null is returned.
         /// </summary>
@@ -101,7 +101,7 @@ namespace SimpleHelpers
         {
             // add to pool if it is not full
             if (m_bag.Count < MaxCapacity)
-            {               
+            {
                 m_bag.Push (item);
             }
             else if (DefaultInstanceDispose != null)
@@ -122,7 +122,7 @@ namespace SimpleHelpers
                 T item;
                 while (m_bag.TryPop (out item))
                 {
-                    DefaultInstanceDispose (item);                    
+                    DefaultInstanceDispose (item);
                 }
             }
             m_bag.Clear ();
