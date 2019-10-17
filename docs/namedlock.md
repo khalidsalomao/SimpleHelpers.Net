@@ -52,7 +52,7 @@ using (var padlock = new NamedLock (key))
     }
     else
     {
-        // do some other thing since we could not aquire the lock
+        // do some other thing since we could not acquire the lock
     }
 }
 ```
