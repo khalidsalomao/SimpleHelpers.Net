@@ -9,7 +9,7 @@ SimpleHelpers.Net
 In every project there are lot's of reusable patterns that we find our selves rewriting or just doing some copy & paste, and thus the idea behind SimpleHelpers micro-libraries is to create a small collection of such code but keeping it reliable and easy to use.
 
 
-Most of SimpleHelpers.Net libraries are distributed by Nuget.org as source code files (c#), since this enable us to use these utility code as micro-libraries without creating and having to deploy a huge number of assemblies (dlls). The idea is to keep things simple!
+Most of SimpleHelpers.Net libraries are distributed by Nuget.org as source code files (C#), since this enable us to use these utility code as micro-libraries without creating and having to deploy a huge number of assemblies (dlls). The idea is to keep things simple!
 
 Distributing source code also make things easier in case of doubt or curiosity. You can just take a look into the full source code!
 

@@ -40,9 +40,9 @@ namespace $rootnamespace$.SimpleHelpers.SQLite
 {    
     /// <summary>
     /// Simple key value storage using sqlite.
-    /// All member methods are thread-safe, so any instance can be safelly be accessed by multiple threads.
+    /// All member methods are thread-safe, so any instance can be safely be accessed by multiple threads.
     /// All stored items are serialized to json by Newtonsoft.Json.
-    /// Note: this nuget package contains c# source code and depends on .Net 4.0.
+    /// Note: this nuget package contains C# source code and depends on .Net 4.0.
     /// </summary>    
     /// <example>
     /// // create a new instance

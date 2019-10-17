@@ -15,7 +15,7 @@ namespace SimpleHelpers.SQLite
         }
 
         public static Dictionary<string, object> ParseToDictionary (this object obj)
-        { 
+        {
             System.ComponentModel.PropertyDescriptorCollection properties = System.ComponentModel.TypeDescriptor.GetProperties (obj);
             Dictionary<string, object> result = new Dictionary<string, object> (properties.Count + 1, StringComparer.Ordinal);
             foreach (System.ComponentModel.PropertyDescriptor property in properties)

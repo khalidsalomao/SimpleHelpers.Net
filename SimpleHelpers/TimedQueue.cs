@@ -1,6 +1,6 @@
 ﻿#region *   License     *
 /*
-    SimpleHelpers - TimedQueue   
+    SimpleHelpers - TimedQueue
 
     Copyright © 2013 Khalid Salomão
 
@@ -23,7 +23,7 @@
     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-    OTHER DEALINGS IN THE SOFTWARE. 
+    OTHER DEALINGS IN THE SOFTWARE.
 
     License: http://www.opensource.org/licenses/mit-license.php
     Website: https://github.com/khalidsalomao/SimpleHelpers.Net
@@ -87,7 +87,7 @@ namespace SimpleHelpers
 
         /// <summary>
         /// Removes the specified TimedQueue by key.<para/>
-        /// Note: the TimedQueue will safely be removed and disposed. 
+        /// Note: the TimedQueue will safely be removed and disposed.
         /// If the queue was already removed, this will be a NOP.
         /// </summary>
         /// <param name="key">The TimedQueue associated key.</param>
@@ -102,7 +102,7 @@ namespace SimpleHelpers
 
         /// <summary>
         /// Removes and dispose of all TimedQueues.
-        /// Note: the TimedQueue will safely be removed and disposed. 
+        /// Note: the TimedQueue will safely be removed and disposed.
         /// </summary>
         public static void Clear ()
         {
@@ -118,8 +118,8 @@ namespace SimpleHelpers
     /// * grouping data for later processing;
     /// * async processing (consumer/producer);
     /// * etc.
-    /// Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
-    /// </summary>    
+    /// Note: this nuget package contains C# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
+    /// </summary>
     public class TimedQueue<T> : IDisposable where T : class
     {
         private TimeSpan m_timerStep = TimeSpan.FromMilliseconds (1000);
@@ -201,13 +201,13 @@ namespace SimpleHelpers
         public void Flush ()
         {
             StopMaintenance ();
-            ExecuteMaintenance (null);            
+            ExecuteMaintenance (null);
         }
 
         /// <summary>
         /// Flushes the current enqueued events.
         /// </summary>
-        public void Dispose () 
+        public void Dispose ()
         {
             Flush ();
             StopMaintenance ();
@@ -256,7 +256,7 @@ namespace SimpleHelpers
                 if (m_queue.Count == 0)
                 {
                     // after 3 loops with empty queue, stop timer
-                    if (m_idleCounter++ > 2)                    
+                    if (m_idleCounter++ > 2)
                         StopMaintenance ();
                 }
                 else
@@ -268,8 +268,8 @@ namespace SimpleHelpers
                         m_idleCounter = 0;
 
                         // execute event handler
-                        OnExecution (TakeQueuedItems ());    
-                    }                    
+                        OnExecution (TakeQueuedItems ());
+                    }
                     else
                     {
                         // simply stop the queue if there is no event listening

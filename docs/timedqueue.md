@@ -13,7 +13,7 @@ Useful for:
 * async processing (consumer/producer);
 * etc.
 
-Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
+Note: this nuget package contains C# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
 
 
 Installation

@@ -1,6 +1,6 @@
 #region *   License     *
 /*
-    SimpleHelpers - NamedLock   
+    SimpleHelpers - NamedLock
 
     Copyright © 2013 Khalid Salomão
 
@@ -23,7 +23,7 @@
     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-    OTHER DEALINGS IN THE SOFTWARE. 
+    OTHER DEALINGS IN THE SOFTWARE.
 
     License: http://www.opensource.org/licenses/mit-license.php
     Website: https://github.com/khalidsalomao/SimpleHelpers.Net
@@ -36,9 +36,9 @@ namespace SimpleHelpers
 {
     /// <summary>
     /// Synchronization helper: a static lock collection associated with a key.
-    /// NamedLock manages the lifetime of critical sections that can be accessed by a key (name) throughout the application. 
-    /// It also have some helper methods to allow a maximum wait time (timeout) to aquire the lock and safelly release it.    
-    /// Note: this nuget package contains c# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
+    /// NamedLock manages the lifetime of critical sections that can be accessed by a key (name) throughout the application.
+    /// It also have some helper methods to allow a maximum wait time (timeout) to acquire the lock and safely release it.
+    /// Note: this nuget package contains C# source code and depends on System.Collections.Concurrent introduced in .Net 4.0.
     /// </summary>
     /// <example>
     /// // create a lock for this key
@@ -59,7 +59,7 @@ namespace SimpleHelpers
         #region *   Internal static methods   *
 
         private static readonly System.Collections.Concurrent.ConcurrentDictionary <string, CountedLock> m_waitLock = new System.Collections.Concurrent.ConcurrentDictionary<string, CountedLock> (StringComparer.Ordinal);
-        
+
         private static object GetOrAdd (string key)
         {
             CountedLock padlock = m_waitLock.GetOrAdd (key, LockFactory);
@@ -106,9 +106,9 @@ namespace SimpleHelpers
         private object m_padlock;
 
         private bool m_locked = false;
-        
+
         /// <summary>
-        /// Check if a lock was aquired.
+        /// Check if a lock was acquired.
         /// </summary>
         public bool IsLocked
         {
@@ -148,7 +148,7 @@ namespace SimpleHelpers
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing,
         /// or resetting unmanaged resources.
-        /// Releases aquired lock and related resources.
+        /// Releases acquired lock and related resources.
         /// </summary>
         public void Dispose ()
         {
@@ -161,7 +161,7 @@ namespace SimpleHelpers
         #region *   Internal variables & properties *
 
         /// <summary>
-        /// Tries to aquire a lock.
+        /// Tries to acquire a lock.
         /// </summary>
         public bool Enter ()
         {
@@ -173,10 +173,10 @@ namespace SimpleHelpers
         }
 
         /// <summary>
-        /// Tries to aquire a lock respecting the specified timeout.
+        /// Tries to acquire a lock respecting the specified timeout.
         /// </summary>
         /// <param name="waitTimeoutMilliseconds">The wait timeout milliseconds.</param>
-        /// <returns>If the lock was aquired in the specified timeout</returns>
+        /// <returns>If the lock was acquired in the specified timeout</returns>
         public bool Enter (int waitTimeoutMilliseconds)
         {
             if (!m_locked)
@@ -187,17 +187,17 @@ namespace SimpleHelpers
         }
 
         /// <summary>
-        /// Tries to aquire a lock respecting the specified timeout.
+        /// Tries to acquire a lock respecting the specified timeout.
         /// </summary>
         /// <param name="waitTimeout">The wait timeout.</param>
-        /// <returns>If the lock was aquired in the specified timeout</returns>
+        /// <returns>If the lock was acquired in the specified timeout</returns>
         public bool Enter (TimeSpan waitTimeout)
         {
             return Enter ((int)waitTimeout.TotalMilliseconds);
         }
 
         /// <summary>
-        /// Releases the lock if it was already aquired.
+        /// Releases the lock if it was already acquired.
         /// Called also at "Dispose".
         /// </summary>
         public bool Exit ()
@@ -205,7 +205,7 @@ namespace SimpleHelpers
             if (m_locked)
             {
                 m_locked = false;
-                System.Threading.Monitor.Exit (m_padlock);                
+                System.Threading.Monitor.Exit (m_padlock);
             }
             return false;
         }
@@ -215,7 +215,7 @@ namespace SimpleHelpers
         #region *   Factory methods     *
 
         /// <summary>
-        /// Creates a new instance and tries to aquire a lock.
+        /// Creates a new instance and tries to acquire a lock.
         /// </summary>
         /// <param name="key">The named lock key.</param>
         public static NamedLock CreateAndEnter (string key)
@@ -227,7 +227,7 @@ namespace SimpleHelpers
         }
 
         /// <summary>
-        /// Creates a new instance and tries to aquire a lock.
+        /// Creates a new instance and tries to acquire a lock.
         /// </summary>
         /// <param name="key">The named lock key.</param>
         /// <param name="waitTimeoutMilliseconds">The wait timeout milliseconds.</param>
@@ -240,7 +240,7 @@ namespace SimpleHelpers
         }
 
         /// <summary>
-        /// Creates a new instance and tries to aquire a lock.
+        /// Creates a new instance and tries to acquire a lock.
         /// </summary>
         /// <param name="key">The named lock key.</param>
         /// <param name="waitTimeout">The wait timeout.</param>
