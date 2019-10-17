@@ -434,6 +434,26 @@ namespace SimpleHelpersTests
             Assert.False(diff.AreEqual);
         }
 
+        [Fact]
+        public void AbleToHandleCollectionHoldingInterfaceReferences()
+        {
+            ObjectDiffPatch.DefaultSerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects;
+
+            var original = new TestCollection();
+            original.List.Add(TestClass.CreateSimpleInstance());
+
+            var changedValue = TestClass.CreateSimpleInstance();
+            changedValue.StringProperty = "Other Value";
+            var updated = new TestCollection();
+            updated.List.Add(changedValue);
+
+            var diff = ObjectDiffPatch.GenerateDiff(original, updated);
+            Assert.False(diff.AreEqual);
+
+            var patchedUpdated = ObjectDiffPatch.PatchObject(original, diff.NewValues);
+            Assert.Equal(patchedUpdated.List.ElementAt(0).StringProperty, changedValue.StringProperty);
+        }
+
     }
 
 
@@ -460,7 +480,12 @@ namespace SimpleHelpersTests
         //}
     }
 
-	class TestClass
+    interface TestInterface
+    {
+        string StringProperty { get; }
+    }
+
+	class TestClass : TestInterface
 	{
 		public string StringProperty { get; set; }
 		public int IntProperty { get; set; }
@@ -515,4 +540,9 @@ namespace SimpleHelpersTests
 			};
         }
 	}
+
+    class TestCollection
+    {
+        public List<TestInterface> List = new List<TestInterface>();
+    }
 }
