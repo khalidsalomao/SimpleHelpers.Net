@@ -2,7 +2,7 @@ SimpleHelpers.TimedQueue
 ===========
 
 [![NuGet](https://img.shields.io/nuget/v/SimpleHelpers.TimedQueue.svg?maxAge=1200&style=flat-square)](https://www.nuget.org/packages/SimpleHelpers.TimedQueue/)
-[![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg?maxAge=3600&style=flat-square)](https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/LICENSE.txt)
+[![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg?maxAge=3600&style=flat-square)](https://cdn.jsdelivr.net/gh/khalidsalomao/SimpleHelpers.Net/SimpleHelpers/LICENSE.txt)
 
 Fast lightweight in-memory queue that stores data in a concurrent queue and periodically process the queued items.
 
@@ -39,7 +39,7 @@ The source code will be installed in your project with the following file system
 
 ### Download
 
-If you prefer, you can also download the source code: [TimedQueue.cs](https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/TimedQueue.cs)
+If you prefer, you can also download the source code: [TimedQueue.cs](https://cdn.jsdelivr.net/gh/khalidsalomao/SimpleHelpers.Net/SimpleHelpers/TimedQueue.cs)
 
 
 Configuration

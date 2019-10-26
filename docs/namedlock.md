@@ -2,7 +2,7 @@ SimpleHelpers.NamedLock
 ===========
 
 [![NuGet](https://img.shields.io/nuget/v/SimpleHelpers.NamedLock.svg?maxAge=1200&style=flat-square)](https://www.nuget.org/packages/SimpleHelpers.NamedLock/)
-[![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg?maxAge=3600&style=flat-square)](https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/LICENSE.txt)
+[![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg?maxAge=3600&style=flat-square)](https://cdn.jsdelivr.net/gh/khalidsalomao/SimpleHelpers.Net/SimpleHelpers/LICENSE.txt)
 
 Synchronization helper: a static lock collection associated with a key.
 
@@ -32,7 +32,7 @@ The source code will be installed in your project with the following file system
 
 ### Download
 
-If you prefer, you can also download the source code: [NamedLock.cs](https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/NamedLock.cs)
+If you prefer, you can also download the source code: [NamedLock.cs](https://cdn.jsdelivr.net/gh/khalidsalomao/SimpleHelpers.Net/SimpleHelpers/NamedLock.cs)
 
 
 Examples
