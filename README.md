@@ -1,7 +1,7 @@
 SimpleHelpers.Net
 =================
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg?maxAge=3600&style=flat-square)](https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/LICENSE.txt)
+[![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg?maxAge=3600&style=flat-square)](https://cdn.jsdelivr.net/gh/khalidsalomao/SimpleHelpers.Net/SimpleHelpers/LICENSE.txt)
 
 
 *Micro-libraries* (pieces of utility code) for .Net that are safe and simple to use.
@@ -119,4 +119,4 @@ If you are having issues, please let us know [here](https://github.com/khalidsal
 License
 -------
 
-The project is licensed under the [MIT license](https://raw.github.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/LICENSE.txt).
+The project is licensed under the [MIT license](https://cdn.jsdelivr.net/gh/khalidsalomao/SimpleHelpers.Net/SimpleHelpers/LICENSE.txt).
