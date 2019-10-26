@@ -2,7 +2,7 @@ SimpleHelpers.FileEncoding
 ===========
 
 [![NuGet](https://img.shields.io/nuget/v/SimpleHelpers.FileEncoding.svg?maxAge=1200&style=flat-square)](https://www.nuget.org/packages/SimpleHelpers.FileEncoding/)
-[![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg?maxAge=3600&style=flat-square)](https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/LICENSE.txt)
+[![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg?maxAge=3600&style=flat-square)](https://cdn.jsdelivr.net/gh/khalidsalomao/SimpleHelpers.Net/SimpleHelpers/LICENSE.txt)
 
 Detect any text file charset encoding using Mozilla Charset Detector (UDE.CSharp).
 

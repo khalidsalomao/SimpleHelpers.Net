@@ -2,7 +2,7 @@ SimpleHelpers.MemoryCache
 ===========
 
 [![NuGet](https://img.shields.io/nuget/v/SimpleHelpers.MemoryCache.svg?maxAge=1200&style=flat-square)](https://www.nuget.org/packages/SimpleHelpers.MemoryCache/)
-[![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg?maxAge=3600&style=flat-square)](https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/LICENSE.txt)
+[![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg?maxAge=3600&style=flat-square)](https://cdn.jsdelivr.net/gh/khalidsalomao/SimpleHelpers.Net/SimpleHelpers/LICENSE.txt)
 
 Simple, lightweight and fast in-memory caching.
 
