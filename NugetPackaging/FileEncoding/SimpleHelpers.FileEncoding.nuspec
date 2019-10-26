@@ -6,7 +6,7 @@
         <title>SimpleHelpers.FileEncoding (C# - Source file)</title>
         <authors>Khalid Salomão</authors>
         <owners>Khalid Salomão</owners>
-        <licenseUrl>https://raw.github.com/khalidsalomao/SimpleHelpers.Net/master/SimpleHelpers/LICENSE.txt</licenseUrl>
+        <licenseUrl>https://cdn.jsdelivr.net/gh/khalidsalomao/SimpleHelpers.Net/SimpleHelpers/LICENSE.txt</licenseUrl>
         <projectUrl>https://github.com/khalidsalomao/SimpleHelpers.Net</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Detect any text file charset encoding using Mozilla Charset Detector (C# - Source file).</description>
