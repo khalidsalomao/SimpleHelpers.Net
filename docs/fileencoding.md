@@ -41,7 +41,7 @@ The source code will be installed in your project with the following file system
 
 ### Download
 
-If you prefer, you can also download the source code: [FileEncoding.cs](https://raw.githubusercontent.com/khalidsalomao/SimpleHelpers.Net/master/NugetPackaging/SimpleFileEncoding/FileEncoding.cs.pp)
+If you prefer, you can also download the source code: [FileEncoding.cs](https://github.com/khalidsalomao/SimpleHelpers.Net/blob/master/SimpleHelpers.ConsoleUtils/SimpleHelpers/FileEncoding.cs)
 
 
 ### Dependencies
